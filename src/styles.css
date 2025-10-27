@@ -1,0 +1,49 @@
+:root{
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#2563eb;
+  --danger:#ef4444;
+}
+
+body { font-family: Inter, system-ui, Arial; background: var(--bg); margin:0; color:#111827; }
+
+.topbar { display:flex; justify-content:space-between; align-items:center; padding:12px 20px; background:linear-gradient(90deg,#0ea5e9, #6366f1); color:white; }
+.topbar h1 { margin:0; font-size:20px; }
+.topbar nav a { color:white; margin-left:14px; text-decoration:none; font-weight:600; }
+
+.container { max-width:960px; margin:20px auto; padding:16px; }
+.narrow { max-width:480px; }
+
+.filters { display:flex; gap:16px; align-items:center; margin-bottom:12px; }
+.filters label { display:flex; gap:8px; align-items:center; }
+
+.grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+
+.card { background:var(--card); box-shadow:0 3px 8px rgba(2,6,23,0.06); padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; }
+.card-left h3 { margin:0 0 6px 0; font-size:16px; }
+.muted { color:var(--muted); font-size:13px; }
+
+.traffic-light { width:38px; padding:6px 0; border-radius:6px; background:#11182710; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.light { width:16px; height:16px; border-radius:50%; opacity:0.25; transition:opacity .18s, transform .15s; }
+.light.on { opacity:1; transform:scale(1.15); }
+.green { background: #10b981; }
+.yellow { background: #f59e0b; }
+.red { background: #ef4444; }
+
+.card-right { display:flex; flex-direction:column; align-items:center; gap:6px; }
+
+.status-text { font-weight:600; color:var(--muted); font-size:13px; }
+
+.form { display:flex; flex-direction:column; gap:10px; background:var(--card); padding:12px; border-radius:8px; box-shadow:0 4px 12px rgba(2,6,23,0.06); }
+.form label { display:flex; flex-direction:column; font-size:13px; }
+.form input, .form select { padding:8px; border-radius:6px; border:1px solid #e5e7eb; }
+
+button { background:var(--accent); color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+button:active { transform:translateY(1px); }
+
+.admin-top { display:flex; justify-content:space-between; align-items:center; }
+.admin-row { display:flex; justify-content:space-between; align-items:center; padding:10px; margin:8px 0; background:var(--card); border-radius:8px; }
+.admin-actions button { margin-left:8px; padding:6px 8px; background:#111827; }
+.error { color:var(--danger); }
+.footer { padding:12px; text-align:center; color:var(--muted); }
