@@ -1,31 +1,19 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import React, { useState } from "react";
 import RestaurantList from "./components/RestaurantList";
-import AdminLogin from "./components/AdminLogin";
 import AdminDashboard from "./components/AdminDashboard";
 
-export default function App(){
+export default function App() {
+  const [view, setView] = useState("diner");
+
   return (
-    <div className="app">
-      <header className="topbar">
-        <h1>EatEase</h1>
-        <nav>
-          <Link to="/">Diner</Link>
-          <Link to="/admin">Admin</Link>
-        </nav>
-      </header>
+    <div style={{ padding: "20px" }}>
+      <h1>🍽️ EatEase – Crowd Monitor</h1>
+      <div style={{ marginBottom: "20px" }}>
+        <button onClick={() => setView("diner")}>👥 Diner View</button>
+        <button onClick={() => setView("admin")}>🧑‍💼 Admin View</button>
+      </div>
 
-      <main>
-        <Routes>
-          <Route path="/" element={<RestaurantList />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        </Routes>
-      </main>
-
-      <footer className="footer">
-        <small>EatEase • Progressive Web App</small>
-      </footer>
+      {view === "diner" ? <RestaurantList /> : <AdminDashboard />}
     </div>
   );
 }

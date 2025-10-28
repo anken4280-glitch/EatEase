@@ -1,31 +1,28 @@
-import { BASE_URL } from "./config";
+const API_BASE = "http://localhost:4000";
 
-async function request(path, options = {}) {
-  const url = `${BASE_URL}${path}`;
-  const token = localStorage.getItem("admin_token");
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-  const resp = await fetch(url, { ...options, headers });
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`${resp.status} ${text}`);
+export async function fetchRestaurants() {
+  try {
+    const response = await fetch(`${API_BASE}/api/restaurants`);
+    if (!response.ok) throw new Error("Failed to fetch restaurants");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
+    return [];
   }
-  return resp.json();
 }
 
-export const api = {
-  getRestaurants: () => request("/api/restaurants"),
-  setRestaurantStatus: (id, status) =>
-    request(`/api/restaurants/${id}/status`, {
+export async function updateRestaurantStatus(id, status, crowdLevel) {
+  try {
+    const response = await fetch(`${API_BASE}/api/restaurants/${id}/status`, {
       method: "POST",
-      body: JSON.stringify({ status }),
-    }),
-  adminLogin: (user, pass) =>
-    request(`/api/admin/login`, {
-      method: "POST",
-      body: JSON.stringify({ username: user, password: pass }),
-    }),
-};
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status, crowdLevel }),
+    });
+
+    if (!response.ok) throw new Error("Failed to update restaurant status");
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating status:", error);
+    return null;
+  }
+}
