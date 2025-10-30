@@ -1,8 +1,8 @@
-const API_BASE = "http://localhost:4000";
+const API_BASE = "http://localhost:8000/api";
 
 export async function fetchRestaurants() {
   try {
-    const response = await fetch(`${API_BASE}/api/restaurants`);
+    const response = await fetch(`${API_BASE}/restaurants`);
     if (!response.ok) throw new Error("Failed to fetch restaurants");
     return await response.json();
   } catch (error) {
@@ -13,7 +13,7 @@ export async function fetchRestaurants() {
 
 export async function updateRestaurantStatus(id, status, crowdLevel) {
   try {
-    const response = await fetch(`${API_BASE}/api/restaurants/${id}/status`, {
+    const response = await fetch(`${API_BASE}/restaurants/${id}/status`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status, crowdLevel }),
