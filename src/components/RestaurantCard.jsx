@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
+import PopularTimesChart from "./PopularTimesChart";
+import ReviewsSection from "./ReviewsSection";
 
-export default function RestaurantCard({ restaurant }) {
+export default function RestaurantCard({ restaurant, currentUser }) {
   const [promotions, setPromotions] = useState([]);
+  const [showPopularTimes, setShowPopularTimes] = useState(false);
 
   useEffect(() => {
     async function fetchPromotions() {
       try {
-        const response = await fetch(`${API_BASE}/restaurants/${restaurant.id}/promotions`);
+        const response = await fetch(`http://localhost:4000/api/restaurants/${restaurant.id}/promotions`);
         if (response.ok) {
           const data = await response.json();
           setPromotions(data);
@@ -63,7 +66,30 @@ export default function RestaurantCard({ restaurant }) {
             ⏱️ Wait: {restaurant.waitTime} min
           </span>
         </div>
+
+        {restaurant.rating && (
+          <div className="rating-row">
+            <span>⭐ {restaurant.rating}/5 ({restaurant.reviewCount || 0} reviews)</span>
+          </div>
+        )}
       </div>
+
+      {/* Popular Times Toggle */}
+      <div className="card-actions">
+        <button 
+          onClick={() => setShowPopularTimes(!showPopularTimes)}
+          className="action-btn"
+        >
+          {showPopularTimes ? "📊 Hide Popular Times" : "📊 Show Popular Times"}
+        </button>
+      </div>
+
+      {/* Popular Times Chart */}
+      {showPopularTimes && (
+        <div className="popular-times-section">
+          <PopularTimesChart restaurant={restaurant} currentTime={new Date()} />
+        </div>
+      )}
 
       {promotions.length > 0 && (
         <div className="promotions-section">
@@ -77,6 +103,15 @@ export default function RestaurantCard({ restaurant }) {
           ))}
         </div>
       )}
+
+      {/* Reviews Section */}
+      <div className="reviews-preview">
+        <ReviewsSection 
+          restaurantId={restaurant.id} 
+          currentUser={currentUser}
+          compact={true}
+        />
+      </div>
       
       <div className="last-updated">
         <small>IoT Updated: {new Date(restaurant.lastUpdated).toLocaleTimeString()}</small>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchRestaurants, updateRestaurantStatus } from "../api";
+import PopularTimesChart from "./PopularTimesChart";
 
 export default function AdminDashboard() {
   const [restaurants, setRestaurants] = useState([]);
@@ -34,7 +35,7 @@ export default function AdminDashboard() {
   const handleCreatePromotion = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_BASE}/promotions`, {
+      const response = await fetch("http://localhost:4000/api/promotions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,6 +87,12 @@ export default function AdminDashboard() {
               </h4>
               <p>Occupancy: {selectedRestaurant.occupancy}%</p>
               <p>Wait Time: {selectedRestaurant.waitTime} min</p>
+              
+              {/* Add Popular Times to Admin Dashboard */}
+              <div className="popular-times-admin">
+                <h5>Popular Times Analytics</h5>
+                <PopularTimesChart restaurant={selectedRestaurant} currentTime={new Date()} />
+              </div>
             </div>
           </div>
 

@@ -4,6 +4,9 @@ import AdminDashboard from "./components/AdminDashboard";
 import Filters from "./components/Filters";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import PreferencesModal from "./components/PreferencesModal";
+import SuggestionModal from "./components/SuggestionModal";
+import { RecommendationEngine } from "./utils/RecommendationEngine";
 import { getCurrentUser, logoutUser } from "./api";
 
 export default function App() {
@@ -18,10 +21,20 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [authView, setAuthView] = useState("login");
   const [loading, setLoading] = useState(true);
+  const [userPreferences, setUserPreferences] = useState(null);
+  const [showPreferencesModal, setShowPreferencesModal] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
 
   useEffect(() => {
     console.log("App mounted, checking auth status...");
     checkAuthStatus();
+    
+    // Load saved preferences from localStorage
+    const savedPreferences = localStorage.getItem('userPreferences');
+    if (savedPreferences) {
+      setUserPreferences(JSON.parse(savedPreferences));
+    }
   }, []);
 
   useEffect(() => {
@@ -89,6 +102,60 @@ export default function App() {
     localStorage.removeItem("user");
     setUser(null);
     setView("diner");
+  };
+
+  const handleSavePreferences = (preferences) => {
+    setUserPreferences(preferences);
+    setShowPreferencesModal(false);
+    localStorage.setItem('userPreferences', JSON.stringify(preferences));
+  };
+
+  const handleSuggestPlace = async () => {
+    if (!userPreferences) {
+      setShowPreferencesModal(true);
+      alert("Please set your dining preferences first!");
+      return;
+    }
+
+    try {
+      // Fetch current restaurants data
+      const response = await fetch("http://localhost:4000/api/restaurants");
+      const restaurants = await response.json();
+
+      // Generate suggestions
+      const suggestions = restaurants
+        .map(restaurant => {
+          const matchScore = RecommendationEngine.calculateMatchScore(
+            restaurant,
+            userPreferences,
+            new Date()
+          );
+          const reasons = RecommendationEngine.getRecommendationReason(
+            restaurant,
+            userPreferences,
+            matchScore
+          );
+          
+          return {
+            restaurant,
+            matchScore,
+            reasons
+          };
+        })
+        .filter(suggestion => suggestion.matchScore >= 40) // Only show decent matches
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, 5); // Top 5 suggestions
+
+      if (suggestions.length > 0) {
+        setSuggestions(suggestions);
+        setShowSuggestionModal(true);
+      } else {
+        alert("No great matches found right now. Try adjusting your preferences!");
+      }
+    } catch (error) {
+      console.error("Error generating suggestions:", error);
+      alert("Unable to generate suggestions. Please try again.");
+    }
   };
 
   if (loading) {
@@ -165,9 +232,35 @@ export default function App() {
             <div className="view-header">
               <h2>Find Your Perfect Dining Experience</h2>
               <p>Real-time crowd monitoring with IoT technology</p>
+              <button 
+                onClick={() => setShowPreferencesModal(true)}
+                className="preferences-btn"
+              >
+                ⚙️ Set Dining Preferences
+              </button>
             </div>
-            <Filters filters={filters} setFilters={setFilters} restaurants={[]} />
-            <RestaurantList filters={filters} />
+            <Filters 
+              filters={filters} 
+              setFilters={setFilters} 
+              restaurants={[]} 
+              onSuggestPlace={handleSuggestPlace}
+              userPreferences={userPreferences}
+            />
+            <RestaurantList filters={filters} currentUser={user} />
+            
+            <PreferencesModal
+              isOpen={showPreferencesModal}
+              onClose={() => setShowPreferencesModal(false)}
+              onSave={handleSavePreferences}
+              currentPreferences={userPreferences}
+            />
+
+            <SuggestionModal
+              isOpen={showSuggestionModal}
+              onClose={() => setShowSuggestionModal(false)}
+              suggestions={suggestions}
+              userPreferences={userPreferences}
+            />
           </div>
         ) : (
           <AdminDashboard />

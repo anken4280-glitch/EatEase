@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Filters({ filters, setFilters, restaurants }) {
+export default function Filters({ filters, setFilters, restaurants, onSuggestPlace, userPreferences }) {
   const [searchTerm, setSearchTerm] = useState("");
   const cuisines = Array.from(new Set(restaurants.map(r => r.cuisine))).filter(Boolean);
 
@@ -19,7 +19,7 @@ export default function Filters({ filters, setFilters, restaurants }) {
           onChange={handleSearch}
           className="search-input"
         />
-        <button className="suggest-btn">
+        <button className="suggest-btn" onClick={onSuggestPlace}>
           🎯 Suggest a Place for me
         </button>
       </div>
