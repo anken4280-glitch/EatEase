@@ -6,7 +6,7 @@ export default function RestaurantCard({ restaurant }) {
   useEffect(() => {
     async function fetchPromotions() {
       try {
-        const response = await fetch(`http://localhost:4000/api/restaurants/${restaurant.id}/promotions`);
+        const response = await fetch(`${API_BASE}/restaurants/${restaurant.id}/promotions`);
         if (response.ok) {
           const data = await response.json();
           setPromotions(data);

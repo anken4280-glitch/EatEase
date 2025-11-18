@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   const handleCreatePromotion = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:4000/api/promotions", {
+      const response = await fetch(`${API_BASE}/promotions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

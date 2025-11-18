@@ -1,4 +1,6 @@
-const API_BASE = "http://localhost:8000/api";
+import { BASE_URL } from "./config";
+
+const API_BASE = `${BASE_URL}/api`;
 
 export async function fetchRestaurants() {
   try {
@@ -29,7 +31,7 @@ export async function updateRestaurantStatus(id, status, crowdLevel) {
 
 export async function simulateIoTUpdate() {
   try {
-    const response = await fetch(`${API_BASE}/api/restaurants/iot-update`, {
+    const response = await fetch(`${API_BASE}/restaurants/iot-update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
@@ -44,7 +46,7 @@ export async function simulateIoTUpdate() {
 
 export async function getRestaurantOccupancy(id) {
   try {
-    const response = await fetch(`${API_BASE}/api/restaurants/${id}/occupancy`);
+    const response = await fetch(`${API_BASE}/restaurants/${id}/occupancy`);
     if (!response.ok) throw new Error("Failed to fetch occupancy data");
     return await response.json();
   } catch (error) {
@@ -55,7 +57,7 @@ export async function getRestaurantOccupancy(id) {
 
 export async function signupUser(email, password, name, userType) {
   try {
-    const response = await fetch(`${API_BASE}/api/auth/signup`, {
+    const response = await fetch(`${API_BASE}/auth/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, name, userType }),
@@ -75,7 +77,7 @@ export async function signupUser(email, password, name, userType) {
 
 export async function loginUser(email, password) {
   try {
-    const response = await fetch(`${API_BASE}/api/auth/login`, {
+    const response = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -95,7 +97,7 @@ export async function loginUser(email, password) {
 
 export async function logoutUser(token) {
   try {
-    const response = await fetch(`${API_BASE}/api/auth/logout`, {
+    const response = await fetch(`${API_BASE}/auth/logout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
@@ -109,7 +111,7 @@ export async function logoutUser(token) {
 
 export async function getCurrentUser(token) {
   try {
-    const response = await fetch(`${API_BASE}/api/auth/me`, {
+    const response = await fetch(`${API_BASE}/auth/me`, {
       headers: {
         "Authorization": `Bearer ${token}`
       },
