@@ -24,30 +24,25 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h3>Set Your Dining Preferences</h3>
-          <button onClick={onClose} className="close-btn">×</button>
+    <div className="preferences-inline">
+      <div className="preferences-form">
+        <div className="preference-section">
+          <label>Favorite Cuisines</label>
+          <div className="cuisine-tags">
+            {cuisines.map(cuisine => (
+              <button
+                key={cuisine}
+                type="button"
+                className={`cuisine-tag ${preferences.cuisine.includes(cuisine) ? 'active' : ''}`}
+                onClick={() => toggleCuisine(cuisine)}
+              >
+                {cuisine}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="preferences-form">
-          <div className="preference-section">
-            <label>Favorite Cuisines</label>
-            <div className="cuisine-tags">
-              {cuisines.map(cuisine => (
-                <button
-                  key={cuisine}
-                  type="button"
-                  className={`cuisine-tag ${preferences.cuisine.includes(cuisine) ? 'active' : ''}`}
-                  onClick={() => toggleCuisine(cuisine)}
-                >
-                  {cuisine}
-                </button>
-              ))}
-            </div>
-          </div>
-
+        <div className="preferences-grid">
           <div className="preference-section">
             <label>Budget Range</label>
             <select 
@@ -109,7 +104,7 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
           </div>
         </div>
 
-        <div className="modal-actions">
+        <div className="preferences-actions">
           <button onClick={onClose} className="btn-secondary">Cancel</button>
           <button onClick={() => onSave(preferences)} className="btn-primary">Save Preferences</button>
         </div>

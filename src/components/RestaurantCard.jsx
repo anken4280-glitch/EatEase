@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import PopularTimesChart from "./PopularTimesChart";
 import ReviewsSection from "./ReviewsSection";
+import ReservationModal from "./ReservationModal"; // Added import
 
 export default function RestaurantCard({ restaurant, currentUser }) {
   const [promotions, setPromotions] = useState([]);
   const [showPopularTimes, setShowPopularTimes] = useState(false);
+  const [showReservationModal, setShowReservationModal] = useState(false); // Added state
 
   useEffect(() => {
     async function fetchPromotions() {
@@ -74,13 +76,19 @@ export default function RestaurantCard({ restaurant, currentUser }) {
         )}
       </div>
 
-      {/* Popular Times Toggle */}
+      {/* Card Actions */}
       <div className="card-actions">
         <button 
           onClick={() => setShowPopularTimes(!showPopularTimes)}
           className="action-btn"
         >
           {showPopularTimes ? "📊 Hide Popular Times" : "📊 Show Popular Times"}
+        </button>
+        <button 
+          onClick={() => setShowReservationModal(true)}
+          className="action-btn reserve-btn"
+        >
+          📅 Reserve Table
         </button>
       </div>
 
@@ -113,6 +121,14 @@ export default function RestaurantCard({ restaurant, currentUser }) {
         />
       </div>
       
+      {/* Reservation Modal */}
+      <ReservationModal
+        restaurant={restaurant}
+        isOpen={showReservationModal}
+        onClose={() => setShowReservationModal(false)}
+        currentUser={currentUser}
+      />
+
       <div className="last-updated">
         <small>IoT Updated: {new Date(restaurant.lastUpdated).toLocaleTimeString()}</small>
       </div>

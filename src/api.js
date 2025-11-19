@@ -14,6 +14,7 @@ const mockRestaurants = [
     waitTime: 5,
     hasPromo: true,
     rating: 4.5,
+    location: "Downtown",
     lastUpdated: new Date().toISOString()
   },
   {
@@ -26,6 +27,7 @@ const mockRestaurants = [
     waitTime: 15,
     hasPromo: false,
     rating: 4.2,
+    location: "Mall Area",
     lastUpdated: new Date().toISOString()
   },
   {
@@ -38,6 +40,7 @@ const mockRestaurants = [
     waitTime: 25,
     hasPromo: true,
     rating: 4.0,
+    location: "Downtown",
     lastUpdated: new Date().toISOString()
   },
   {
@@ -50,6 +53,7 @@ const mockRestaurants = [
     waitTime: 8,
     hasPromo: false,
     rating: 3.8,
+    location: "Food Court",
     lastUpdated: new Date().toISOString()
   },
   {
@@ -62,6 +66,7 @@ const mockRestaurants = [
     waitTime: 12,
     hasPromo: true,
     rating: 4.7,
+    location: "Mall Area",
     lastUpdated: new Date().toISOString()
   }
 ];
