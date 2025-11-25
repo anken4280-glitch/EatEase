@@ -10,7 +10,7 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
     groupSize: 2
   });
 
-  const cuisines = ["Italian", "Chinese", "Japanese", "Mexican", "American", "Indian", "Thai", "Filipino", "Korean", "Mediterranean"];
+  const cuisines = ["Pakistani", "Roasted Chicken"];
 
   const toggleCuisine = (cuisine) => {
     setPreferences(prev => ({
@@ -44,9 +44,9 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
 
         <div className="preferences-grid">
           <div className="preference-section">
-            <label>Budget Range</label>
+            <label>Price Range</label>
             <select 
-              value={preferences.budget}
+              value={preferences.price}
               onChange={(e) => setPreferences({...preferences, budget: e.target.value})}
             >
               <option value="low">💰 Budget (Under ₱200)</option>
@@ -56,10 +56,10 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
           </div>
 
           <div className="preference-section">
-            <label>Crowd Tolerance</label>
+            <label>Crowd Status</label>
             <select 
-              value={preferences.crowdTolerance}
-              onChange={(e) => setPreferences({...preferences, crowdTolerance: e.target.value})}
+              value={preferences.tolerance}
+              onChange={(e) => setPreferences({...preferences, budget: e.target.value})}
             >
               <option value="low">🟢 Prefer Quiet (Low Crowd)</option>
               <option value="medium">🟡 Moderate Crowd OK</option>
@@ -67,41 +67,6 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
             </select>
           </div>
 
-          <div className="preference-section">
-            <label>Maximum Wait Time: {preferences.maxWaitTime} minutes</label>
-            <input 
-              type="range" 
-              min="5" 
-              max="60" 
-              step="5"
-              value={preferences.maxWaitTime}
-              onChange={(e) => setPreferences({...preferences, maxWaitTime: parseInt(e.target.value)})}
-            />
-          </div>
-
-          <div className="preference-section">
-            <label>Dining Occasion</label>
-            <select 
-              value={preferences.diningOccasion}
-              onChange={(e) => setPreferences({...preferences, diningOccasion: e.target.value})}
-            >
-              <option value="casual">🍔 Casual Dining</option>
-              <option value="business">💼 Business Meal</option>
-              <option value="date">💑 Romantic Date</option>
-              <option value="family">👨‍👩‍👧‍👦 Family Gathering</option>
-            </select>
-          </div>
-
-          <div className="preference-section">
-            <label>Group Size: {preferences.groupSize} people</label>
-            <input 
-              type="range" 
-              min="1" 
-              max="10" 
-              value={preferences.groupSize}
-              onChange={(e) => setPreferences({...preferences, groupSize: parseInt(e.target.value)})}
-            />
-          </div>
         </div>
 
         <div className="preferences-actions">

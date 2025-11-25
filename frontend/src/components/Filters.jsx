@@ -32,8 +32,14 @@ export default function Filters({ filters, setFilters, restaurants, onSuggestPla
           onChange={handleLocationChange}
           className="search-input"
         />
-        <button className="suggest-btn" onClick={onSuggestPlace}>
-          🎯 Suggest a Place for me
+        
+        {/* Updated Suggest Button */}
+        <button 
+          className="suggest-btn"
+          onClick={onSuggestPlace}
+          type="button"
+        >
+          🎯 Suggest a Place for Me
         </button>
       </div>
 

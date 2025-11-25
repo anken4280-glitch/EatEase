@@ -1,198 +1,247 @@
-import React, { useEffect, useState } from "react";
-import { fetchRestaurants } from "../api";
-import RestaurantCard from "./RestaurantCard";
-import RestaurantDetailsModal from "./RestaurantDetailsModal";
+import React, { useState, useEffect } from "react";
+import { fetchRestaurants, toggleBookmark } from "../api";
+import ReservationModal from "./ReservationModal";
 
 export default function RestaurantList({ filters, currentUser }) {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [showReservationModal, setShowReservationModal] = useState(false);
 
-  // ----------------------------
-  // Auto Error Logging Function
-  // ----------------------------
-  async function logError(details) {
-    console.error("Logged Error:", details);
-
-    // mock log endpoint (optional)
-    try {
-      await fetch("/logs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(details),
-      });
-    } catch {
-      // Even if logging fails, ignore it
-    }
-  }
-
-  // ----------------------------
-  // Initial Load
-  // ----------------------------
   useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
-        const data = await fetchRestaurants();
-        setRestaurants(data);
-        setFilteredRestaurants(data);
-      } catch (err) {
-        setError("⚠ Failed to load restaurants. Please try again.");
-        logError({
-          message: "Restaurant fetch failed",
-          error: err.toString(),
-          time: new Date().toISOString(),
-        });
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadData();
+    loadRestaurants();
   }, []);
 
-  // ----------------------------
-  // Filtering Logic
-  // ----------------------------
   useEffect(() => {
+    filterRestaurants();
+  }, [restaurants, filters]);
+
+  const loadRestaurants = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchRestaurants();
+      setRestaurants(data);
+    } catch (error) {
+      console.error("Error loading restaurants:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterRestaurants = () => {
     let filtered = restaurants;
 
-    if (filters.cuisine !== "all") {
-      filtered = filtered.filter((r) => r.cuisine === filters.cuisine);
-    }
-
-    if (filters.hasPromo) {
-      filtered = filtered.filter((r) => r.hasPromo);
-    }
-
-    if (filters.crowdLevel !== "all") {
-      filtered = filtered.filter(
-        (r) => r.crowdLevel.toLowerCase() === filters.crowdLevel.toLowerCase()
-      );
-    }
-
+    // Search filter
     if (filters.search) {
-      filtered = filtered.filter(
-        (r) =>
-          r.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-          r.cuisine.toLowerCase().includes(filters.search.toLowerCase())
+      filtered = filtered.filter(restaurant =>
+        restaurant.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+        restaurant.cuisine.toLowerCase().includes(filters.search.toLowerCase()) ||
+        restaurant.location.toLowerCase().includes(filters.search.toLowerCase())
       );
     }
 
+    // Cuisine filter
+    if (filters.cuisine !== "all") {
+      filtered = filtered.filter(restaurant =>
+        restaurant.cuisine.toLowerCase() === filters.cuisine.toLowerCase()
+      );
+    }
+
+    // Crowd level filter
+    if (filters.crowdLevel !== "all") {
+      filtered = filtered.filter(restaurant =>
+        restaurant.status === filters.crowdLevel
+      );
+    }
+
+    // Has promotion filter
+    if (filters.hasPromo) {
+      filtered = filtered.filter(restaurant => restaurant.hasPromo);
+    }
+
+    // Location filter
     if (filters.location) {
-      filtered = filtered.filter((r) =>
-        r.location.toLowerCase().includes(filters.location.toLowerCase())
+      filtered = filtered.filter(restaurant =>
+        restaurant.location.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
 
     setFilteredRestaurants(filtered);
-  }, [filters, restaurants]);
-
-  // ----------------------------
-  // Handlers
-  // ----------------------------
-  const handleRestaurantSelect = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-    setShowDetailsModal(true);
   };
 
-  const handleSimilarRestaurantSelect = (restaurant) => {
-    setSelectedRestaurant(restaurant);
+  const handleBookmark = async (restaurantId, e) => {
+    e.stopPropagation();
+    try {
+      const result = await toggleBookmark(restaurantId);
+      if (result.success) {
+        // Update local state to reflect bookmark change
+        setRestaurants(prev => 
+          prev.map(restaurant => 
+            restaurant.id === restaurantId 
+              ? { ...restaurant, isBookmarked: result.isBookmarked }
+              : restaurant
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
   };
 
-  const refreshPage = () => window.location.reload();
+  const handleMakeReservation = (restaurant, e) => {
+    e.stopPropagation();
+    setSelectedRestaurant(restaurant);
+    setShowReservationModal(true);
+  };
 
-  // ----------------------------
-  // Loading Screen
-  // ----------------------------
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "green": return "#27ae60";
+      case "yellow": return "#f39c12";
+      case "orange": return "#e67e22";
+      case "red": return "#e74c3c";
+      default: return "#95a5a6";
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "green": return "🟢";
+      case "yellow": return "🟡";
+      case "orange": return "🟠";
+      case "red": return "🔴";
+      default: return "⚪";
+    }
+  };
+
   if (loading) {
     return (
-      <div className="restaurant-list loading-screen-container">
-        <div className="loading-spinner"></div>
-        <p>Loading restaurants...</p>
-      </div>
-    );
-  }
-
-  // ----------------------------
-  // ERROR UI (Dark Mode Friendly)
-  // ----------------------------
-  if (error) {
-    return (
-      <div className="restaurant-list error-container">
-        <div className="error-box">
-          <h2>⚠ Oops! Something went wrong.</h2>
-          <p>{error}</p>
-
-          <button onClick={refreshPage} className="refresh-btn">
-            🔄 Refresh Page
-          </button>
+      <div className="restaurant-list">
+        <div className="loading-screen">
+          <div className="loading-spinner"></div>
+          <p>Loading restaurants...</p>
         </div>
       </div>
     );
   }
 
-  // ----------------------------
-  // Main UI
-  // ----------------------------
   return (
     <div className="restaurant-list">
-      {/* GLOBAL REFRESH BUTTON */}
-      <div className="header-tools">
-        <p>Found {filteredRestaurants.length} restaurants</p>
-
-        <div className="header-actions">
-          {filteredRestaurants.length > 0 && (
-            <button
-              className="toggle-view-btn"
-              onClick={() =>
-                document.querySelector(".cards").classList.toggle("list-view")
-              }
-            >
-              🔄 Toggle View
-            </button>
-          )}
-
-          <button className="refresh-btn" onClick={refreshPage}>
-            🔁 Refresh
-          </button>
+      <div className="results-header">
+        <h3>Found {filteredRestaurants.length} restaurants</h3>
+        <div className="status-legend">
+          <span className="legend-item">
+            <span className="legend-color green"></span> Low (0-60%)
+          </span>
+          <span className="legend-item">
+            <span className="legend-color yellow"></span> Moderate (61-79%)
+          </span>
+          <span className="legend-item">
+            <span className="legend-color orange"></span> High (80-89%)
+          </span>
+          <span className="legend-item">
+            <span className="legend-color red"></span> Full (90-100%)
+          </span>
         </div>
       </div>
 
-      {filteredRestaurants.length > 0 ? (
-        <div className="cards">
-          {filteredRestaurants.map((restaurant) => (
-            <div
-              key={restaurant.id}
-              className="restaurant-card-wrapper"
-              onClick={() => handleRestaurantSelect(restaurant)}
+      {filteredRestaurants.length === 0 ? (
+        <div className="no-results">
+          <h3>No restaurants found</h3>
+          <p>Try adjusting your filters to see more results.</p>
+        </div>
+      ) : (
+        <div className="restaurants-grid">
+          {filteredRestaurants.map(restaurant => (
+            <div 
+              key={restaurant.id} 
+              className={`restaurant-card ${restaurant.isBookmarked ? 'bookmarked' : ''}`}
+              onClick={() => setSelectedRestaurant(restaurant)}
             >
-              <RestaurantCard
-                restaurant={restaurant}
-                currentUser={currentUser}
-              />
+              <div className="card-header">
+                <div className="restaurant-name">
+                  <h3>{restaurant.name}</h3>
+                  {restaurant.verified && <span className="verified-badge">✅ Verified</span>}
+                </div>
+                <button 
+                  className={`bookmark-btn ${restaurant.isBookmarked ? 'active' : ''}`}
+                  onClick={(e) => handleBookmark(restaurant.id, e)}
+                  title={restaurant.isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                >
+                  {restaurant.isBookmarked ? '❤️' : '🤍'}
+                </button>
+              </div>
+              
+              <p className="cuisine-location">
+                {restaurant.cuisine} • {restaurant.location}
+              </p>
+              
+              <div className="status-section">
+                <div 
+                  className="status-indicator"
+                  style={{ backgroundColor: getStatusColor(restaurant.status) }}
+                >
+                  {getStatusIcon(restaurant.status)} {restaurant.status.toUpperCase()} ({restaurant.crowdLevel})
+                </div>
+                <div className="status-details">
+                  <span className="occupancy">👥 {restaurant.occupancy}% full</span>
+                  <span className="wait-time">⏱️ {restaurant.waitTime} min wait</span>
+                </div>
+              </div>
+
+              {/* Features Display */}
+              {restaurant.features && restaurant.features.length > 0 && (
+                <div className="features-section">
+                  <div className="features">
+                    {restaurant.features.slice(0, 3).map((feature, index) => (
+                      <span key={index} className="feature-tag">
+                        {feature}
+                      </span>
+                    ))}
+                    {restaurant.features.length > 3 && (
+                      <span className="feature-more">
+                        +{restaurant.features.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="card-footer">
+                <div className="rating-promo">
+                  <span className="rating">⭐ {restaurant.rating}</span>
+                  {restaurant.hasPromo && <span className="promo-badge">🎯 Promotion</span>}
+                </div>
+                
+                <button 
+                  className="reserve-btn"
+                  onClick={(e) => handleMakeReservation(restaurant, e)}
+                >
+                  Reserve Now
+                </button>
+              </div>
+
+              {/* Quick Info */}
+              <div className="quick-info">
+                <span className="info-item">📞 {restaurant.phone}</span>
+                <span className="info-item">📍 {restaurant.address}</span>
+              </div>
             </div>
           ))}
         </div>
-      ) : (
-        <div className="no-results">
-          <p>No restaurants found matching your filters.</p>
-          <button onClick={refreshPage} className="refresh-btn">
-            Reset Filters
-          </button>
-        </div>
       )}
 
-      <RestaurantDetailsModal
-        restaurant={selectedRestaurant}
-        isOpen={showDetailsModal}
-        onClose={() => setShowDetailsModal(false)}
-        currentUser={currentUser}
-        onSimilarRestaurantSelect={handleSimilarRestaurantSelect}
-      />
+      {showReservationModal && selectedRestaurant && (
+        <ReservationModal
+          restaurant={selectedRestaurant}
+          onClose={() => {
+            setShowReservationModal(false);
+            setSelectedRestaurant(null);
+          }}
+          currentUser={currentUser}
+        />
+      )}
     </div>
   );
 }

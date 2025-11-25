@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
 import RestaurantList from "./components/RestaurantList";
 import AdminDashboard from "./components/AdminDashboard";
+import DeveloperAdmin from "./components/DeveloperAdmin";
+import Bookmarks from "./components/Bookmarks";
+import Notifications from "./components/Notifications";
+import FeaturesManager from "./components/FeaturesManager";
 import Filters from "./components/Filters";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import PreferencesModal from "./components/PreferencesModal";
 import SuggestionModal from "./components/SuggestionModal";
 import { RecommendationEngine } from "./utils/RecommendationEngine";
-import { getCurrentUser, logoutUser, fetchRestaurants } from "./api";
-
-// ⭐ ADD THESE TWO IMPORTS
+import { getCurrentUser, logoutUser, fetchRestaurants, getNotifications } from "./api";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./components/ErrorFallback";
 
 export default function App() {
-  const [view, setView] = useState("diner");
+  const [user, setUser] = useState(null);
+  const [authView, setAuthView] = useState("login");
+  const [loading, setLoading] = useState(true);
+  const [userPreferences, setUserPreferences] = useState(null);
+  const [showPreferencesModal, setShowPreferencesModal] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false); // Added state
   const [filters, setFilters] = useState({
     cuisine: "all",
     openNow: false,
@@ -23,13 +32,9 @@ export default function App() {
     search: "",
     location: ""
   });
-  const [user, setUser] = useState(null);
-  const [authView, setAuthView] = useState("login");
-  const [loading, setLoading] = useState(true);
-  const [userPreferences, setUserPreferences] = useState(null);
-  const [showPreferencesModal, setShowPreferencesModal] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
+  const [activeSection, setActiveSection] = useState("restaurants"); // "restaurants", "bookmarks", "notifications", "features"
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [view, setView] = useState("diner"); // For admin/developer views
 
   useEffect(() => {
     console.log("App mounted, checking auth status...");
@@ -43,6 +48,9 @@ export default function App() {
 
   useEffect(() => {
     console.log("User state changed:", user);
+    if (user) {
+      checkNotifications();
+    }
   }, [user]);
 
   const checkAuthStatus = async () => {
@@ -68,6 +76,16 @@ export default function App() {
     setLoading(false);
   };
 
+  const checkNotifications = async () => {
+    try {
+      const notifications = await getNotifications();
+      const unreadCount = notifications.filter(n => !n.isRead).length;
+      setNotificationCount(unreadCount);
+    } catch (error) {
+      console.error("Error checking notifications:", error);
+    }
+  };
+
   const handleLogin = (userData) => {
     setUser(userData);
     setAuthView("login");
@@ -86,6 +104,7 @@ export default function App() {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
     setUser(null);
+    setActiveSection("restaurants");
     setView("diner");
   };
 
@@ -95,6 +114,7 @@ export default function App() {
     localStorage.setItem("userPreferences", JSON.stringify(preferences));
   };
 
+  // Updated handleSuggestPlace function
   const handleSuggestPlace = async () => {
     if (!userPreferences) {
       setShowPreferencesModal(true);
@@ -103,6 +123,7 @@ export default function App() {
     }
 
     try {
+      setShowSuggestions(true); // Show suggestions section
       const restaurants = await fetchRestaurants();
       const suggestions = restaurants
         .map((restaurant) => {
@@ -127,10 +148,12 @@ export default function App() {
         setShowSuggestionModal(true);
       } else {
         alert("No great matches found right now.");
+        setShowSuggestions(false);
       }
     } catch (error) {
       console.error("Error generating suggestions:", error);
       alert("Unable to generate suggestions. Please try again.");
+      setShowSuggestions(false);
     }
   };
 
@@ -188,75 +211,240 @@ export default function App() {
               </div>
               <div className="header-user">
                 <span className="user-greeting">Hello, {user.name}</span>
+                {/* Debug info - can remove after testing */}
+                <span style={{fontSize: '12px', color: '#666', margin: '0 10px'}}>
+                  (Role: {user.isDeveloperAdmin ? 'Developer' : user.type})
+                </span>
                 <button onClick={handleLogout} className="logout-btn">
                   🚪 Logout
                 </button>
               </div>
             </div>
 
+            {/* Simplified Navigation - Only show relevant view */}
             <nav className="nav-links">
-              <button
-                className={`nav-btn ${view === "diner" ? "active" : ""}`}
-                onClick={() => setView("diner")}
-              >
-                👥 Diner View
-              </button>
-
-              {user.type === "admin" && (
-                <button
-                  className={`nav-btn ${view === "admin" ? "active" : ""}`}
-                  onClick={() => setView("admin")}
-                >
-                  🧑‍💼 Admin View
+              {user.type === "diner" && (
+                <>
+                  <button
+                    className={`nav-btn ${activeSection === "restaurants" ? "active" : ""}`}
+                    onClick={() => setActiveSection("restaurants")}
+                  >
+                    🏪 Restaurants
+                  </button>
+                  
+                  <button
+                    className={`nav-btn ${activeSection === "bookmarks" ? "active" : ""}`}
+                    onClick={() => setActiveSection("bookmarks")}
+                  >
+                    📑 Bookmarks
+                  </button>
+                  
+                  <button
+                    className={`nav-btn ${activeSection === "notifications" ? "active" : ""}`}
+                    onClick={() => setActiveSection("notifications")}
+                  >
+                    🔔 Notifications {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
+                  </button>
+                </>
+              )}
+              
+              {user.type === "admin" && !user.isDeveloperAdmin && (
+                <button className="nav-btn active">
+                  🧑‍💼 Restaurant Admin
                 </button>
+              )}
+              
+              {user.isDeveloperAdmin && (
+                <>
+                  <button
+                    className={`nav-btn ${view === "diner" ? "active" : ""}`}
+                    onClick={() => setView("diner")}
+                  >
+                    👥 Diner View
+                  </button>
+                  
+                  <button
+                    className={`nav-btn ${view === "admin" ? "active" : ""}`}
+                    onClick={() => setView("admin")}
+                  >
+                    🧑‍💼 Admin View
+                  </button>
+                  
+                  <button
+                    className={`nav-btn ${view === "developer" ? "active" : ""}`}
+                    onClick={() => setView("developer")}
+                  >
+                    🚀 Developer Admin
+                  </button>
+
+                  <button
+                    className={`nav-btn ${activeSection === "features" ? "active" : ""}`}
+                    onClick={() => setActiveSection("features")}
+                  >
+                    ⭐ Features
+                  </button>
+                </>
               )}
             </nav>
           </div>
         </header>
 
         <main className="container main-content">
-          {view === "diner" ? (
-            <div className="diner-view">
-              <div className="view-header">
-                <h2>Find Your Perfect Dining Experience</h2>
-                <p>Real-time crowd monitoring with IoT technology</p>
+          {/* Diner View */}
+          {user.type === "diner" && (
+            <>
+              {activeSection === "restaurants" && (
+                <div className="diner-view">
+                  <div className="view-header">
+                    <h2>Find Your Perfect Dining Experience</h2>
+                    <p>Real-time crowd monitoring with IoT technology</p>
 
-                <button
-                  onClick={() => setShowPreferencesModal(!showPreferencesModal)}
-                  className="preferences-btn"
-                >
-                  ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining Preferences
-                </button>
-              </div>
+                    <button
+                      onClick={() => setShowPreferencesModal(!showPreferencesModal)}
+                      className="preferences-btn"
+                    >
+                      ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining Preferences
+                    </button>
+                  </div>
 
-              {showPreferencesModal && (
-                <PreferencesModal
-                  isOpen={showPreferencesModal}
-                  onClose={() => setShowPreferencesModal(false)}
-                  onSave={handleSavePreferences}
-                  currentPreferences={userPreferences}
-                />
+                  {showPreferencesModal && (
+                    <PreferencesModal
+                      isOpen={showPreferencesModal}
+                      onClose={() => setShowPreferencesModal(false)}
+                      onSave={handleSavePreferences}
+                      currentPreferences={userPreferences}
+                    />
+                  )}
+
+                  <Filters
+                    filters={filters}
+                    setFilters={setFilters}
+                    restaurants={[]}
+                    onSuggestPlace={handleSuggestPlace}
+                    userPreferences={userPreferences}
+                  />
+
+                  {/* Add suggestions display after Filters component */}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className="suggestions-display">
+                      <div className="suggestions-header">
+                        <h3>🎯 Personalized Recommendations</h3>
+                        <p>Based on your preferences, we found these perfect matches!</p>
+                      </div>
+                      <SuggestionModal
+                        isOpen={showSuggestionModal}
+                        onClose={() => {
+                          setShowSuggestionModal(false);
+                          setShowSuggestions(false);
+                        }}
+                        suggestions={suggestions}
+                        userPreferences={userPreferences}
+                      />
+                    </div>
+                  )}
+
+                  <RestaurantList filters={filters} currentUser={user} />
+
+                  <SuggestionModal
+                    isOpen={showSuggestionModal}
+                    onClose={() => setShowSuggestionModal(false)}
+                    suggestions={suggestions}
+                    userPreferences={userPreferences}
+                  />
+                </div>
               )}
 
-              <Filters
-                filters={filters}
-                setFilters={setFilters}
-                restaurants={[]}
-                onSuggestPlace={handleSuggestPlace}
-                userPreferences={userPreferences}
-              />
+              {activeSection === "bookmarks" && (
+                <Bookmarks />
+              )}
 
-              <RestaurantList filters={filters} currentUser={user} />
+              {activeSection === "notifications" && (
+                <Notifications />
+              )}
+            </>
+          )}
 
-              <SuggestionModal
-                isOpen={showSuggestionModal}
-                onClose={() => setShowSuggestionModal(false)}
-                suggestions={suggestions}
-                userPreferences={userPreferences}
-              />
-            </div>
-          ) : (
+          {/* Regular Restaurant Admin sees AdminDashboard */}
+          {user.type === "admin" && !user.isDeveloperAdmin && (
             <AdminDashboard />
+          )}
+
+          {/* Developer Admin sees different views */}
+          {user.isDeveloperAdmin && (
+            <>
+              {view === "diner" && (
+                <div className="diner-view">
+                  <div className="view-header">
+                    <h2>Find Your Perfect Dining Experience</h2>
+                    <p>Real-time crowd monitoring with IoT technology</p>
+
+                    <button
+                      onClick={() => setShowPreferencesModal(!showPreferencesModal)}
+                      className="preferences-btn"
+                    >
+                      ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining Preferences
+                    </button>
+                  </div>
+
+                  {showPreferencesModal && (
+                    <PreferencesModal
+                      isOpen={showPreferencesModal}
+                      onClose={() => setShowPreferencesModal(false)}
+                      onSave={handleSavePreferences}
+                      currentPreferences={userPreferences}
+                    />
+                  )}
+
+                  <Filters
+                    filters={filters}
+                    setFilters={setFilters}
+                    restaurants={[]}
+                    onSuggestPlace={handleSuggestPlace}
+                    userPreferences={userPreferences}
+                  />
+
+                  {/* Add suggestions display after Filters component */}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <div className="suggestions-display">
+                      <div className="suggestions-header">
+                        <h3>🎯 Personalized Recommendations</h3>
+                        <p>Based on your preferences, we found these perfect matches!</p>
+                      </div>
+                      <SuggestionModal
+                        isOpen={showSuggestionModal}
+                        onClose={() => {
+                          setShowSuggestionModal(false);
+                          setShowSuggestions(false);
+                        }}
+                        suggestions={suggestions}
+                        userPreferences={userPreferences}
+                      />
+                    </div>
+                  )}
+
+                  <RestaurantList filters={filters} currentUser={user} />
+
+                  <SuggestionModal
+                    isOpen={showSuggestionModal}
+                    onClose={() => setShowSuggestionModal(false)}
+                    suggestions={suggestions}
+                    userPreferences={userPreferences}
+                  />
+                </div>
+              )}
+
+              {view === "admin" && (
+                <AdminDashboard />
+              )}
+
+              {view === "developer" && (
+                <DeveloperAdmin />
+              )}
+
+              {activeSection === "features" && (
+                <FeaturesManager />
+              )}
+            </>
           )}
         </main>
 

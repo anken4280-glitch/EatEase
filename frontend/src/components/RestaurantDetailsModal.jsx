@@ -24,6 +24,8 @@ export default function RestaurantDetailsModal({
   return (
     <div className="modal-overlay detailed-modal">
       <div className="modal-content restaurant-details-modal">
+        
+        {/* Header */}
         <div className="modal-header">
           <div className="restaurant-title">
             <h2>{restaurant.name}</h2>
@@ -32,27 +34,22 @@ export default function RestaurantDetailsModal({
           <button onClick={onClose} className="close-btn">×</button>
         </div>
 
-        {/* Quick Stats */}
+        {/* Quick Stats — cleaned */}
         <div className="quick-stats">
           <div className="stat-item">
-            <span className="stat-value">{getColor(restaurant.status)} {restaurant.crowdLevel}</span>
+            <span className="stat-value">
+              {getColor(restaurant.status)} {restaurant.crowdLevel}
+            </span>
             <span className="stat-label">Current Crowd</span>
           </div>
-          <div className="stat-item">
-            <span className="stat-value">{restaurant.waitTime} min</span>
-            <span className="stat-label">Wait Time</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">{restaurant.occupancy}%</span>
-            <span className="stat-label">Occupancy</span>
-          </div>
+
           <div className="stat-item">
             <span className="stat-value">⭐ {restaurant.rating || "N/A"}/5</span>
             <span className="stat-label">Rating</span>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Tabs */}
         <div className="details-tabs">
           <button 
             className={`tab-btn ${activeTab === "details" ? "active" : ""}`}
@@ -80,35 +77,13 @@ export default function RestaurantDetailsModal({
           </button>
         </div>
 
-        {/* Tab Content */}
+        {/* Tab Body */}
         <div className="tab-content">
+          
           {activeTab === "details" && (
             <div className="details-content">
-              <div className="iot-status">
-                <h4>📡 Real-time IoT Status</h4>
-                <div className="status-grid">
-                  <div className="status-item">
-                    <span className="label">Crowd Level:</span>
-                    <span className={`value status-${restaurant.status}`}>
-                      {restaurant.crowdLevel}
-                    </span>
-                  </div>
-                  <div className="status-item">
-                    <span className="label">Occupancy:</span>
-                    <span className="value">{restaurant.occupancy}%</span>
-                  </div>
-                  <div className="status-item">
-                    <span className="label">Wait Time:</span>
-                    <span className="value">{restaurant.waitTime} minutes</span>
-                  </div>
-                  <div className="status-item">
-                    <span className="label">Last Updated:</span>
-                    <span className="value">
-                      {new Date(restaurant.lastUpdated).toLocaleTimeString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
+
+              {/* Removed IoT wait time, occupancy, last updated */}
 
               {restaurant.description && (
                 <div className="restaurant-description">
@@ -143,6 +118,7 @@ export default function RestaurantDetailsModal({
               />
             </div>
           )}
+
         </div>
 
         <div className="modal-actions">
@@ -153,6 +129,7 @@ export default function RestaurantDetailsModal({
             🗺️ Get Directions
           </button>
         </div>
+
       </div>
     </div>
   );
