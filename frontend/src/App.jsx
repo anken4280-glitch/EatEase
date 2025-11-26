@@ -10,6 +10,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import PreferencesModal from "./components/PreferencesModal";
 import SuggestionModal from "./components/SuggestionModal";
+import FeatureCarousel from "./components/FeatureCarousel"; // Add this import
 import { RecommendationEngine } from "./utils/RecommendationEngine";
 import { getCurrentUser, logoutUser, fetchRestaurants, getNotifications } from "./api";
 import { ErrorBoundary } from "react-error-boundary";
@@ -298,6 +299,9 @@ export default function App() {
                   <div className="view-header">
                     <h2>Find Your Perfect Dining Experience</h2>
                     <p>Real-time crowd monitoring with IoT technology</p>
+                    
+                    {/* Add Feature Carousel here */}
+                    <FeatureCarousel />
 
                     <button
                       onClick={() => setShowPreferencesModal(!showPreferencesModal)}
@@ -377,6 +381,9 @@ export default function App() {
                   <div className="view-header">
                     <h2>Find Your Perfect Dining Experience</h2>
                     <p>Real-time crowd monitoring with IoT technology</p>
+
+                    {/* Add Feature Carousel here for developer admin diner view too */}
+                    <FeatureCarousel />
 
                     <button
                       onClick={() => setShowPreferencesModal(!showPreferencesModal)}

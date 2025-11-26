@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
+  PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer 
+} from 'recharts';
+import { 
   fetchRestaurants, 
   verifyRestaurant, 
   deleteRestaurant, 
@@ -13,13 +17,57 @@ import {
 export default function DeveloperAdmin() {
   const [restaurants, setRestaurants] = useState([]);
   const [reports, setReports] = useState([]);
-  const [activeTab, setActiveTab] = useState("restaurants");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [showRestaurantForm, setShowRestaurantForm] = useState(false);
   const [showReportForm, setShowReportForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
+  // Modern metrics state
+  const [systemMetrics, setSystemMetrics] = useState({
+    activeUsers: 1247,
+    totalRestaurants: 89,
+    apiCalls: 24567,
+    errorRate: 0.23,
+    responseTime: 142,
+    storageUsed: 67
+  });
+
+  const [performanceData, setPerformanceData] = useState([
+    { name: 'Mon', users: 400, revenue: 2400, errors: 12 },
+    { name: 'Tue', users: 600, revenue: 3800, errors: 8 },
+    { name: 'Wed', users: 800, revenue: 4200, errors: 5 },
+    { name: 'Thu', users: 1200, revenue: 5200, errors: 3 },
+    { name: 'Fri', users: 900, revenue: 4800, errors: 7 },
+    { name: 'Sat', users: 1500, revenue: 6100, errors: 15 },
+    { name: 'Sun', users: 1800, revenue: 7200, errors: 10 }
+  ]);
+
+  const [userDistribution, setUserDistribution] = useState([
+    { name: 'Diners', value: 75 },
+    { name: 'Restaurant Admins', value: 20 },
+    { name: 'Developers', value: 5 }
+  ]);
+
+  const [recentActivities, setRecentActivities] = useState([
+    { id: 1, action: 'User Registration', user: 'john_doe', time: '2 min ago', status: 'success' },
+    { id: 2, action: 'API Update', user: 'system', time: '5 min ago', status: 'warning' },
+    { id: 3, action: 'Database Backup', user: 'admin', time: '10 min ago', status: 'success' },
+    { id: 4, action: 'Error Report', user: 'auto_monitor', time: '15 min ago', status: 'error' },
+    { id: 5, action: 'Feature Deploy', user: 'dev_team', time: '20 min ago', status: 'success' }
+  ]);
+
+  const [systemSettings, setSystemSettings] = useState({
+    maintenanceMode: false,
+    apiRateLimit: 1000,
+    autoBackup: true,
+    debugMode: false,
+    notificationEnabled: true
+  });
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   const [restaurantForm, setRestaurantForm] = useState({
     name: "",
@@ -54,6 +102,51 @@ export default function DeveloperAdmin() {
     if (restaurantsData.length > 0) {
       setSelectedRestaurant(restaurantsData[0]);
     }
+  };
+
+  // Modern Component: Metric Card
+  const MetricCard = ({ title, value, change, icon, color }) => (
+    <div className="metric-card">
+      <div className="metric-header">
+        <div className="metric-icon" style={{ backgroundColor: color }}>
+          {icon}
+        </div>
+        <div className="metric-info">
+          <h3>{value}</h3>
+          <span className="metric-title">{title}</span>
+          {change && (
+            <span className={`metric-change ${change >= 0 ? 'positive' : 'negative'}`}>
+              {change >= 0 ? '↑' : '↓'} {Math.abs(change)}%
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Modern Component: Status Badge
+  const StatusBadge = ({ status }) => {
+    const statusConfig = {
+      success: { color: '#10B981', label: 'Success' },
+      warning: { color: '#F59E0B', label: 'Warning' },
+      error: { color: '#EF4444', label: 'Error' },
+      info: { color: '#3B82F6', label: 'Info' }
+    };
+    
+    const config = statusConfig[status] || statusConfig.info;
+    
+    return (
+      <span 
+        className="status-badge"
+        style={{ 
+          backgroundColor: `${config.color}20`,
+          color: config.color,
+          border: `1px solid ${config.color}40`
+        }}
+      >
+        {config.label}
+      </span>
+    );
   };
 
   const filteredRestaurants = restaurants.filter(restaurant => {
@@ -168,51 +261,153 @@ export default function DeveloperAdmin() {
 
   return (
     <div className="developer-admin">
+      {/* Modern Header */}
       <div className="admin-header">
-        <h1>🚀 Developer Admin Panel</h1>
-        <p>Platform Management & Restaurant Verification</p>
-        
-        <div className="admin-stats">
-          <div className="stat-card">
-            <h3>{stats.totalRestaurants}</h3>
-            <p>Total Restaurants</p>
-          </div>
-          <div className="stat-card">
-            <h3>{stats.verified}</h3>
-            <p>Verified</p>
-          </div>
-          <div className="stat-card">
-            <h3>{stats.unverified}</h3>
-            <p>Pending Verification</p>
-          </div>
-          <div className="stat-card">
-            <h3>{stats.pendingReports}</h3>
-            <p>Pending Reports</p>
-          </div>
+        <div className="header-content">
+          <h1>🚀 Developer Admin</h1>
+          <p>Complete system oversight and management</p>
+        </div>
+        <div className="header-actions">
+          <button className="btn btn-secondary">
+            📊 Export Reports
+          </button>
+          <button className="btn btn-primary">
+            ⚙️ System Settings
+          </button>
         </div>
       </div>
 
+      {/* Modern Navigation Tabs */}
       <div className="admin-tabs">
-        <button 
-          className={activeTab === "restaurants" ? "active" : ""}
-          onClick={() => setActiveTab("restaurants")}
-        >
-          🏪 Restaurant Management
-        </button>
-        <button 
-          className={activeTab === "reports" ? "active" : ""}
-          onClick={() => setActiveTab("reports")}
-        >
-          ⚠️ Report Center ({reports.length})
-        </button>
-        <button 
-          className={activeTab === "analytics" ? "active" : ""}
-          onClick={() => setActiveTab("analytics")}
-        >
-          📊 Platform Analytics
-        </button>
+        {['dashboard', 'restaurants', 'reports', 'analytics', 'system'].map(tab => (
+          <button
+            key={tab}
+            className={`tab-btn ${activeTab === tab ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === 'dashboard' && '📊 Dashboard'}
+            {tab === 'restaurants' && '🏪 Restaurants'}
+            {tab === 'reports' && `⚠️ Reports (${reports.length})`}
+            {tab === 'analytics' && '📈 Analytics'}
+            {tab === 'system' && '⚙️ System'}
+          </button>
+        ))}
       </div>
 
+      {/* Modern Dashboard Tab */}
+      {activeTab === 'dashboard' && (
+        <div className="tab-content">
+          {/* Metrics Grid */}
+          <div className="metrics-grid">
+            <MetricCard
+              title="Total Restaurants"
+              value={stats.totalRestaurants.toString()}
+              change={5.2}
+              icon="🏪"
+              color="#10B981"
+            />
+            <MetricCard
+              title="Verified Restaurants"
+              value={stats.verified.toString()}
+              change={12.5}
+              icon="✅"
+              color="#3B82F6"
+            />
+            <MetricCard
+              title="Pending Verification"
+              value={stats.unverified.toString()}
+              change={-2.1}
+              icon="⏳"
+              color="#F59E0B"
+            />
+            <MetricCard
+              title="Active Reports"
+              value={stats.pendingReports.toString()}
+              change={8.7}
+              icon="⚠️"
+              color="#EF4444"
+            />
+            <MetricCard
+              title="Avg. Response Time"
+              value="142ms"
+              change={-15.3}
+              icon="⚡"
+              color="#8B5CF6"
+            />
+            <MetricCard
+              title="System Health"
+              value="98%"
+              change={0.5}
+              icon="💚"
+              color="#06B6D4"
+            />
+          </div>
+
+          {/* Charts Row */}
+          <div className="charts-row">
+            <div className="chart-card">
+              <h3>Restaurant Performance</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={performanceData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="users" stroke="#3B82F6" strokeWidth={2} />
+                  <Line type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-card">
+              <h3>Verification Status</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Verified', value: stats.verified },
+                      { name: 'Pending', value: stats.unverified }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    <Cell fill="#10B981" />
+                    <Cell fill="#F59E0B" />
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Recent Activities */}
+          <div className="activities-card">
+            <h3>Recent Activities</h3>
+            <div className="activities-list">
+              {recentActivities.map(activity => (
+                <div key={activity.id} className="activity-item">
+                  <div className="activity-main">
+                    <span className="activity-action">{activity.action}</span>
+                    <span className="activity-user">by {activity.user}</span>
+                  </div>
+                  <div className="activity-meta">
+                    <span className="activity-time">{activity.time}</span>
+                    <StatusBadge status={activity.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Restaurants Tab (Your existing code) */}
       {activeTab === "restaurants" && (
         <div className="restaurant-management">
           <div className="management-header">
@@ -364,6 +559,7 @@ export default function DeveloperAdmin() {
         </div>
       )}
 
+      {/* Reports Tab (Your existing code) */}
       {activeTab === "reports" && (
         <div className="reports-management">
           <div className="reports-header">
@@ -424,9 +620,38 @@ export default function DeveloperAdmin() {
         </div>
       )}
 
+      {/* Modern Analytics Tab */}
       {activeTab === "analytics" && (
-        <div className="analytics-tab">
-          <h3>Platform Analytics</h3>
+        <div className="tab-content">
+          <div className="analytics-header">
+            <h2>📈 Advanced Analytics</h2>
+            <div className="date-filter">
+              <select className="filter-select">
+                <option>Last 7 days</option>
+                <option>Last 30 days</option>
+                <option>Last 90 days</option>
+                <option>Custom range</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="chart-card full-width">
+            <h3>Restaurant Performance Metrics</h3>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={performanceData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="users" fill="#3B82F6" />
+                <Bar dataKey="revenue" fill="#10B981" />
+                <Bar dataKey="errors" fill="#EF4444" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Your existing analytics content */}
           <div className="analytics-grid">
             <div className="analytics-card">
               <h4>Verification Status</h4>
@@ -495,6 +720,50 @@ export default function DeveloperAdmin() {
         </div>
       )}
 
+      {/* Modern System Tab */}
+      {activeTab === 'system' && (
+        <div className="tab-content">
+          <h2>⚙️ System Configuration</h2>
+          <div className="settings-grid">
+            {Object.entries(systemSettings).map(([key, value]) => (
+              <div key={key} className="setting-item">
+                <div className="setting-info">
+                  <h4>{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h4>
+                  <p>Configure {key} settings</p>
+                </div>
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={value}
+                    onChange={() => setSystemSettings(prev => ({
+                      ...prev,
+                      [key]: !value
+                    }))}
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+            ))}
+          </div>
+          
+          <div className="danger-zone">
+            <h3>🚨 Danger Zone</h3>
+            <div className="danger-actions">
+              <button className="btn btn-danger">
+                🗑️ Clear All Data
+              </button>
+              <button className="btn btn-warning">
+                🔄 System Reset
+              </button>
+              <button className="btn btn-danger">
+                ⚡ Emergency Shutdown
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Your existing modals */}
       {showRestaurantForm && (
         <div className="modal-overlay">
           <div className="modal">
