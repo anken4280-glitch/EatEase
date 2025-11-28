@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from "react";
-import RestaurantList from "./components/RestaurantList";
-import AdminDashboard from "./components/AdminDashboard";
-import DeveloperAdmin from "./components/DeveloperAdmin";
-import Bookmarks from "./components/Bookmarks";
-import Notifications from "./components/Notifications";
-import FeaturesManager from "./components/FeaturesManager";
-import Filters from "./components/Filters";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import PreferencesModal from "./components/PreferencesModal";
-import SuggestionModal from "./components/SuggestionModal";
-import FeatureCarousel from "./components/FeatureCarousel"; // Add this import
+import RestaurantList from "./components/RestaurantList/RestaurantList";
+import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
+import DeveloperAdmin from "./components/DeveloperAdmin/DeveloperAdmin";
+import Bookmarks from "./components/Bookmarks/Bookmarks";
+import Notifications from "./components/Notifications/Notifications";
+import FeaturesManager from "./components/FeaturesManage/FeaturesManager";
+import Filters from "./components/Filters/Filters";
+import Login from "./components/Login/Login";
+import Signup from "./components/Signup/Signup";
+import PreferencesModal from "./components/PreferenceModal/PreferencesModal";
+import SuggestionModal from "./components/SuggestionModal/SuggestionModal";
+import FeatureCarousel from "./components/FeatureCarousel/FeatureCarousel"; // Add this import
 import { RecommendationEngine } from "./utils/RecommendationEngine";
-import { getCurrentUser, logoutUser, fetchRestaurants, getNotifications } from "./api";
+import {
+  getCurrentUser,
+  logoutUser,
+  fetchRestaurants,
+  getNotifications,
+} from "./api";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "./components/ErrorFallback";
+import ErrorFallback from "./components/ErrorFallback/ErrorFallback";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -31,7 +36,7 @@ export default function App() {
     hasPromo: false,
     crowdLevel: "all",
     search: "",
-    location: ""
+    location: "",
   });
   const [activeSection, setActiveSection] = useState("restaurants"); // "restaurants", "bookmarks", "notifications", "features"
   const [notificationCount, setNotificationCount] = useState(0);
@@ -80,7 +85,7 @@ export default function App() {
   const checkNotifications = async () => {
     try {
       const notifications = await getNotifications();
-      const unreadCount = notifications.filter(n => !n.isRead).length;
+      const unreadCount = notifications.filter((n) => !n.isRead).length;
       setNotificationCount(unreadCount);
     } catch (error) {
       console.error("Error checking notifications:", error);
@@ -171,17 +176,6 @@ export default function App() {
     return (
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <div className="app">
-          <header className="topbar">
-            <div className="container">
-              <div className="header-main">
-                <div className="header-brand">
-                  <h1>🍽️ EatEase</h1>
-                  <p className="tagline">Dine with ease</p>
-                </div>
-              </div>
-            </div>
-          </header>
-
           <main className="container main-content">
             {authView === "login" ? (
               <Login
@@ -207,17 +201,11 @@ export default function App() {
           <div className="container">
             <div className="header-main">
               <div className="header-brand">
-                <h1>🍽️ EatEase</h1>
-                <p className="tagline">Dine with ease</p>
+                <h1>EatEase</h1>
               </div>
               <div className="header-user">
-                <span className="user-greeting">Hello, {user.name}</span>
-                {/* Debug info - can remove after testing */}
-                <span style={{fontSize: '12px', color: '#666', margin: '0 10px'}}>
-                  (Role: {user.isDeveloperAdmin ? 'Developer' : user.type})
-                </span>
                 <button onClick={handleLogout} className="logout-btn">
-                  🚪 Logout
+                  Logout
                 </button>
               </div>
             </div>
@@ -227,34 +215,43 @@ export default function App() {
               {user.type === "diner" && (
                 <>
                   <button
-                    className={`nav-btn ${activeSection === "restaurants" ? "active" : ""}`}
+                    className={`nav-btn ${
+                      activeSection === "restaurants" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSection("restaurants")}
                   >
                     🏪 Restaurants
                   </button>
-                  
+
                   <button
-                    className={`nav-btn ${activeSection === "bookmarks" ? "active" : ""}`}
+                    className={`nav-btn ${
+                      activeSection === "bookmarks" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSection("bookmarks")}
                   >
                     📑 Bookmarks
                   </button>
-                  
+
                   <button
-                    className={`nav-btn ${activeSection === "notifications" ? "active" : ""}`}
+                    className={`nav-btn ${
+                      activeSection === "notifications" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSection("notifications")}
                   >
-                    🔔 Notifications {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
+                    🔔 Notifications{" "}
+                    {notificationCount > 0 && (
+                      <span className="notification-badge">
+                        {notificationCount}
+                      </span>
+                    )}
                   </button>
                 </>
               )}
-              
+
               {user.type === "admin" && !user.isDeveloperAdmin && (
-                <button className="nav-btn active">
-                  🧑‍💼 Restaurant Admin
-                </button>
+                <button className="nav-btn active">🧑‍💼 Restaurant Admin</button>
               )}
-              
+
               {user.isDeveloperAdmin && (
                 <>
                   <button
@@ -263,23 +260,27 @@ export default function App() {
                   >
                     👥 Diner View
                   </button>
-                  
+
                   <button
                     className={`nav-btn ${view === "admin" ? "active" : ""}`}
                     onClick={() => setView("admin")}
                   >
                     🧑‍💼 Admin View
                   </button>
-                  
+
                   <button
-                    className={`nav-btn ${view === "developer" ? "active" : ""}`}
+                    className={`nav-btn ${
+                      view === "developer" ? "active" : ""
+                    }`}
                     onClick={() => setView("developer")}
                   >
                     🚀 Developer Admin
                   </button>
 
                   <button
-                    className={`nav-btn ${activeSection === "features" ? "active" : ""}`}
+                    className={`nav-btn ${
+                      activeSection === "features" ? "active" : ""
+                    }`}
                     onClick={() => setActiveSection("features")}
                   >
                     ⭐ Features
@@ -297,17 +298,17 @@ export default function App() {
               {activeSection === "restaurants" && (
                 <div className="diner-view">
                   <div className="view-header">
-                    <h2>Find Your Perfect Dining Experience</h2>
-                    <p>Real-time crowd monitoring with IoT technology</p>
-                    
                     {/* Add Feature Carousel here */}
                     <FeatureCarousel />
 
                     <button
-                      onClick={() => setShowPreferencesModal(!showPreferencesModal)}
+                      onClick={() =>
+                        setShowPreferencesModal(!showPreferencesModal)
+                      }
                       className="preferences-btn"
                     >
-                      ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining Preferences
+                      ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining
+                      Preferences
                     </button>
                   </div>
 
@@ -333,7 +334,10 @@ export default function App() {
                     <div className="suggestions-display">
                       <div className="suggestions-header">
                         <h3>🎯 Personalized Recommendations</h3>
-                        <p>Based on your preferences, we found these perfect matches!</p>
+                        <p>
+                          Based on your preferences, we found these perfect
+                          matches!
+                        </p>
                       </div>
                       <SuggestionModal
                         isOpen={showSuggestionModal}
@@ -358,13 +362,9 @@ export default function App() {
                 </div>
               )}
 
-              {activeSection === "bookmarks" && (
-                <Bookmarks />
-              )}
+              {activeSection === "bookmarks" && <Bookmarks />}
 
-              {activeSection === "notifications" && (
-                <Notifications />
-              )}
+              {activeSection === "notifications" && <Notifications />}
             </>
           )}
 
@@ -386,10 +386,13 @@ export default function App() {
                     <FeatureCarousel />
 
                     <button
-                      onClick={() => setShowPreferencesModal(!showPreferencesModal)}
+                      onClick={() =>
+                        setShowPreferencesModal(!showPreferencesModal)
+                      }
                       className="preferences-btn"
                     >
-                      ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining Preferences
+                      ⚙️ {showPreferencesModal ? "Hide" : "Set"} Dining
+                      Preferences
                     </button>
                   </div>
 
@@ -415,7 +418,10 @@ export default function App() {
                     <div className="suggestions-display">
                       <div className="suggestions-header">
                         <h3>🎯 Personalized Recommendations</h3>
-                        <p>Based on your preferences, we found these perfect matches!</p>
+                        <p>
+                          Based on your preferences, we found these perfect
+                          matches!
+                        </p>
                       </div>
                       <SuggestionModal
                         isOpen={showSuggestionModal}
@@ -440,24 +446,21 @@ export default function App() {
                 </div>
               )}
 
-              {view === "admin" && (
-                <AdminDashboard />
-              )}
+              {view === "admin" && <AdminDashboard />}
 
-              {view === "developer" && (
-                <DeveloperAdmin />
-              )}
+              {view === "developer" && <DeveloperAdmin />}
 
-              {activeSection === "features" && (
-                <FeaturesManager />
-              )}
+              {activeSection === "features" && <FeaturesManager />}
             </>
           )}
         </main>
 
         <footer className="footer">
           <div className="container">
-            <p>CIT6 - Capstone Project 1 | Promoting Beneficial and Sustainable Tourism</p>
+            <p>
+              CIT6 - Capstone Project 1 | Promoting Beneficial and Sustainable
+              Tourism
+            </p>
           </div>
         </footer>
       </div>

@@ -1,0 +1,137 @@
+import React, { useState } from "react";
+import PopularTimesChart from "../PopularTimesChart/PopularTimesChart";
+import ReviewsSection from "../ReviewsSection/ReviewsSection";
+import SimilarRestaurants from "../SimilarRestaurants/SimilarRestaurants";
+import './RestaurantDetailsModal.css';
+
+export default function RestaurantDetailsModal({
+  restaurant,
+  isOpen,
+  onClose,
+  currentUser,
+  onSimilarRestaurantSelect,
+}) {
+  const [activeTab, setActiveTab] = useState("details");
+
+  if (!isOpen || !restaurant) return null;
+
+  const getColor = (status) => {
+    if (status === "green") return "🟢";
+    if (status === "yellow") return "🟡";
+    if (status === "red") return "🔴";
+    return "⚪";
+  };
+
+  return (
+    <div className="modal-overlay detailed-modal">
+      <div className="modal-content restaurant-details-modal">
+        {/* Header */}
+        <div className="modal-header">
+          <div className="restaurant-title">
+            <h2>{restaurant.name}</h2>
+            <p className="restaurant-cuisine">{restaurant.cuisine}</p>
+          </div>
+          <button onClick={onClose} className="close-btn">
+            ×
+          </button>
+        </div>
+
+        {/* Quick Stats — cleaned */}
+        <div className="quick-stats">
+          <div className="stat-item">
+            <span className="stat-value">
+              {getColor(restaurant.status)} {restaurant.crowdLevel}
+            </span>
+            <span className="stat-label">Current Crowd</span>
+          </div>
+
+          <div className="stat-item">
+            <span className="stat-value">
+              ⭐ {restaurant.rating || "N/A"}/5
+            </span>
+            <span className="stat-label">Rating</span>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="details-tabs">
+          <button
+            className={`tab-btn ${activeTab === "details" ? "active" : ""}`}
+            onClick={() => setActiveTab("details")}
+          >
+            📊 Details
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "times" ? "active" : ""}`}
+            onClick={() => setActiveTab("times")}
+          >
+            🕒 Popular Times
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "reviews" ? "active" : ""}`}
+            onClick={() => setActiveTab("reviews")}
+          >
+            💬 Reviews
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "similar" ? "active" : ""}`}
+            onClick={() => setActiveTab("similar")}
+          >
+            🍽️ Similar
+          </button>
+        </div>
+
+        {/* Tab Body */}
+        <div className="tab-content">
+          {activeTab === "details" && (
+            <div className="details-content">
+              {/* Removed IoT wait time, occupancy, last updated */}
+
+              {restaurant.description && (
+                <div className="restaurant-description">
+                  <h4>About</h4>
+                  <p>{restaurant.description}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === "times" && (
+            <div className="times-content">
+              <PopularTimesChart
+                restaurant={restaurant}
+                currentTime={new Date()}
+              />
+            </div>
+          )}
+
+          {activeTab === "reviews" && (
+            <div className="reviews-content">
+              <ReviewsSection
+                restaurantId={restaurant.id}
+                currentUser={currentUser}
+                compact={false}
+              />
+            </div>
+          )}
+
+          {activeTab === "similar" && (
+            <div className="similar-content">
+              <SimilarRestaurants
+                currentRestaurant={restaurant}
+                onRestaurantSelect={onSimilarRestaurantSelect}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="modal-actions">
+          <button onClick={onClose} className="btn-secondary">
+            Close
+          </button>
+          <button className="btn-primary">🗺️ Get Directions</button>
+        </div>
+      </div>
+    </div>
+  );
+}
