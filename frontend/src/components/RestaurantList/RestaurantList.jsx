@@ -149,24 +149,6 @@ export default function RestaurantList({ filters, currentUser }) {
 
   return (
     <div className="restaurant-list">
-      <div className="results-header">
-        <h3>Found {filteredRestaurants.length} restaurants</h3>
-        <div className="status-legend">
-          <span className="legend-item">
-            <span className="legend-color green"></span> Low (0-60%)
-          </span>
-          <span className="legend-item">
-            <span className="legend-color yellow"></span> Moderate (61-79%)
-          </span>
-          <span className="legend-item">
-            <span className="legend-color orange"></span> High (80-89%)
-          </span>
-          <span className="legend-item">
-            <span className="legend-color red"></span> Full (90-100%)
-          </span>
-        </div>
-      </div>
-
       {filteredRestaurants.length === 0 ? (
         <div className="no-results">
           <h3>No restaurants found</h3>
@@ -186,7 +168,7 @@ export default function RestaurantList({ filters, currentUser }) {
                 <div className="restaurant-name">
                   <h3>{restaurant.name}</h3>
                   {restaurant.verified && (
-                    <span className="verified-badge">✅ Verified</span>
+                    <span className="verified-badge">✅</span>
                   )}
                 </div>
                 <button
@@ -218,29 +200,8 @@ export default function RestaurantList({ filters, currentUser }) {
                   <span className="occupancy">
                     👥 {restaurant.occupancy}% full
                   </span>
-                  <span className="wait-time">
-                    ⏱️ {restaurant.waitTime} min wait
-                  </span>
                 </div>
               </div>
-
-              {/* Features Display */}
-              {restaurant.features && restaurant.features.length > 0 && (
-                <div className="features-section">
-                  <div className="features">
-                    {restaurant.features.slice(0, 3).map((feature, index) => (
-                      <span key={index} className="feature-tag">
-                        {feature}
-                      </span>
-                    ))}
-                    {restaurant.features.length > 3 && (
-                      <span className="feature-more">
-                        +{restaurant.features.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
 
               <div className="card-footer">
                 <div className="rating-promo">

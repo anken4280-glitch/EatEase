@@ -57,11 +57,10 @@ export default function Signup({ onSignup, onSwitchToLogin }) {
     <div className="auth-container">
       <div className="auth-form">
         <h2>Create Account</h2>
-        <p className="auth-subtitle">Join EatEase today</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Full Name</label>
+            <label>Name</label>
             <input
               type="text"
               name="name"

@@ -142,9 +142,6 @@ export default function SimilarRestaurants({ currentRestaurant, onRestaurantSele
                     </span>
                   </div>
                   <div className="detail-item">
-                    <span className="wait-time">⏱️ {restaurant.waitTime}min</span>
-                  </div>
-                  <div className="detail-item">
                     <span className="rating">⭐ {restaurant.rating || "N/A"}/5</span>
                   </div>
                 </div>
