@@ -1,0 +1,182 @@
+.popular-times-chart {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chart-header h4 {
+  margin: 0;
+  color: var(--text);
+}
+
+.current-crowd {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.current-crowd .label {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.current-crowd .crowd-level {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.chart-container {
+  margin: 1rem 0;
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 200px;
+  padding: 0 0.5rem;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+
+.chart-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+.time-label {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  height: 20px;
+}
+
+.chart-bar {
+  width: 20px;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: all 0.3s ease;
+  min-height: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar.current-hour {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.chart-bar:hover {
+  transform: scale(1.15);
+  z-index: 3;
+}
+
+.crowd-percent {
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2px;
+  display: none;
+}
+
+.chart-bar:hover .crowd-percent {
+  display: block;
+}
+
+.period-label {
+  font-size: 0.6rem;
+  color: var(--text-light);
+  margin-top: 0.25rem;
+  text-align: center;
+  height: 30px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: #f8fafc;
+  border-radius: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.chart-insights {
+  background: #f0f9ff;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid var(--primary);
+}
+
+.chart-insights h5 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+}
+
+.chart-insights ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.chart-insights li {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.iot-note {
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .chart-bars {
+    height: 150px;
+  }
+  
+  .chart-bar {
+    width: 16px;
+  }
+  
+  .time-label {
+    font-size: 0.6rem;
+  }
+  
+  .chart-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

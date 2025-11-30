@@ -1,0 +1,63 @@
+/* Owner Dashboard Styles */
+.owner-dashboard {
+  padding: 1rem 0;
+}
+
+.owner-card {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.status-controls {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.status-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.status-btn.green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-btn.yellow {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-btn.red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-btn.active {
+  transform: scale(1.05);
+  font-weight: bold;
+}
+
+.status-btn:hover:not(.active) {
+  opacity: 0.8;
+}
+
+.reservation-summary {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}

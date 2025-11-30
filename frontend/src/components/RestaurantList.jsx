@@ -140,26 +140,12 @@ export default function RestaurantList({ filters, currentUser }) {
   // ----------------------------
   return (
     <div className="restaurant-list">
-      {/* GLOBAL REFRESH BUTTON */}
-      <div className="header-tools">
-        <p>Found {filteredRestaurants.length} restaurants</p>
+      {/* Header Actions */}
+      <div className="header-actions">
 
-        <div className="header-actions">
-          {filteredRestaurants.length > 0 && (
-            <button
-              className="toggle-view-btn"
-              onClick={() =>
-                document.querySelector(".cards").classList.toggle("list-view")
-              }
-            >
-              🔄 Toggle View
-            </button>
-          )}
-
-          <button className="refresh-btn" onClick={refreshPage}>
-            🔁 Refresh
-          </button>
-        </div>
+        <button className="refresh-btn" onClick={refreshPage}>
+          🔁 Refresh
+        </button>
       </div>
 
       {filteredRestaurants.length > 0 ? (

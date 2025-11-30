@@ -1,0 +1,382 @@
+/* Reservation Modal */
+.reservation-modal {
+  max-width: 500px;
+}
+
+.restaurant-info {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--primary);
+}
+
+.restaurant-info h4 {
+  margin: 0 0 0.25rem 0;
+  color: var(--text);
+}
+
+.restaurant-info .cuisine {
+  color: var(--text-light);
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.current-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.reservation-summary {
+  background: #f0f9ff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.reservation-summary h5 {
+  margin: 0 0 1rem 0;
+  color: var(--text);
+}
+
+.summary-details p {
+  margin: 0.5rem 0;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.summary-details strong {
+  color: var(--text);
+}
+
+.success-message {
+  text-align: center;
+  padding: 2rem;
+}
+
+.success-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.success-message h4 {
+  color: var(--success);
+  margin-bottom: 1rem;
+}
+
+.success-message p {
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+/* Restaurant Details Modal */
+.detailed-modal .modal-content {
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.restaurant-details-modal {
+  padding: 0;
+}
+
+.restaurant-details-modal .modal-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 1.5rem 2rem;
+  margin: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.restaurant-title h2 {
+  margin: 0;
+  color: white;
+}
+
+.restaurant-cuisine {
+  margin: 0.25rem 0 0 0;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.details-tabs {
+  display: flex;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: white;
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.tab-content {
+  padding: 2rem;
+  min-height: 400px;
+}
+
+.details-content, .times-content, .reviews-content, .similar-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.iot-status {
+  margin-bottom: 2rem;
+}
+
+.iot-status h4 {
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 4px solid var(--primary);
+}
+
+.status-item .label {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.status-item .value {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.restaurant-description {
+  margin-top: 2rem;
+}
+
+.restaurant-description h4 {
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.restaurant-description p {
+  color: var(--text-light);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Suggestion Modal */
+.suggestion-modal {
+  max-width: 800px;
+}
+
+.suggestion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.top-suggestion .suggestion-card {
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.match-badge {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: var(--success);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.match-badge.small {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.75rem;
+}
+
+.cuisine-badge {
+  background: var(--primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.suggestion-details {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-row .label {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.detail-row .value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.reasons-section {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--success);
+}
+
+.reasons-section h5 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+}
+
+.reasons-section ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.reasons-section li {
+  margin-bottom: 0.25rem;
+  color: var(--text-light);
+}
+
+.promo-banner {
+  background: linear-gradient(135deg, var(--secondary), #f97316);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.alternative-suggestions h4 {
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.alternative-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.alternative-cards .suggestion-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  position: relative;
+}
+
+.alternative-cards .suggestion-card h5 {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.quick-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+  .quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .details-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-btn {
+    flex: 1 0 50%;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+}

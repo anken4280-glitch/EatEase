@@ -39,14 +39,6 @@ export default function RestaurantDetailsModal({
             <span className="stat-label">Current Crowd</span>
           </div>
           <div className="stat-item">
-            <span className="stat-value">{restaurant.waitTime} min</span>
-            <span className="stat-label">Wait Time</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">{restaurant.occupancy}%</span>
-            <span className="stat-label">Occupancy</span>
-          </div>
-          <div className="stat-item">
             <span className="stat-value">⭐ {restaurant.rating || "N/A"}/5</span>
             <span className="stat-label">Rating</span>
           </div>
@@ -92,14 +84,6 @@ export default function RestaurantDetailsModal({
                     <span className={`value status-${restaurant.status}`}>
                       {restaurant.crowdLevel}
                     </span>
-                  </div>
-                  <div className="status-item">
-                    <span className="label">Occupancy:</span>
-                    <span className="value">{restaurant.occupancy}%</span>
-                  </div>
-                  <div className="status-item">
-                    <span className="label">Wait Time:</span>
-                    <span className="value">{restaurant.waitTime} minutes</span>
                   </div>
                   <div className="status-item">
                     <span className="label">Last Updated:</span>

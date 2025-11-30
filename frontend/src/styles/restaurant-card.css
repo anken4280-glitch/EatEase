@@ -1,0 +1,187 @@
+.restaurant-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.promo-badge {
+  background: linear-gradient(135deg, var(--secondary), #f97316);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cuisine {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.iot-data {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary);
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.occupancy-row {
+  margin-bottom: 0.75rem;
+}
+
+.occupancy-row span {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.occupancy-bar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.occupancy-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.occupancy-fill.green { background: var(--success); }
+.occupancy-fill.yellow { background: var(--warning); }
+.occupancy-fill.red { background: var(--danger); }
+
+.wait-time {
+  font-weight: 600;
+  margin: 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.text-green-600 { color: var(--success); }
+.text-yellow-600 { color: var(--warning); }
+.text-red-600 { color: var(--danger); }
+
+.card-actions {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.action-btn:hover {
+  background: var(--primary-dark);
+}
+
+.reserve-btn {
+  background: var(--success) !important;
+  margin-left: 0.5rem;
+}
+
+.reserve-btn:hover {
+  background: #0da271 !important;
+}
+
+.last-updated {
+  color: var(--text-light);
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.rating-row {
+  margin: 0.75rem 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.popular-times-section {
+  margin: 1rem 0;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.promotions-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.promotions-section h5 {
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.promotion-item {
+  background: #fff8e1;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid var(--secondary);
+}
+
+.promotion-item strong {
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.promotion-item p {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  margin: 0.25rem 0;
+}
+
+.promotion-item small {
+  color: var(--success);
+  font-weight: 600;
+}

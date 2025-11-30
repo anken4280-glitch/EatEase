@@ -5,12 +5,11 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
     cuisine: [],
     budget: "medium",
     crowdTolerance: "medium",
-    maxWaitTime: 20,
-    diningOccasion: "casual",
-    groupSize: 2
+    openNow: false,
+    hasPromo: false
   });
 
-  const cuisines = ["Italian", "Chinese", "Japanese", "Mexican", "American", "Indian", "Thai", "Filipino", "Korean", "Mediterranean"];
+  const cuisines = ["Pakistan Cuisine, Lechon Manok"];
 
   const toggleCuisine = (cuisine) => {
     setPreferences(prev => ({
@@ -26,6 +25,7 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
   return (
     <div className="preferences-inline">
       <div className="preferences-form">
+        {/* Favorite Cuisines */}
         <div className="preference-section">
           <label>Favorite Cuisines</label>
           <div className="cuisine-tags">
@@ -42,11 +42,12 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
           </div>
         </div>
 
+        {/* Budget & Crowd Tolerance */}
         <div className="preferences-grid">
           <div className="preference-section">
-            <label>Budget Range</label>
+            <label>Price Range</label>
             <select 
-              value={preferences.budget}
+              value={preferences.price}
               onChange={(e) => setPreferences({...preferences, budget: e.target.value})}
             >
               <option value="low">💰 Budget (Under ₱200)</option>
@@ -56,54 +57,41 @@ export default function PreferencesModal({ isOpen, onClose, onSave, currentPrefe
           </div>
 
           <div className="preference-section">
-            <label>Crowd Tolerance</label>
+            <label>Crowd Status</label>
             <select 
-              value={preferences.crowdTolerance}
+              value={preferences.crowdStatus}
               onChange={(e) => setPreferences({...preferences, crowdTolerance: e.target.value})}
             >
-              <option value="low">🟢 Prefer Quiet (Low Crowd)</option>
+              <option value="low">🟢 Prefer Quiet</option>
               <option value="medium">🟡 Moderate Crowd OK</option>
-              <option value="high">🔴 Don't Mind Busy Places</option>
+              <option value="high">🔴 Busy Places Are Fine</option>
             </select>
           </div>
 
           <div className="preference-section">
-            <label>Maximum Wait Time: {preferences.maxWaitTime} minutes</label>
-            <input 
-              type="range" 
-              min="5" 
-              max="60" 
-              step="5"
-              value={preferences.maxWaitTime}
-              onChange={(e) => setPreferences({...preferences, maxWaitTime: parseInt(e.target.value)})}
-            />
+            <label>
+              <input 
+                type="checkbox"
+                checked={preferences.openNow}
+                onChange={(e) => setPreferences({...preferences, openNow: e.target.checked})}
+              />
+              Open Now Only
+            </label>
           </div>
 
           <div className="preference-section">
-            <label>Dining Occasion</label>
-            <select 
-              value={preferences.diningOccasion}
-              onChange={(e) => setPreferences({...preferences, diningOccasion: e.target.value})}
-            >
-              <option value="casual">🍔 Casual Dining</option>
-              <option value="business">💼 Business Meal</option>
-              <option value="date">💑 Romantic Date</option>
-              <option value="family">👨‍👩‍👧‍👦 Family Gathering</option>
-            </select>
-          </div>
-
-          <div className="preference-section">
-            <label>Group Size: {preferences.groupSize} people</label>
-            <input 
-              type="range" 
-              min="1" 
-              max="10" 
-              value={preferences.groupSize}
-              onChange={(e) => setPreferences({...preferences, groupSize: parseInt(e.target.value)})}
-            />
+            <label>
+              <input 
+                type="checkbox"
+                checked={preferences.hasPromo}
+                onChange={(e) => setPreferences({...preferences, hasPromo: e.target.checked})}
+              />
+              Show Promotions
+            </label>
           </div>
         </div>
 
+        {/* Actions */}
         <div className="preferences-actions">
           <button onClick={onClose} className="btn-secondary">Cancel</button>
           <button onClick={() => onSave(preferences)} className="btn-primary">Save Preferences</button>

@@ -1,0 +1,205 @@
+/* Overlay behind dropdown */
+.dropdown-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 900;
+}
+
+/* Small floating dropdown menu */
+.dropdown-small-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #2b2b2f;
+  border-radius: 10px;
+  padding: 6px 0;
+  width: 220px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  animation: fadeIn 0.15s ease-out;
+  z-index: 999;
+}
+
+/* User Info Section */
+.dropdown-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+.dropdown-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #4a4a4d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.dropdown-user-name {
+  font-size: 0.9rem;
+  color: white;
+  margin: 0;
+}
+
+.dropdown-user-email {
+  font-size: 0.75rem;
+  color: #b5b5b5;
+  margin: 0;
+}
+
+/* Divider */
+.dropdown-divider {
+  height: 1px;
+  background: #3e3e40;
+  margin: 6px 0;
+}
+
+/* Dropdown Items */
+.dropdown-small-item {
+  width: 100%;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: #eaeaea;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.dropdown-small-item:hover {
+  background: #3a3a3d;
+}
+
+.item-icon {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.item-danger {
+  color: #ff6b6b;
+}
+
+.item-danger:hover {
+  background: #473434;
+}
+
+/* Inline Help & Bookmarks content */
+.inline-help-content,
+.inline-bookmarks-content {
+  background: #2b2b2f; /* Same as drawer */
+  color: #eaeaea;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 12px 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  width: 100%;
+  max-width: 800px;
+  animation: fadeIn 0.2s ease-out;
+  font-size: 0.9rem;
+}
+
+.inline-help-content h3,
+.inline-bookmarks-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.inline-help-content ul,
+.inline-bookmarks-content ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.inline-help-content li,
+.inline-bookmarks-content li {
+  margin-bottom: 6px;
+}
+
+/* Fade-in animation (reuse from drawer) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Preferences Popup Styles ===== */
+.preferences-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  color: #000;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  z-index: 1000;
+  min-width: 250px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.preferences-popup h4 {
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.preferences-tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.preference-tag {
+  display: inline-block;
+  background-color: #f3f4f6;
+  color: #111827;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin: 4px 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.edit-preferences-btn {
+  margin-top: 12px;
+  padding: 8px 14px;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.edit-preferences-btn:hover {
+  background-color: #1d4ed8;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,100 @@
+.enhanced-filters {
+  background: var(--card);
+  max-height: 60px; /* collapsed height */
+  overflow: hidden;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.enhanced-filters.open {
+  max-height: 1000px; /* expanded height */
+  padding: 1.5rem;
+}
+
+.search-section {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.suggest-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.preferences-drawer {
+  background: #f0f9ff;
+  border-left: 4px solid var(--primary);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.preferences-drawer h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.preferences-drawer ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.preferences-drawer li {
+  margin-bottom: 0.25rem;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.filter-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.filter-grid select, .filter-grid input[type="checkbox"] {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+}
+
+.filter-grid input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .search-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}

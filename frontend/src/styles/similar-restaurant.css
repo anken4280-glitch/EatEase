@@ -1,0 +1,134 @@
+.similar-restaurants {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.similar-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.similar-header h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text);
+}
+
+.similar-subtitle {
+  color: var(--text-light);
+  margin: 0;
+}
+
+.similar-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.similar-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.similar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+}
+
+.similarity-badge {
+  position: absolute;
+  top: -8px;
+  right: 1rem;
+  background: var(--success);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.similar-card-content h5 {
+  margin: 0.5rem 0 0.25rem 0;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.similar-cuisine {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.similar-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.detail-item {
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.status-indicator, .wait-time, .rating {
+  font-weight: 600;
+}
+
+.promo-indicator {
+  background: linear-gradient(135deg, var(--secondary), #f97316);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.similarity-reasons {
+  margin-top: 0.5rem;
+}
+
+.similarity-reasons small {
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.view-restaurant-btn {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  transition: background 0.3s ease;
+}
+
+.view-restaurant-btn:hover {
+  background: var(--primary-dark);
+}
+
+.loading, .no-similar {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+  .similar-cards {
+    grid-template-columns: 1fr;
+  }
+}
