@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import './Login.css';
+import React, { useState } from "react";
+import "./Login.css";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onSwitchToSignup }) {
   // State for form data
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -22,32 +22,32 @@ function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       // Send login request to Laravel backend
-      const response = await fetch('http://localhost:8000/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8000/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         // Store user data and token in localStorage
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
+        localStorage.setItem("auth_token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
         // Notify parent component (App.jsx) about successful login
         onLogin(data.user);
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.message || "Login failed");
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -56,7 +56,6 @@ function Login({ onLogin }) {
   return (
     <div className="login">
       <h2>Sign In</h2>
-
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Email Address</label>
@@ -89,9 +88,13 @@ function Login({ onLogin }) {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
-
       <div className="auth-switch">
-        <p>Don't have an account? <button type="button">Sign Up</button></p>
+        <p>
+          Don't have an account? <span> </span>  
+          <button type="button" onClick={onSwitchToSignup}>
+            Sign Up
+          </button>
+        </p>
       </div>
     </div>
   );
