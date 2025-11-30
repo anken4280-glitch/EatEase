@@ -4,14 +4,6 @@ import {
   PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer 
 } from 'recharts';
 import { 
-  fetchRestaurants, 
-  verifyRestaurant, 
-  deleteRestaurant, 
-  fetchReports, 
-  resolveReport,
-  createRestaurant,
-  updateRestaurant,
-  addMockReport
 } from "../../api";
 import './DeveloperAdmin.css';
 

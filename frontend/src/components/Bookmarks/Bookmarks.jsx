@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { getBookmarks, toggleBookmark } from "../../api";
 import './Bookmarks.css';
 
 export default function Bookmarks() {

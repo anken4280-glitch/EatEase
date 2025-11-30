@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '../../api';
 import './Notifications.css';
 
 export default function Notifications() {

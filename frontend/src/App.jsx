@@ -17,8 +17,6 @@ import Drawer from "./components/Drawer/Drawer";
 import {
   getCurrentUser,
   logoutUser,
-  fetchRestaurants,
-  getNotifications,
 } from "./api";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./components/ErrorFallback/ErrorFallback";
