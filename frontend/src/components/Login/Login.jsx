@@ -1,90 +1,100 @@
-import React, { useState } from "react";
-import { loginUser } from "../../api";
+import React, { useState } from 'react';
 import './Login.css';
 
-export default function Login({ onLogin, onSwitchToSignup }) {
+function Login({ onLogin }) {
+  // State for form data
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: ''
   });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
+  // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setError('');
 
     try {
-      console.log("Attempting login...");
-      const result = await loginUser(formData.email, formData.password);
-      console.log("Login successful:", result);
+      // Send login request to Laravel backend
+      const response = await fetch('http://localhost:8000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
 
-      localStorage.setItem("auth_token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
+      const data = await response.json();
 
-      console.log("Calling onLogin callback...");
-      onLogin(result.user);
-    } catch (error) {
-      console.error("Login error:", error);
-      setError(error.message);
+      if (response.ok) {
+        // Store user data and token in localStorage
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Notify parent component (App.jsx) about successful login
+        onLogin(data.user);
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form">
-        <h2>Sign In</h2>
-        <p>Please enter your details</p>
+    <div className="login">
+      <h2>Sign In</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Email"
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Password"
-            />
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? "Signing In..." : "Login"}
-          </button>
-        </form>
-
-        <div className="auth-switch">
-          <p>
-            Don't have an account?{" "}
-            <button onClick={onSwitchToSignup} className="switch-button">
-              Sign Up
-            </button>
-          </p>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your email"
+            required
+          />
         </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        {/* Display error messages */}
+        {error && <div className="error-message">{error}</div>}
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+
+      <div className="auth-switch">
+        <p>Don't have an account? <button type="button">Sign Up</button></p>
       </div>
     </div>
   );
 }
+
+export default Login;

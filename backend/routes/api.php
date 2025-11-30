@@ -1,23 +1,35 @@
 <?php
-
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RestaurantController;
+use Illuminate\Support\Facades\DB;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/test-db', function() {
+    try {
+        // Simple database test - try to get the database name
+        $databaseName = DB::connection()->getDatabaseName();
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database connected successfully!',
+            'database' => $databaseName
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Database connection failed',
+            'error' => $e->getMessage()
+        ]);
+    }
 });
 
-Route::get('/restaurants', [RestaurantController::class, 'index']);
-Route::post('/restaurants/{id}/status', [RestaurantController::class, 'updateStatus']);
+// Simple API test
+Route::get('/test-api', function() {
+    return response()->json([
+        'message' => '✅ API is working!',
+        'timestamp' => now()
+    ]);
+});
+
+// Login route
+Route::post('/auth/login', [App\Http\Controllers\AuthController::class, 'login']);
+// Sign Up route
+Route::post('/auth/signup', [App\Http\Controllers\AuthController::class, 'signup']);
