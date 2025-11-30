@@ -1,244 +1,184 @@
 import React, { useState, useEffect } from "react";
-import { fetchRestaurants, toggleBookmark } from "../../api";
-import ReservationModal from "../ReservationModal/ReservationModal";
-import './RestaurantList.css';
+import { fetchRestaurants} from "../../api";
+import RestaurantCard from "../RestaurantCard/RestaurantCard";
+import RestaurantDetailsModal from "../RestaurantDetailsModal/RestaurantDetailsModal";
 
 export default function RestaurantList({ filters, currentUser }) {
   const [restaurants, setRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // ----------------------------
+  // Auto Error Logging Function
+  // ----------------------------
+  async function logError(details) {
+    console.error("Logged Error:", details);
+
+    // mock log endpoint (optional)
+    try {
+      await fetch("/logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(details),
+      });
+    } catch {
+      // Even if logging fails, ignore it
+    }
+  }
+
+  // ----------------------------
+  // Initial Load
+  // ----------------------------
   useEffect(() => {
-    loadRestaurants();
+    async function loadData() {
+      try {
+        setLoading(true);
+        const data = await fetchRestaurants();
+        setRestaurants(data);
+        setFilteredRestaurants(data);
+      } catch (err) {
+        setError("⚠ Failed to load restaurants. Please try again.");
+        logError({
+          message: "Restaurant fetch failed",
+          error: err.toString(),
+          time: new Date().toISOString(),
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
   }, []);
 
+  // ----------------------------
+  // Filtering Logic
+  // ----------------------------
   useEffect(() => {
-    filterRestaurants();
-  }, [restaurants, filters]);
-
-  const loadRestaurants = async () => {
-    setLoading(true);
-    try {
-      const data = await fetchRestaurants();
-      setRestaurants(data);
-    } catch (error) {
-      console.error("Error loading restaurants:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filterRestaurants = () => {
     let filtered = restaurants;
 
-    // Search filter
-    if (filters.search) {
-      filtered = filtered.filter(
-        (restaurant) =>
-          restaurant.name
-            .toLowerCase()
-            .includes(filters.search.toLowerCase()) ||
-          restaurant.cuisine
-            .toLowerCase()
-            .includes(filters.search.toLowerCase()) ||
-          restaurant.location
-            .toLowerCase()
-            .includes(filters.search.toLowerCase())
-      );
-    }
-
-    // Cuisine filter
     if (filters.cuisine !== "all") {
-      filtered = filtered.filter(
-        (restaurant) =>
-          restaurant.cuisine.toLowerCase() === filters.cuisine.toLowerCase()
-      );
+      filtered = filtered.filter((r) => r.cuisine === filters.cuisine);
     }
 
-    // Crowd level filter
+    if (filters.hasPromo) {
+      filtered = filtered.filter((r) => r.hasPromo);
+    }
+
     if (filters.crowdLevel !== "all") {
       filtered = filtered.filter(
-        (restaurant) => restaurant.status === filters.crowdLevel
+        (r) => r.crowdLevel.toLowerCase() === filters.crowdLevel.toLowerCase()
       );
     }
 
-    // Has promotion filter
-    if (filters.hasPromo) {
-      filtered = filtered.filter((restaurant) => restaurant.hasPromo);
+    if (filters.search) {
+      filtered = filtered.filter(
+        (r) =>
+          r.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+          r.cuisine.toLowerCase().includes(filters.search.toLowerCase())
+      );
     }
 
-    // Location filter
     if (filters.location) {
-      filtered = filtered.filter((restaurant) =>
-        restaurant.location
-          .toLowerCase()
-          .includes(filters.location.toLowerCase())
+      filtered = filtered.filter((r) =>
+        r.location.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
 
     setFilteredRestaurants(filtered);
-  };
+  }, [filters, restaurants]);
 
-  const handleBookmark = async (restaurantId, e) => {
-    e.stopPropagation();
-    try {
-      const result = await toggleBookmark(restaurantId);
-      if (result.success) {
-        // Update local state to reflect bookmark change
-        setRestaurants((prev) =>
-          prev.map((restaurant) =>
-            restaurant.id === restaurantId
-              ? { ...restaurant, isBookmarked: result.isBookmarked }
-              : restaurant
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error toggling bookmark:", error);
-    }
-  };
-
-  const handleMakeReservation = (restaurant, e) => {
-    e.stopPropagation();
+  // ----------------------------
+  // Handlers
+  // ----------------------------
+  const handleRestaurantSelect = (restaurant) => {
     setSelectedRestaurant(restaurant);
-    setShowReservationModal(true);
+    setShowDetailsModal(true);
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "green":
-        return "#27ae60";
-      case "yellow":
-        return "#f39c12";
-      case "orange":
-        return "#e67e22";
-      case "red":
-        return "#e74c3c";
-      default:
-        return "#95a5a6";
-    }
+  const handleSimilarRestaurantSelect = (restaurant) => {
+    setSelectedRestaurant(restaurant);
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "green":
-        return "🟢";
-      case "yellow":
-        return "🟡";
-      case "orange":
-        return "🟠";
-      case "red":
-        return "🔴";
-      default:
-        return "⚪";
-    }
-  };
+  const refreshPage = () => window.location.reload();
 
+  // ----------------------------
+  // Loading Screen
+  // ----------------------------
   if (loading) {
     return (
-      <div className="restaurant-list">
-        <div className="loading-screen">
-          <div className="loading-spinner"></div>
-          <p>Loading restaurants...</p>
+      <div className="restaurant-list loading-screen-container">
+        <div className="loading-spinner"></div>
+        <p>Loading restaurants...</p>
+      </div>
+    );
+  }
+
+  // ----------------------------
+  // ERROR UI (Dark Mode Friendly)
+  // ----------------------------
+  if (error) {
+    return (
+      <div className="restaurant-list error-container">
+        <div className="error-box">
+          <h2>⚠ Oops! Something went wrong.</h2>
+          <p>{error}</p>
+
+          <button onClick={refreshPage} className="refresh-btn">
+            🔄 Refresh Page
+          </button>
         </div>
       </div>
     );
   }
 
+  // ----------------------------
+  // Main UI
+  // ----------------------------
   return (
     <div className="restaurant-list">
-      {filteredRestaurants.length === 0 ? (
-        <div className="no-results">
-          <h3>No restaurants found</h3>
-          <p>Try adjusting your filters to see more results.</p>
-        </div>
-      ) : (
-        <div className="restaurants-grid">
+      {/* Header Actions */}
+      <div className="header-actions">
+
+        <button className="refresh-btn" onClick={refreshPage}>
+          🔁 Refresh
+        </button>
+      </div>
+
+      {filteredRestaurants.length > 0 ? (
+        <div className="cards">
           {filteredRestaurants.map((restaurant) => (
             <div
               key={restaurant.id}
-              className={`restaurant-card ${
-                restaurant.isBookmarked ? "bookmarked" : ""
-              }`}
-              onClick={() => setSelectedRestaurant(restaurant)}
+              className="restaurant-card-wrapper"
+              onClick={() => handleRestaurantSelect(restaurant)}
             >
-              <div className="card-header">
-                <div className="restaurant-name">
-                  <h3>{restaurant.name}</h3>
-                  {restaurant.verified && (
-                    <span className="verified-badge">✅</span>
-                  )}
-                </div>
-                <button
-                  className={`bookmark-btn ${
-                    restaurant.isBookmarked ? "active" : ""
-                  }`}
-                  onClick={(e) => handleBookmark(restaurant.id, e)}
-                  title={
-                    restaurant.isBookmarked ? "Remove bookmark" : "Add bookmark"
-                  }
-                >
-                  {restaurant.isBookmarked ? "❤️" : "🤍"}
-                </button>
-              </div>
-
-              <p className="cuisine-location">
-                {restaurant.cuisine} • {restaurant.location}
-              </p>
-
-              <div className="status-section">
-                <div
-                  className="status-indicator"
-                  style={{ backgroundColor: getStatusColor(restaurant.status) }}
-                >
-                  {getStatusIcon(restaurant.status)}{" "}
-                  {restaurant.status.toUpperCase()} ({restaurant.crowdLevel})
-                </div>
-                <div className="status-details">
-                  <span className="occupancy">
-                    👥 {restaurant.occupancy}% full
-                  </span>
-                </div>
-              </div>
-
-              <div className="card-footer">
-                <div className="rating-promo">
-                  <span className="rating">⭐ {restaurant.rating}</span>
-                  {restaurant.hasPromo && (
-                    <span className="promo-badge">🎯 Promotion</span>
-                  )}
-                </div>
-
-                <button
-                  className="reserve-btn"
-                  onClick={(e) => handleMakeReservation(restaurant, e)}
-                >
-                  Reserve Now
-                </button>
-              </div>
-
-              {/* Quick Info */}
-              <div className="quick-info">
-                <span className="info-item">📞 {restaurant.phone}</span>
-                <span className="info-item">📍 {restaurant.address}</span>
-              </div>
+              <RestaurantCard
+                restaurant={restaurant}
+                currentUser={currentUser}
+              />
             </div>
           ))}
         </div>
+      ) : (
+        <div className="no-results">
+          <p>No restaurants found matching your filters.</p>
+          <button onClick={refreshPage} className="refresh-btn">
+            Reset Filters
+          </button>
+        </div>
       )}
 
-      {showReservationModal && selectedRestaurant && (
-        <ReservationModal
-          restaurant={selectedRestaurant}
-          onClose={() => {
-            setShowReservationModal(false);
-            setSelectedRestaurant(null);
-          }}
-          currentUser={currentUser}
-        />
-      )}
+      <RestaurantDetailsModal
+        restaurant={selectedRestaurant}
+        isOpen={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        currentUser={currentUser}
+        onSimilarRestaurantSelect={handleSimilarRestaurantSelect}
+      />
     </div>
   );
 }

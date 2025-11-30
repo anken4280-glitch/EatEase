@@ -1,109 +1,133 @@
-import React, { useState, useEffect } from "react";
-import PopularTimesChart from "./PopularTimesChart";
+import React, { useState } from "react";
+import PopularTimesChart from "../PopularTimesChart/PopularTimesChart";
 import ReviewsSection from "../ReviewsSection/ReviewsSection";
-import ReservationModal from "./ReservationModal";
+import ReservationModal from "../ReservationModal/ReservationModal";
 import "./RestaurantCard.css";
 
-export default function RestaurantCard({ restaurant, currentUser }) {
-  const [promotions, setPromotions] = useState([]);
+export default function RestaurantCard({ restaurant, currentUser, onEdit }) {
   const [showPopularTimes, setShowPopularTimes] = useState(false);
 
-  useEffect(() => {
-    async function fetchPromotions() {
-      try {
-        const response = await fetch(
-          `http://localhost:4000/api/restaurants/${restaurant.id}/promotions`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setPromotions(data);
-        }
-      } catch (error) {
-        console.error("Error fetching promotions:", error);
-      }
-    }
-
-    if (restaurant.hasPromo) {
-      fetchPromotions();
-    }
-  }, [restaurant.id, restaurant.hasPromo]);
-
-  const getColor = (status) => {
+  // Determine color based on crowd status and occupancy
+  const getColor = (status, occupancy) => {
+    if (occupancy >= 100) return "🔴"; // Full
+    if (occupancy >= 80) return "🟠"; // Almost full
     if (status === "green") return "🟢";
     if (status === "yellow") return "🟡";
-    if (status === "red") return "🔴";
     return "⚪";
   };
 
   return (
     <div className="restaurant-card">
-      {/* Header */}
+      {/* Cover photo */}
+      {restaurant.coverPhoto && (
+        <img src={restaurant.coverPhoto} alt="Cover" className="cover-photo" />
+      )}
+
       <div className="card-header">
         <h3>{restaurant.name}</h3>
-        {restaurant.hasPromo && <span className="promo-badge">🔥 Promo</span>}
+        {/* Profile picture */}
+        {restaurant.profilePic && (
+          <img
+            src={restaurant.profilePic}
+            alt="Profile"
+            className="profile-pic"
+          />
+        )}
       </div>
 
       <p className="cuisine">{restaurant.cuisine}</p>
 
-      {/* Cleaned IoT section */}
+      {/* Basic Info */}
       <div className="iot-data">
-        <div className="status-row">
-          <span>
-            Status: {getColor(restaurant.status)} {restaurant.crowdLevel}
-          </span>
-        </div>
-
+        <span>
+          Status: {getColor(restaurant.status, restaurant.occupancy)}{" "}
+          {restaurant.crowdLevel}{" "}
+          {restaurant.occupancy != null && `• ${restaurant.occupancy}% full`}
+        </span>
         {restaurant.rating && (
-          <div className="rating-row">
-            <span>
-              ⭐ {restaurant.rating}/5 ({restaurant.reviewCount || 0} reviews)
-            </span>
+          <span>
+            ⭐ {restaurant.rating}/5 ({restaurant.reviewCount || 0} reviews)
+          </span>
+        )}
+      </div>
+
+      {/* Restaurant Details */}
+      <div className="restaurant-details">
+        {restaurant.openHours && (
+          <p>
+            <strong>Open Hours:</strong> {restaurant.openHours}
+          </p>
+        )}
+        {restaurant.maxTables && (
+          <p>
+            <strong>Max Tables:</strong> {restaurant.maxTables}
+          </p>
+        )}
+        {restaurant.contactNumber && (
+          <p>
+            <strong>Contact:</strong> {restaurant.contactNumber}
+          </p>
+        )}
+        {restaurant.overview && (
+          <p>
+            <strong>Overview:</strong> {restaurant.overview}
+          </p>
+        )}
+        {restaurant.menu && (
+          <p>
+            <strong>Menu:</strong> {restaurant.menu}
+          </p>
+        )}
+        {restaurant.photos && restaurant.photos.length > 0 && (
+          <div className="photo-gallery">
+            {restaurant.photos.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Photo ${index + 1}`}
+                className="food-photo"
+              />
+            ))}
           </div>
+        )}
+        {restaurant.direction && (
+          <p>
+            <strong>Direction / Map:</strong>{" "}
+            <a href={restaurant.direction} target="_blank" rel="noreferrer">
+              View Map
+            </a>
+          </p>
+        )}
+        {restaurant.priceRange && (
+          <p>
+            <strong>Price Range:</strong> {restaurant.priceRange}
+          </p>
         )}
       </div>
 
       {/* Actions */}
       <div className="card-actions">
-        <button
-          onClick={() => setShowPopularTimes(!showPopularTimes)}
-          className="action-btn"
-        >
+        <button onClick={() => setShowPopularTimes(!showPopularTimes)}>
           {showPopularTimes ? "📊 Hide Popular Times" : "📊 Show Popular Times"}
         </button>
+
+        {/* Edit button for restaurant owners */}
+        {currentUser?.type === "restaurant_owner" && (
+          <button onClick={onEdit}>✏️ Edit Restaurant</button>
+        )}
       </div>
 
       {/* Popular Times */}
       {showPopularTimes && (
-        <div className="popular-times-section">
-          <PopularTimesChart restaurant={restaurant} currentTime={new Date()} />
-        </div>
+        <PopularTimesChart restaurant={restaurant} currentTime={new Date()} />
       )}
 
-      {/* Promotions */}
-      {promotions.length > 0 && (
-        <div className="promotions-section">
-          <h5>Current Promotions:</h5>
-          {promotions.map((promo) => (
-            <div key={promo.id} className="promotion-item">
-              <strong>{promo.title}</strong>
-              <p>{promo.description}</p>
-              <small>
-                Save {promo.discount}% • Valid until{" "}
-                {new Date(promo.validUntil).toLocaleDateString()}
-              </small>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Reviews Preview */}
-      <div className="reviews-preview">
-        <ReviewsSection
-          restaurantId={restaurant.id}
-          currentUser={currentUser}
-          compact={true}
-        />
-      </div>
+      {/* Reviews Section */}
+      <ReviewsSection
+        restaurantId={restaurant.id}
+        currentUser={currentUser}
+        compact
+      />
     </div>
   );
 }

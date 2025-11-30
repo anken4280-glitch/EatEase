@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchRestaurants } from "../../api";
-import './SimilarRestaurants.css';
+import './SimilarRestaurant.css';
 
 export default function SimilarRestaurants({ currentRestaurant, onRestaurantSelect }) {
   const [similarRestaurants, setSimilarRestaurants] = useState([]);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PopularTimesChart from "../PopularTimesChart/PopularTimesChart";
 import ReviewsSection from "../ReviewsSection/ReviewsSection";
 import SimilarRestaurants from "../SimilarRestaurants/SimilarRestaurants";
-import './RestaurantDetailsModal.css';
+import "./RestaurantDetailsModal.css";
 
 export default function RestaurantDetailsModal({
   restaurant,
@@ -85,7 +85,23 @@ export default function RestaurantDetailsModal({
         <div className="tab-content">
           {activeTab === "details" && (
             <div className="details-content">
-              {/* Removed IoT wait time, occupancy, last updated */}
+              <div className="iot-status">
+                <h4>📡 Real-time IoT Status</h4>
+                <div className="status-grid">
+                  <div className="status-item">
+                    <span className="label">Crowd Level:</span>
+                    <span className={`value status-${restaurant.status}`}>
+                      {restaurant.crowdLevel}
+                    </span>
+                  </div>
+                  <div className="status-item">
+                    <span className="label">Last Updated:</span>
+                    <span className="value">
+                      {new Date(restaurant.lastUpdated).toLocaleTimeString()}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
               {restaurant.description && (
                 <div className="restaurant-description">

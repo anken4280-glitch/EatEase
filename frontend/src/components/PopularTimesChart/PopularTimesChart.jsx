@@ -1,8 +1,18 @@
 import React from "react";
 import './PopularTimesChart.css';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  CartesianGrid,
+} from "recharts";
 
 export default function PopularTimesChart({ restaurant, currentTime }) {
-  // Sample popular times data (in a real app, this would come from IoT sensors)
+  // Sample popular times data (can come from restaurant.popularTimes if available)
   const popularTimes = [
     { hour: "8AM", crowd: 15, label: "Breakfast" },
     { hour: "9AM", crowd: 20, label: "Breakfast" },
@@ -18,7 +28,7 @@ export default function PopularTimesChart({ restaurant, currentTime }) {
     { hour: "7PM", crowd: 85, label: "Dinner" },
     { hour: "8PM", crowd: 70, label: "Dinner" },
     { hour: "9PM", crowd: 50, label: "Late Night" },
-    { hour: "10PM", crowd: 30, label: "Late Night" }
+    { hour: "10PM", crowd: 30, label: "Late Night" },
   ];
 
   const getCurrentHourIndex = () => {
@@ -29,81 +39,59 @@ export default function PopularTimesChart({ restaurant, currentTime }) {
   };
 
   const currentHourIndex = getCurrentHourIndex();
-  const currentCrowdLevel = popularTimes[currentHourIndex]?.crowd || 0;
 
   const getCrowdLevelColor = (crowd) => {
-    if (crowd <= 30) return "var(--success)";
-    if (crowd <= 70) return "var(--warning)";
-    return "var(--danger)";
-  };
-
-  const getCrowdLevelLabel = (crowd) => {
-    if (crowd <= 30) return "Quiet";
-    if (crowd <= 70) return "Moderate";
-    return "Busy";
+    if (crowd <= 30) return "#10B981"; // success / green
+    if (crowd <= 70) return "#F59E0B"; // warning / yellow
+    return "#EF4444"; // danger / red
   };
 
   return (
-    <div className="popular-times-chart">
-      <div className="chart-header">
-        <h4>📊 Popular Times</h4>
-        <div className="current-crowd">
-          <span className="label">Right now:</span>
-          <span 
-            className="crowd-level" 
-            style={{ color: getCrowdLevelColor(currentCrowdLevel) }}
-          >
-            {getCrowdLevelLabel(currentCrowdLevel)} ({currentCrowdLevel}%)
-          </span>
-        </div>
+    <div className="popular-times-chart" style={{ width: "100%", height: 300 }}>
+      <h4>📊 Popular Times</h4>
+      <ResponsiveContainer>
+        <BarChart data={popularTimes} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="hour" />
+          <YAxis />
+          <Tooltip
+            formatter={(value, name, props) => [`${value}%`, props.payload.label]}
+          />
+          <Bar dataKey="crowd">
+            {popularTimes.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={
+                  index === currentHourIndex
+                    ? "#2563EB" // highlight current hour in blue
+                    : getCrowdLevelColor(entry.crowd)
+                }
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+
+      <div style={{ marginTop: "1rem" }}>
+        <strong>Right now:</strong>{" "}
+        <span style={{ color: getCrowdLevelColor(popularTimes[currentHourIndex].crowd) }}>
+          {popularTimes[currentHourIndex].crowd <= 30
+            ? "Quiet"
+            : popularTimes[currentHourIndex].crowd <= 70
+            ? "Moderate"
+            : "Busy"}{" "}
+          ({popularTimes[currentHourIndex].crowd}%)
+        </span>
       </div>
 
-      <div className="chart-container">
-        <div className="chart-bars">
-          {popularTimes.map((time, index) => (
-            <div key={index} className="chart-bar-container">
-              <div className="time-label">{time.hour}</div>
-              <div 
-                className={`chart-bar ${index === currentHourIndex ? 'current-hour' : ''}`}
-                style={{ 
-                  height: `${time.crowd}%`,
-                  backgroundColor: getCrowdLevelColor(time.crowd)
-                }}
-                title={`${time.hour}: ${time.crowd}% busy - ${time.label}`}
-              >
-                <span className="crowd-percent">{time.crowd}%</span>
-              </div>
-              <div className="period-label">{time.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="chart-legend">
-        <div className="legend-item">
-          <div className="color-dot" style={{ backgroundColor: "var(--success)" }}></div>
-          <span>Quiet (0-30%)</span>
-        </div>
-        <div className="legend-item">
-          <div className="color-dot" style={{ backgroundColor: "var(--warning)" }}></div>
-          <span>Moderate (31-70%)</span>
-        </div>
-        <div className="legend-item">
-          <div className="color-dot" style={{ backgroundColor: "var(--danger)" }}></div>
-          <span>Busy (71-100%)</span>
-        </div>
-      </div>
-
-      <div className="chart-insights">
-        <h5>💡 Best Times to Visit:</h5>
+      <div style={{ marginTop: "1rem", fontSize: "0.9rem", color: "#555" }}>
+        <p>💡 Best Times to Visit:</p>
         <ul>
           <li>🕗 Early Breakfast (8AM-10AM): Least crowded</li>
           <li>🕒 Afternoon (2PM-4PM): Good balance</li>
           <li>🕤 Late Night (9PM+): Winding down</li>
         </ul>
-        <p className="iot-note">
-          <small>📡 Data powered by IoT sensors and historical patterns</small>
-        </p>
+        <small>📡 Data powered by IoT sensors and historical patterns</small>
       </div>
     </div>
   );
