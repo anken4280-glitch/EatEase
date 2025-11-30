@@ -11,6 +11,7 @@ export const mockRestaurants = [
     status: "green",
     crowdLevel: "Low",
     occupancy: 25,
+    waitTime: 5,
     hasPromo: true,
     rating: 4.5,
     location: "Downtown",
@@ -33,6 +34,7 @@ export const mockRestaurants = [
     status: "yellow",
     crowdLevel: "Moderate",
     occupancy: 65,
+    waitTime: 15,
     hasPromo: false,
     rating: 4.2,
     location: "Mall Area",
@@ -107,18 +109,9 @@ export async function simulateIoTUpdate() {
       const statuses = ["green", "yellow", "red"];
       const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
       restaurant.status = newStatus;
-      restaurant.crowdLevel = 
-        newStatus === "green" ? "Low" : 
-        newStatus === "yellow" ? "Moderate" : 
-        newStatus === "orange" ? "High" : "Full";
-      restaurant.occupancy = 
-        newStatus === "green" ? 25 : 
-        newStatus === "yellow" ? 65 : 
-        newStatus === "orange" ? 85 : 95;
-      restaurant.waitTime = 
-        newStatus === "green" ? 5 : 
-        newStatus === "yellow" ? 15 : 
-        newStatus === "orange" ? 25 : 35;
+      restaurant.crowdLevel = newStatus === "green" ? "Low" : newStatus === "yellow" ? "Moderate" : "High";
+      restaurant.occupancy = newStatus === "green" ? 25 : newStatus === "yellow" ? 65 : 85;
+      restaurant.waitTime = newStatus === "green" ? 5 : newStatus === "yellow" ? 15 : 25;
       restaurant.lastUpdated = new Date().toISOString();
     }
   });
