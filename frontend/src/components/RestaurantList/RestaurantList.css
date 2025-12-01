@@ -38,3 +38,58 @@
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
+
+/* Hamburger Menu */
+.menu-container {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 180px;
+  margin-top: 0.5rem;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-menu button:hover {
+  background: #f8f9fa;
+}
+
+.dropdown-menu button:last-child {
+  border-bottom: none;
+}
+
+.logout-btn {
+  color: #dc3545 !important;
+  font-weight: 500;
+}
+
+/* Close menu when clicking outside */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+

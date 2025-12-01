@@ -123,7 +123,6 @@ function Signup({ onSignup, onSwitchToLogin }) {
 
           {/* Display error messages */}
           {error && <div style={{ color: "red" }}>{error}</div>}
-          <br></br>
           <button type="submit" disabled={loading}>
             {loading ? "Creating Account..." : "Create Account"}
           </button>
@@ -133,7 +132,7 @@ function Signup({ onSignup, onSwitchToLogin }) {
           <p>
             Already have an account?
             <button type="button" onClick={onSwitchToLogin}>
-              Login here
+              Login
             </button>
           </p>
         </div>

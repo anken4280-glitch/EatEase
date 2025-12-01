@@ -17,7 +17,6 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
       <div className="card-details">
         <p className="cuisine">{restaurant.cuisine}</p>
         <p className="occupancy">Occupancy: {restaurant.occupancy}%</p>
-        <p className="wait-time">Wait Time: {restaurant.waitTime} min</p>
       </div>
     </div>
   );
