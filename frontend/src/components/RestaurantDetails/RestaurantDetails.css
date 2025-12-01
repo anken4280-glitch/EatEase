@@ -1,0 +1,138 @@
+.restaurant-details-page {
+  background: white;
+  margin: 0 -1rem;
+  min-height: calc(100vh - 80px);
+}
+
+.restaurant-hero {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem 1rem;
+}
+
+.restaurant-image {
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.image-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+
+.restaurant-basic-info h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+}
+
+.status-badge.large {
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.cuisine-type {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.quick-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 1.5rem 1rem;
+  background: white;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.detailed-info {
+  padding: 1.5rem 1rem;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+}
+
+.info-section h3 {
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.info-section p {
+  margin: 0 0 1rem 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.action-btn {
+  background: #F8F3B7;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-dot.green { background: #10b981; }
+.status-dot.yellow { background: #f59e0b; }
+.status-dot.red { background: #ef4444; }
+
+.action-buttons {
+  padding: 1.5rem 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.primary-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background: #F8F3B7;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background: #f5ef9e;
+}
