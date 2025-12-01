@@ -55,46 +55,48 @@ function Login({ onLogin, onSwitchToSignup }) {
 
   return (
     <div className="login">
-      <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email Address</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            required
-          />
-        </div>
+      <div className="login-container">
+        <h2>Sign In</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
 
-        {/* Display error messages */}
-        {error && <div className="error-message">{error}</div>}
+          {/* Display error messages */}
+          {error && <div className="error-message">{error}</div>}
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-      <div className="auth-switch">
-        <p>
-          Don't have an account? <span> </span>  
-          <button type="button" onClick={onSwitchToSignup}>
-            Sign Up
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
-        </p>
+        </form>
+        <div className="auth-switch">
+          <p>
+            Don't have an account? <span> </span>
+            <button type="button" onClick={onSwitchToSignup}>
+              Sign Up
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
