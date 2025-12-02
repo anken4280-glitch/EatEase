@@ -30,6 +30,8 @@ function Login({ onLogin, onSwitchToSignup }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json", // ← ADD THIS LINE
+          "X-Requested-With": "XMLHttpRequest" // ← ALSO ADD THIS (optional but helpful)
         },
         body: JSON.stringify(formData),
       });
