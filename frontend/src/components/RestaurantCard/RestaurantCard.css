@@ -1,12 +1,11 @@
 .restaurant-card {
   background: white;
-  padding: 1.5rem;
   border-radius: 12px;
+  padding: 1rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-left: 4px solid #e1e1e1;
+  transition: transform 0.2s ease;
 }
 
 .restaurant-card:hover {
@@ -22,11 +21,13 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-header h3 {
   margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #333;
   flex: 1;
 }
@@ -36,20 +37,361 @@
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.green {
+  background: #51CF66;
   color: white;
 }
 
-.status-badge.green { background: #10b981; }
-.status-badge.yellow { background: #f59e0b; }
-.status-badge.red { background: #ef4444; }
+.status-badge.yellow {
+  background: #FCC419;
+  color: #333;
+}
 
-.card-details p {
-  margin: 0.25rem 0;
+.status-badge.red {
+  background: #FF6B6B;
+  color: white;
+}
+
+.status-badge.orange {
+  background: #FF922B;
+  color: white;
+}
+
+.card-details {
   color: #666;
   font-size: 0.9rem;
 }
 
+.card-details p {
+  margin: 0.25rem 0;
+}
+
 .cuisine {
   font-weight: 500;
-  color: #333 !important;
+  color: #555;
+}
+
+.occupancy {
+  color: #666;
+}
+
+.location {
+  color: #888;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Existing styles... */
+
+/* Card Title Section */
+.card-title-section {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.rating-stars {
+  color: #FFD700; /* Gold color for stars */
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.rating-text {
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Action Buttons */
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.bookmark-btn, .notification-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #e1e1e1;
+  background: white;
+  color: #333;
+}
+
+.bookmark-btn:hover, .notification-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bookmark-btn.active {
+  background: #F8F3B7;
+  border-color: #F8F3B7;
+  color: #333;
+}
+
+.bookmark-btn.active:hover {
+  background: #f5ef9e;
+}
+
+/* Notification Modal */
+.notification-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.notification-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.notification-modal h4 {
+  margin: 0 0 1.5rem 0;
+  color: #333;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.notification-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.notification-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.notification-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notification-option.green:hover {
+  border-color: #51CF66;
+  background: rgba(81, 207, 102, 0.05);
+}
+
+.notification-option.yellow:hover {
+  border-color: #FCC419;
+  background: rgba(252, 196, 25, 0.05);
+}
+
+.notification-option.orange:hover {
+  border-color: #FF922B;
+  background: rgba(255, 146, 43, 0.05);
+}
+
+.notification-option.red:hover {
+  border-color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.notification-option .status-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+
+.notification-option .status-indicator.green {
+  background: #51CF66;
+}
+
+.notification-option .status-indicator.yellow {
+  background: #FCC419;
+}
+
+.notification-option .status-indicator.orange {
+  background: #FF922B;
+}
+
+.notification-option .status-indicator.red {
+  background: #FF6B6B;
+}
+
+.notification-option span {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.notification-option small {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.cancel-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e1e1e1;
+  background: #f8f8f8;
+  color: #666;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+/* Loading state */
+.bookmark-btn.loading,
+.notification-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Active notification button */
+.notification-btn.active {
+  background: #F8F3B7;
+  border-color: #F8F3B7;
+  color: #333;
+}
+
+/* Current notification display */
+.current-notification {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.current-notification .status-green {
+  color: #51CF66;
+  font-weight: 600;
+}
+
+.current-notification .status-yellow {
+  color: #FCC419;
+  font-weight: 600;
+}
+
+.current-notification .status-orange {
+  color: #FF922B;
+  font-weight: 600;
+}
+
+.current-notification .status-red {
+  color: #FF6B6B;
+  font-weight: 600;
+}
+
+.remove-notification-btn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  border-radius: 50%;
+}
+
+.remove-notification-btn:hover {
+  background: #ffebee;
+  color: #FF6B6B;
+}
+
+/* Modal updates */
+.modal-subtitle {
+  color: #666;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.selected-check {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #51CF66;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  border: 2px solid white;
+}
+
+.status-indicator-wrapper {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.remove-all-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #ffebee;
+  color: #FF6B6B;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-all-btn:hover {
+  background: #ffcdd2;
+}
+
+.remove-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

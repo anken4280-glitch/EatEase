@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RestaurantController extends Controller
 {
@@ -88,6 +89,102 @@ class RestaurantController extends Controller
             'crowd_status' => $restaurant->crowd_status,
             'crowd_level' => $restaurant->crowd_level,
             'occupancy_percentage' => $restaurant->occupancy_percentage
+        ]);
+    }
+
+    public function getAllRestaurants()
+    {
+        try {
+            // Get all restaurants (no is_active filter)
+            $restaurants = \App\Models\Restaurant::all(); // Add full namespace
+
+            // Transform for frontend
+            $transformedRestaurants = $restaurants->map(function ($restaurant) {
+                // Calculate occupancy percentage
+                $occupancyPercentage = 0;
+                if ($restaurant->max_capacity > 0) {
+                    $occupancyPercentage = round(($restaurant->current_occupancy / $restaurant->max_capacity) * 100);
+                }
+
+                if ($occupancyPercentage < 40) {
+                    $status = 'green';
+                    $crowdLevel = 'Low';
+                    $waitTime = 5;
+                } elseif ($occupancyPercentage < 70) {
+                    $status = 'yellow';
+                    $crowdLevel = 'Moderate';
+                    $waitTime = 15;
+                } elseif ($occupancyPercentage < 90) {
+                    $status = 'orange';
+                    $crowdLevel = 'Busy';
+                    $waitTime = 25;
+                } else { 
+                    $status = 'red';
+                    $crowdLevel = 'Very High';
+                    $waitTime = 30;
+                }
+
+                return [
+                    'id' => $restaurant->id,
+                    'name' => $restaurant->name,
+                    'cuisine' => $restaurant->cuisine_type,
+                    'address' => $restaurant->address,
+                    'phone' => $restaurant->phone,
+                    'hours' => $restaurant->hours,
+                    'max_capacity' => $restaurant->max_capacity,
+                    'current_occupancy' => $restaurant->current_occupancy,
+                    'status' => $status,
+                    'crowdLevel' => $crowdLevel,
+                    'occupancy' => $occupancyPercentage,
+                    'waitTime' => $waitTime,
+                    'isFeatured' => $restaurant->is_featured ?? false,
+                ];
+            });
+
+            return response()->json([
+                'restaurants' => $transformedRestaurants,
+                'count' => $transformedRestaurants->count()
+            ]);
+        } catch (\Exception $e) {
+            // Fix: Use Illuminate\Support\Facades\Log
+            \Illuminate\Support\Facades\Log::error('Error fetching restaurants: ' . $e->getMessage());
+
+            return response()->json([
+                'error' => 'Failed to fetch restaurants',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getRestaurantById($id)
+    {
+        $restaurant = Restaurant::with(['owner' => function ($query) {
+            $query->select('id', 'name', 'email');
+        }])->find($id);
+
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurant not found'], 404);
+        }
+
+        return response()->json([
+            'restaurant' => [
+                'id' => $restaurant->id,
+                'name' => $restaurant->name,
+                'cuisine' => $restaurant->cuisine_type,
+                'address' => $restaurant->address,
+                'phone' => $restaurant->phone,
+                'hours' => $restaurant->hours,
+                'max_capacity' => $restaurant->max_capacity,
+                'current_occupancy' => $restaurant->current_occupancy,
+                'status' => $restaurant->crowd_status,
+                'crowdLevel' => $restaurant->crowd_level,
+                'occupancy' => $restaurant->occupancy_percentage,
+                'waitTime' => $restaurant->estimated_wait_time,
+                'isFeatured' => $restaurant->is_featured ?? false,
+                'features' => $restaurant->features ?? [],
+                'created_at' => $restaurant->created_at,
+                'updated_at' => $restaurant->updated_at,
+            ]
         ]);
     }
 }

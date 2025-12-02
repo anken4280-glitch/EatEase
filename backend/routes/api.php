@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/test-db', function() {
     try {
@@ -102,4 +103,22 @@ Route::post('/debug-simple', function(Request $request) {
         'raw_post_data' => file_get_contents('php://input'),
         'server_time' => now()
     ]);
+});
+
+// PUBLIC route for browsing
+Route::get('/restaurants', [RestaurantController::class, 'getAllRestaurants']);
+
+// for single restaurant details
+Route::get('/restaurants/{id}', [RestaurantController::class, 'getRestaurantById']);
+
+// Notification
+Route::middleware('auth:sanctum')->group(function () {
+    // Bookmark routes
+    Route::post('/bookmarks/{restaurant_id}', [NotificationController::class, 'toggleBookmark']);
+    Route::get('/bookmarks', [NotificationController::class, 'getBookmarks']);
+    
+    // Notification routes
+    Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);
+    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
+    Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']);
 });

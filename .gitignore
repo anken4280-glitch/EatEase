@@ -22,18 +22,41 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
+
+# ========== LARAVEL BACKEND ==========
+# /vendor is already there ✓
 /vendor
-.env
-.env.backup
-.phpunit.result.cache
-docker-compose.override.yml
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
-/.idea
-/.vscode
+
+# Add these Laravel-specific paths:
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.backup
+backend/.env.example
+backend/storage/*.key
+backend/storage/logs/*.log
+backend/public/hot
+backend/public/storage
+backend/phpunit.result.cache
+backend/composer.lock
+backend/npm-debug.log
+backend/yarn-error.log
+
+# Laravel compiled class file
+backend/bootstrap/cache/*
+
+# Laravel IDE helper
+backend/_ide_helper.php
+backend/.phpstorm.meta.php
+
+# ========== REACT FRONTEND ==========
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# ========== GENERAL ==========
+.DS_Store
+.idea/
+.vscode/
