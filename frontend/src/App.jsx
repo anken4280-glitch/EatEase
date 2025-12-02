@@ -25,6 +25,26 @@ function App() {
     checkAuthStatus();
   }, []);
 
+  // SEE TOKENNNN
+useEffect(() => {
+  let lastToken = localStorage.getItem('auth_token');
+  
+  // Check token every second
+  const interval = setInterval(() => {
+    const currentToken = localStorage.getItem('auth_token');
+    if (lastToken !== currentToken) {
+      console.log('🔍 TOKEN CHANGED!');
+      console.log('Was:', lastToken ? 'Exists' : 'Missing');
+      console.log('Now:', currentToken ? 'Exists' : 'Missing');
+      console.log('Stack trace:', new Error().stack);
+      lastToken = currentToken;
+    }
+  }, 1000);
+  
+  return () => clearInterval(interval);
+}, []);
+
+
   // Handle successful login
   const handleLogin = (userData) => {
     setUser(userData);
