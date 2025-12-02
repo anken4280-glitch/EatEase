@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -8,11 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
 
-Route::get('/test-db', function() {
+Route::get('/test-db', function () {
     try {
         // Simple database test - try to get the database name
         $databaseName = DB::connection()->getDatabaseName();
-        
+
         return response()->json([
             'status' => 'success',
             'message' => 'Database connected successfully!',
@@ -28,7 +29,7 @@ Route::get('/test-db', function() {
 });
 
 // Simple API test
-Route::get('/test-api', function() {
+Route::get('/test-api', function () {
     return response()->json([
         'message' => '✅ API is working!',
         'timestamp' => now()
@@ -49,17 +50,17 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // for debugging 
-Route::post('/debug-save', function(Request $request) {
+Route::post('/debug-save', function (Request $request) {
     try {
         $user = Auth::user();
-        
+
         if (!$user) {
             return response()->json(['error' => 'Not authenticated'], 401);
         }
-        
+
         // Get the value directly
         $receivedValue = $request->input('current_occupancy');
-        
+
         // Create restaurant with hardcoded value first
         $restaurant = \App\Models\Restaurant::create([
             'owner_id' => $user->id,
@@ -71,7 +72,7 @@ Route::post('/debug-save', function(Request $request) {
             'max_capacity' => 100,
             'current_occupancy' => 88, // Hardcoded to test
         ]);
-        
+
         return response()->json([
             'success' => true,
             'debug_info' => [
@@ -82,7 +83,6 @@ Route::post('/debug-save', function(Request $request) {
                 'all_attributes' => $restaurant->getAttributes()
             ]
         ]);
-        
     } catch (\Exception $e) {
         return response()->json([
             'error' => $e->getMessage(),
@@ -92,10 +92,10 @@ Route::post('/debug-save', function(Request $request) {
     }
 })->middleware('auth:sanctum');
 
-Route::post('/debug-simple', function(Request $request) {
+Route::post('/debug-simple', function (Request $request) {
     // Test what's being received
     $receivedValue = $request->input('current_occupancy');
-    
+
     return response()->json([
         'success' => true,
         'received_current_occupancy' => $receivedValue,
@@ -117,7 +117,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Bookmark routes
     Route::post('/bookmarks/{restaurant_id}', [NotificationController::class, 'toggleBookmark']);
     Route::get('/bookmarks', [NotificationController::class, 'getBookmarks']);
-    
+
     // Notification routes
     Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
@@ -130,4 +130,16 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::get('/users', [AdminController::class, 'getAllUsers']);
     Route::post('/verify-restaurant/{id}', [AdminController::class, 'verifyRestaurant']);
     Route::post('/suspend-restaurant/{id}', [AdminController::class, 'suspendRestaurant']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Verification request (for owners)
+    Route::post('/restaurant/request-verification', [RestaurantController::class, 'requestVerification']);
+
+    // Admin verification management
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/verification-requests', [AdminController::class, 'getVerificationRequests']);
+        Route::post('/verify-restaurant/{id}', [AdminController::class, 'approveVerification']);
+        Route::post('/reject-verification/{id}', [AdminController::class, 'rejectVerification']);
+    });
 });

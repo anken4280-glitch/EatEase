@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -13,7 +14,7 @@ class AdminController extends Controller
     public function getAllRestaurants()
     {
         try {
-            $restaurants = Restaurant::with(['owner' => function($query) {
+            $restaurants = Restaurant::with(['owner' => function ($query) {
                 $query->select('id', 'name', 'email');
             }])->get();
 
@@ -42,7 +43,6 @@ class AdminController extends Controller
                 'restaurants' => $formattedRestaurants,
                 'count' => $formattedRestaurants->count()
             ]);
-
         } catch (\Exception $e) {
             Log::error('Admin get restaurants error: ' . $e->getMessage());
             return response()->json([
@@ -73,7 +73,6 @@ class AdminController extends Controller
                 'users' => $users,
                 'count' => $users->count()
             ]);
-
         } catch (\Exception $e) {
             Log::error('Admin get users error: ' . $e->getMessage());
             return response()->json([
@@ -88,7 +87,7 @@ class AdminController extends Controller
     {
         try {
             $restaurant = Restaurant::find($id);
-            
+
             if (!$restaurant) {
                 return response()->json([
                     'success' => false,
@@ -107,7 +106,6 @@ class AdminController extends Controller
                 'message' => 'Restaurant verified successfully',
                 'restaurant' => $restaurant
             ]);
-
         } catch (\Exception $e) {
             Log::error('Verify restaurant error: ' . $e->getMessage());
             return response()->json([
@@ -122,7 +120,7 @@ class AdminController extends Controller
     {
         try {
             $restaurant = Restaurant::find($id);
-            
+
             if (!$restaurant) {
                 return response()->json([
                     'success' => false,
@@ -140,18 +138,116 @@ class AdminController extends Controller
             ]);
 
             $action = $suspended ? 'suspended' : 'unsuspended';
-            
+
             return response()->json([
                 'success' => true,
                 'message' => "Restaurant {$action} successfully",
                 'restaurant' => $restaurant
             ]);
-
         } catch (\Exception $e) {
             Log::error('Suspend restaurant error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update restaurant status'
+            ], 500);
+        }
+    }
+
+    // Get all pending verification requests
+    public function getVerificationRequests()
+    {
+        try {
+            $requests = Restaurant::where('verification_status', 'pending')
+                ->with(['owner' => function ($query) {
+                    $query->select('id', 'name', 'email');
+                }])
+                ->orderBy('verification_requested_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'requests' => $requests,
+                'count' => $requests->count()
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error()('Get verification requests error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch verification requests'
+            ], 500);
+        }
+    }
+
+    // Approve verification
+    public function approveVerification($id)
+    {
+        try {
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            $restaurant->update([
+                'verification_status' => 'approved',
+                'is_verified' => true,
+                'verified_at' => now(),
+                'verified_by' => Auth::id(),
+                'verification_processed_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Restaurant verification approved',
+                'restaurant' => $restaurant
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error()('Approve verification error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to approve verification'
+            ], 500);
+        }
+    }
+
+    // Reject verification
+    public function rejectVerification(Request $request, $id)
+    {
+        try {
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            $request->validate([
+                'rejection_reason' => 'required|string|min:10|max:500'
+            ]);
+
+            $restaurant->update([
+                'verification_status' => 'rejected',
+                'is_verified' => false,
+                'verification_notes' => $request->rejection_reason,
+                'verification_processed_at' => now(),
+                'verified_by' => Auth::id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Verification request rejected',
+                'restaurant' => $restaurant
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error()('Reject verification error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reject verification'
             ], 500);
         }
     }

@@ -3,6 +3,7 @@ import "./AdminPanel.css";
 
 function AdminPanel({ user }) {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [verificationRequests, setVerificationRequests] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +60,56 @@ function AdminPanel({ user }) {
     }
   };
 
+  const handleApproveVerification = async (restaurantId) => {
+    const token = localStorage.getItem("auth_token");
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/admin/verify-restaurant/${restaurantId}`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert("✅ Restaurant verified successfully!");
+        fetchVerificationRequests(); // Refresh list
+        fetchAdminData(); // Refresh main data
+      }
+    } catch (error) {
+      console.error("Approve error:", error);
+      alert("❌ Failed to approve verification");
+    }
+  };
+
+  const handleRejectVerification = async (restaurantId, reason) => {
+    const token = localStorage.getItem("auth_token");
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/admin/reject-verification/${restaurantId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ rejection_reason: reason }),
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert("❌ Verification request rejected");
+        fetchVerificationRequests();
+        fetchAdminData();
+      }
+    } catch (error) {
+      console.error("Reject error:", error);
+      alert("Failed to reject verification");
+    }
+  };
+
   const handleVerifyRestaurant = async (restaurantId) => {
     const token = localStorage.getItem("auth_token");
     try {
@@ -112,6 +163,31 @@ function AdminPanel({ user }) {
       alert("❌ Failed to update restaurant status");
     }
   };
+
+  const fetchVerificationRequests = async () => {
+    const token = localStorage.getItem("auth_token");
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/admin/verification-requests",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        setVerificationRequests(data.requests || []);
+      }
+    } catch (error) {
+      console.error("Fetch verification requests error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "verifications") {
+      fetchVerificationRequests();
+    }
+  }, [activeTab]);
 
   const handleDeleteUser = async (userId) => {
     if (
@@ -170,6 +246,12 @@ function AdminPanel({ user }) {
           📊 Dashboard
         </button>
         <button
+          className={activeTab === "verifications" ? "active" : ""}
+          onClick={() => setActiveTab("verifications")}
+        >
+          ✅ Verifications ({stats.pendingVerifications || 0})
+        </button>
+        <button
           className={activeTab === "restaurants" ? "active" : ""}
           onClick={() => setActiveTab("restaurants")}
         >
@@ -181,6 +263,7 @@ function AdminPanel({ user }) {
         >
           👥 Users ({stats.totalUsers})
         </button>
+
         <button
           className="refresh-btn"
           onClick={fetchAdminData}
@@ -481,6 +564,82 @@ function AdminPanel({ user }) {
                 ))
               )}
             </div>
+          </div>
+        )}
+
+        {activeTab === "verifications" && (
+          <div className="verifications-tab">
+            <h2>✅ Verification Requests</h2>
+
+            {verificationRequests.length === 0 ? (
+              <div className="empty-state">
+                <p>No pending verification requests! 🎉</p>
+              </div>
+            ) : (
+              <div className="verification-requests-list">
+                {verificationRequests.map((request) => (
+                  <div key={request.id} className="verification-request-card">
+                    <div className="request-header">
+                      <h3>{request.name}</h3>
+                      <span className="request-date">
+                        Requested:{" "}
+                        {new Date(
+                          request.verification_requested_at
+                        ).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <div className="request-details">
+                      <p>
+                        <strong>Owner:</strong>{" "}
+                        {request.owner?.name || "Unknown"} (
+                        {request.owner?.email})
+                      </p>
+                      <p>
+                        <strong>Cuisine:</strong> {request.cuisine_type}
+                      </p>
+                      <p>
+                        <strong>Address:</strong> {request.address}
+                      </p>
+
+                      <div className="verification-text">
+                        <strong>Verification Request:</strong>
+                        <div className="text-box">
+                          {request.verification_request}
+                        </div>
+                      </div>
+
+                      <div className="request-actions">
+                        <button
+                          className="approve-btn"
+                          onClick={() => handleApproveVerification(request.id)}
+                        >
+                          ✅ Approve
+                        </button>
+                        <button
+                          className="reject-btn"
+                          onClick={() => {
+                            const reason = prompt("Enter rejection reason:");
+                            if (reason)
+                              handleRejectVerification(request.id, reason);
+                          }}
+                        >
+                          ❌ Reject
+                        </button>
+                        <button
+                          className="view-btn"
+                          onClick={() =>
+                            window.open(`/restaurant/${request.id}`, "_blank")
+                          }
+                        >
+                          👁️ View Restaurant
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -368,6 +368,122 @@
   background: #f5ef9e;
 }
 
+
+/* Verification Status Styles */
+.verification-status {
+  margin: 15px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.verification-badge {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.verification-badge.verified {
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.verification-badge.pending {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+}
+
+.verification-badge.not-verified {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  color: #6c757d;
+}
+
+.badge-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.badge-text {
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.request-verification-btn {
+  background: #4dabf7;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.request-verification-btn:hover {
+  background: #339af0;
+}
+
+.verified-date, .request-date {
+  font-size: 12px;
+  color: #666;
+  margin-left: 10px;
+}
+
+/* Verification CTA Section */
+.verification-cta {
+  background: linear-gradient(135deg, #f8f3b7 0%, #f9f5d7 100%);
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 25px;
+  border: 2px solid #f1e99a;
+}
+
+.cta-content h3 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.benefits-list {
+  margin: 15px 0;
+}
+
+.benefits-list p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.cta-button {
+  background: #51cf66;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cta-button:hover {
+  background: #40c057;
+  transform: translateY(-2px);
+}
+
+.verification-modal {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 /* Responsive for Tablet+ */
 @media (min-width: 768px) {
   .restaurant-owner-dashboard {

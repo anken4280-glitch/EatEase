@@ -17,14 +17,31 @@ class Restaurant extends Model
         'phone',
         'hours',
         'max_capacity',
-        'current_occupancy', // CRITICAL: Was missing!
+        'current_occupancy',
         'features',
-        'is_featured'
+        'is_featured',
+        // Add verification fields
+        'is_verified',
+        'verification_requested',
+        'verification_requested_at',
+        'verified_at',
+        'verified_by',
+        'is_suspended',
+        'suspended_at',
+        'suspended_reason',
+        'admin_notes'
     ];
 
     protected $casts = [
         'features' => 'array',
-        'is_featured' => 'boolean'
+        'is_featured' => 'boolean',
+        // Add verification casts
+        'is_verified' => 'boolean',
+        'verification_requested' => 'boolean',
+        'is_suspended' => 'boolean',
+        'verification_requested_at' => 'datetime',
+        'verified_at' => 'datetime',
+        'suspended_at' => 'datetime'
     ];
 
     protected static function boot()
@@ -56,6 +73,11 @@ class Restaurant extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
     
+    public function verifier()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
+    }
+    
     public function getCrowdLevelAttribute()
     {
         switch ($this->crowd_status) {
@@ -64,6 +86,28 @@ class Restaurant extends Model
             case 'orange': return 'High';
             case 'red': return 'Full';
             default: return 'Unknown';
+        }
+    }
+
+    // Add these helpful methods
+    public function isVerificationPending()
+    {
+        return $this->verification_requested && !$this->is_verified;
+    }
+    
+    public function canRequestVerification()
+    {
+        return !$this->is_verified && !$this->verification_requested;
+    }
+    
+    public function getVerificationStatusAttribute()
+    {
+        if ($this->is_verified) {
+            return 'verified';
+        } elseif ($this->verification_requested) {
+            return 'pending';
+        } else {
+            return 'not_requested';
         }
     }
 }

@@ -212,4 +212,52 @@ class RestaurantController extends Controller
             ]
         ]);
     }
+
+    public function requestVerification(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            // Check if user is restaurant owner
+            if ($user->user_type !== 'restaurant_owner') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only restaurant owners can request verification'
+                ], 403);
+            }
+
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            // Validate request
+            $request->validate([
+                'verification_request' => 'required|string|min:50|max:1000'
+            ]);
+
+            // Update restaurant verification request
+            $restaurant->update([
+                'verification_status' => 'pending',
+                'verification_request' => $request->verification_request,
+                'verification_requested_at' => now(),
+                'is_verified' => false // Ensure not verified yet
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Verification request submitted successfully',
+                'restaurant' => $restaurant
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to submit verification request'
+            ], 500);
+        }
+    }
 }

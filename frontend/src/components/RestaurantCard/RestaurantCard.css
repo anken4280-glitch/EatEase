@@ -395,3 +395,75 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #51cf66;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.verified-badge::before {
+  content: "✓";
+  margin-right: 4px;
+}
+
+/* RestaurantCard.css - Add these styles */
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 8px;
+  gap: 4px;
+  box-shadow: 0 2px 4px rgba(81, 207, 102, 0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(81, 207, 102, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 5px rgba(81, 207, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(81, 207, 102, 0);
+  }
+}
+
+.verified-badge::before {
+  content: "✓";
+  font-size: 14px;
+}
+
+/* Update restaurant card header to include badge */
+.restaurant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.restaurant-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.restaurant-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
