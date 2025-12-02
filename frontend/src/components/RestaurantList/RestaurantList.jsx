@@ -6,17 +6,21 @@ import RestaurantCard from "../RestaurantCard/RestaurantCard";
 import RestaurantDetails from "../RestaurantDetails/RestaurantDetails";
 import "./RestaurantList.css";
 
-function RestaurantList({ user }) {
+function RestaurantList({
+  user,
+  onNavigateToBookmarks,
+  onNavigateToNotifications,
+}) {
   // ========== STATE VARIABLES ==========
-  const [searchQuery, setSearchQuery] = useState("");          // Search input value
-  const [filters, setFilters] = useState({});                  // Active filters (cuisine, status, etc.)
-  const [showFilters, setShowFilters] = useState(false);       // Toggle filter panel visibility
+  const [searchQuery, setSearchQuery] = useState(""); // Search input value
+  const [filters, setFilters] = useState({}); // Active filters (cuisine, status, etc.)
+  const [showFilters, setShowFilters] = useState(false); // Toggle filter panel visibility
   const [selectedRestaurant, setSelectedRestaurant] = useState(null); // Currently selected restaurant for detail view
-  const [showMenu, setShowMenu] = useState(false);             // Toggle hamburger menu
-  const [restaurants, setRestaurants] = useState([]);          // List of restaurants from API (REPLACES hardcoded data)
-  const [loading, setLoading] = useState(true);                // Loading state for API fetch
-  const [error, setError] = useState("");                      // Error message for failed fetch
-  const menuRef = useRef(null);                                // Ref for detecting clicks outside hamburger menu
+  const [showMenu, setShowMenu] = useState(false); // Toggle hamburger menu
+  const [restaurants, setRestaurants] = useState([]); // List of restaurants from API (REPLACES hardcoded data)
+  const [loading, setLoading] = useState(true); // Loading state for API fetch
+  const [error, setError] = useState(""); // Error message for failed fetch
+  const menuRef = useRef(null); // Ref for detecting clicks outside hamburger menu
 
   // ========== USE EFFECTS ==========
   // Effect for closing hamburger menu when clicking outside
@@ -45,19 +49,19 @@ function RestaurantList({ user }) {
     try {
       setLoading(true);
       setError("");
-      
+
       const response = await fetch("http://localhost:8000/api/restaurants");
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setRestaurants(data.restaurants || []); // Set restaurants from API response
     } catch (err) {
       console.error("Failed to fetch restaurants:", err);
       setError("Failed to load restaurants. Please try again.");
-      
+
       // Fallback to sample data if API fails (for development/demo)
       setRestaurants([
         {
@@ -116,14 +120,16 @@ function RestaurantList({ user }) {
   // ========== MENU HANDLERS ==========
   const handleBookmarks = () => {
     setShowMenu(false);
-    console.log("Navigate to Bookmarks");
-    // TODO: Implement bookmark navigation
+    if (onNavigateToBookmarks) {
+      onNavigateToBookmarks();
+    }
   };
 
   const handleNotifications = () => {
     setShowMenu(false);
-    console.log("Navigate to Notifications");
-    // TODO: Implement notification navigation
+    if (onNavigateToNotifications) {
+      onNavigateToNotifications();
+    }
   };
 
   const handleSettings = () => {
@@ -160,7 +166,7 @@ function RestaurantList({ user }) {
 
         {/* Search Bar */}
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-        
+
         {/* Filters Toggle */}
         <Filters
           filters={filters}
@@ -218,7 +224,8 @@ function RestaurantList({ user }) {
         />
       ) : (
         // LIST VIEW - When no restaurant is selected AND not loading AND no error
-        !loading && !error && (
+        !loading &&
+        !error && (
           <>
             {/* FEATURED RESTAURANTS CAROUSEL */}
             <FeatureCarousel restaurants={featuredRestaurants} />
@@ -232,7 +239,9 @@ function RestaurantList({ user }) {
               {restaurants.length === 0 ? (
                 <div className="empty-state">
                   <p>No restaurants available yet.</p>
-                  <p>Restaurant owners can add their restaurants to appear here.</p>
+                  <p>
+                    Restaurant owners can add their restaurants to appear here.
+                  </p>
                 </div>
               ) : (
                 // RESTAURANT CARDS GRID
