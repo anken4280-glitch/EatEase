@@ -26,8 +26,15 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'user' => $user,
-            'token' => $user->createToken('eatease-token')->plainTextToken
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_type' => $user->user_type, // ← MUST INCLUDE THIS!
+                'is_admin' => $user->is_admin,
+                'created_at' => $user->created_at,
+            ],
+            'token' => $user->createToken('eatease-token')->plainTextToken,
         ]);
     }
 
@@ -49,7 +56,13 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'user_type' => $user->user_type, // ← INCLUDED
+                'is_admin' => $user->is_admin,
+            ],
             'token' => $user->createToken('eatease-token')->plainTextToken
         ]);
     }

@@ -5,13 +5,14 @@ import RestaurantList from "./components/RestaurantList/RestaurantList";
 import RestaurantOwnerDashboard from "./components/RestaurantOwnerDashboard/RestaurantOwnerDashboard";
 import BookmarksPage from "./components/BookmarksPage/BookmarksPage";
 import NotificationsPage from "./components/NotificationsPage/NotificationsPage";
+import AdminPanel from './components/AdminPanel/AdminPanel';
 import "./globals.css";
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isLogin, setIsLogin] = useState(true); // ADD THIS STATE
-  const [currentPage, setCurrentPage] = useState("restaurantList"); // ADD THIS LINE
+  const [isLogin, setIsLogin] = useState(true);
+  const [currentPage, setCurrentPage] = useState("restaurantList");
 
   // Check if user is already logged in on app start
   useEffect(() => {
@@ -28,11 +29,10 @@ function App() {
     checkAuthStatus();
   }, []);
 
-  // SEE TOKENNNN
+  // DEBUG: Monitor token changes
   useEffect(() => {
     let lastToken = localStorage.getItem("auth_token");
 
-    // Check token every second
     const interval = setInterval(() => {
       const currentToken = localStorage.getItem("auth_token");
       if (lastToken !== currentToken) {
@@ -49,17 +49,27 @@ function App() {
 
   // Handle successful login
   const handleLogin = (userData) => {
+    console.log("✅ Login successful:", {
+      name: userData.name,
+      user_type: userData.user_type,
+      is_admin: userData.is_admin
+    });
     setUser(userData);
-    setCurrentPage("restaurantList"); // ADD THIS
+    setCurrentPage("restaurantList");
   };
 
   // Handle successful signup
   const handleSignup = (userData) => {
+    console.log("✅ Signup successful:", {
+      name: userData.name,
+      user_type: userData.user_type,
+      is_admin: userData.is_admin
+    });
     setUser(userData);
-    setCurrentPage("restaurantList"); // ADD THIS
+    setCurrentPage("restaurantList");
   };
 
-  // Add these navigation functions after the handlers above
+  // Navigation functions
   const handleNavigateToBookmarks = () => {
     setCurrentPage("bookmarks");
   };
@@ -74,34 +84,55 @@ function App() {
 
   // Show loading while checking authentication
   if (loading) {
-    return (
-      <div className="app">
-        <p>Loading...</p>
-      </div>
-    );
+    return <div className="app"><p>Loading...</p></div>;
   }
 
-  // Role-based routing with page navigation
+  // NOT LOGGED IN - Show Login/Signup
   if (!user) {
     return (
       <div className="app">
         {isLogin ? (
-          <Login
-            onLogin={handleLogin}
-            onSwitchToSignup={() => setIsLogin(false)}
-          />
+          <Login onLogin={handleLogin} onSwitchToSignup={() => setIsLogin(false)} />
         ) : (
-          <Signup
-            onSignup={handleSignup}
-            onSwitchToLogin={() => setIsLogin(true)}
-          />
+          <Signup onSignup={handleSignup} onSwitchToLogin={() => setIsLogin(true)} />
         )}
       </div>
     );
   }
 
-  // Diner navigation flow
+  // LOGGED IN - Show debug info
+  console.log("🎯 APP ROUTING WITH USER:", {
+    id: user.id,
+    name: user.name,
+    user_type: user.user_type,
+    is_admin: user.is_admin,
+    currentPage: currentPage
+  });
+
+  // 1. ADMIN USERS - Go to AdminPanel
+  if (user.is_admin === true || user.is_admin === 1) {
+    console.log("🛡️ Routing: ADMIN → AdminPanel");
+    return (
+      <div className="app">
+        <AdminPanel user={user} />
+      </div>
+    );
+  }
+
+  // 2. RESTAURANT OWNERS - Go to RestaurantOwnerDashboard
+  if (user.user_type === "restaurant_owner") {
+    console.log("🏪 Routing: RESTAURANT OWNER → RestaurantOwnerDashboard");
+    return (
+      <div className="app">
+        <RestaurantOwnerDashboard user={user} />
+      </div>
+    );
+  }
+
+  // 3. DINERS - Show navigation with pages
   if (user.user_type === "diner") {
+    console.log("🍽️ Routing: DINER → " + currentPage);
+    
     switch (currentPage) {
       case "bookmarks":
         return (
@@ -130,29 +161,15 @@ function App() {
     }
   }
 
-  // Role-based routing with auth switching:
-  // - No user → Show Login OR Signup based on isLogin state
-  // - User is diner → Show RestaurantList
-  // - User is restaurant_owner → Show RestaurantOwnerDashboard
+  // 4. FALLBACK - If user_type is unknown, show RestaurantList
+  console.log("⚠️ Unknown user_type, defaulting to RestaurantList:", user.user_type);
   return (
     <div className="app">
-      {!user ? (
-        isLogin ? (
-          <Login
-            onLogin={handleLogin}
-            onSwitchToSignup={() => setIsLogin(false)}
-          />
-        ) : (
-          <Signup
-            onSignup={handleSignup}
-            onSwitchToLogin={() => setIsLogin(true)}
-          />
-        )
-      ) : user.user_type === "diner" ? (
-        <RestaurantList user={user} />
-      ) : (
-        <RestaurantOwnerDashboard user={user} />
-      )}
+      <RestaurantList
+        user={user}
+        onNavigateToBookmarks={handleNavigateToBookmarks}
+        onNavigateToNotifications={handleNavigateToNotifications}
+      />
     </div>
   );
 }

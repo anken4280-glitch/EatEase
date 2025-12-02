@@ -1,0 +1,260 @@
+.admin-panel {
+  padding: 1rem;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.admin-header {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.admin-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.admin-header p {
+  color: #666;
+  margin: 0.5rem 0 0 0;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.admin-tabs button {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #e1e1e1;
+  background: white;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.admin-tabs button:hover {
+  background: #f8f8f8;
+  transform: translateY(-1px);
+}
+
+.admin-tabs button.active {
+  background: #F8F3B7;
+  border-color: #F8F3B7;
+  color: #333;
+}
+
+.admin-content {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Dashboard Stats */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e1e1e1;
+}
+
+.stat-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* Verification Cards */
+.verification-card {
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.restaurant-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.restaurant-info p {
+  margin: 0.25rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.verification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 120px;
+}
+
+.verify-btn, .view-btn, .suspend-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.verify-btn {
+  background: #51CF66;
+  color: white;
+}
+
+.verify-btn:hover {
+  background: #40c057;
+}
+
+.view-btn {
+  background: #f8f8f8;
+  color: #333;
+  border: 1px solid #e1e1e1;
+}
+
+.suspend-btn {
+  background: #FF6B6B;
+  color: white;
+}
+
+.suspend-btn:hover {
+  background: #ff5252;
+}
+
+/* Admin Restaurant Cards */
+.admin-restaurant-card {
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.restaurant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.status-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge.verified {
+  background: #51CF66;
+  color: white;
+}
+
+.badge.suspended {
+  background: #FF6B6B;
+  color: white;
+}
+
+.badge.featured {
+  background: #FF922B;
+  color: white;
+}
+
+.restaurant-details p {
+  margin: 0.25rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.small-btn {
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.unsuspend-btn {
+  background: #51CF66;
+  color: white;
+}
+
+.delete-btn {
+  background: #ffebee;
+  color: #FF6B6B;
+}
+
+/* Users Tab */
+.admin-user-card {
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-user-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.admin-user-card p {
+  margin: 0.25rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Loading and Empty States */
+.loading, .empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+@media (min-width: 768px) {
+  .admin-panel {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}

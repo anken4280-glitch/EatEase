@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/test-db', function() {
     try {
@@ -121,4 +122,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
     Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']);
+});
+
+// Admin routes
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/restaurants', [AdminController::class, 'getAllRestaurants']);
+    Route::get('/users', [AdminController::class, 'getAllUsers']);
+    Route::post('/verify-restaurant/{id}', [AdminController::class, 'verifyRestaurant']);
+    Route::post('/suspend-restaurant/{id}', [AdminController::class, 'suspendRestaurant']);
 });

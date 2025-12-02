@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class RestaurantController extends Controller
 {
     // Get restaurant for current owner
+    // Get restaurant for current owner - FIXED VERSION
     public function getMyRestaurant()
     {
         $user = Auth::user();
@@ -18,15 +19,39 @@ class RestaurantController extends Controller
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
+        // Check if user is a restaurant owner
+        if ($user->user_type !== 'restaurant_owner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not a restaurant owner',
+                'user_type' => $user->user_type
+            ], 403);
+        }
+
         $restaurant = Restaurant::where('owner_id', $user->id)->first();
 
         if (!$restaurant) {
-            return response()->json(['message' => 'No restaurant found'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'No restaurant found. Please create one.',
+                'needs_setup' => true
+            ], 404);
         }
 
+        // Calculate crowd status based on your schema
+        $occupancyPercentage = 0;
+        if ($restaurant->max_capacity > 0) {
+            $occupancyPercentage = round(($restaurant->current_occupancy / $restaurant->max_capacity) * 100);
+        }
+
+        // Use your existing crowd_status logic
+        $status = $restaurant->crowd_status; // This should already be calculated
+
         return response()->json([
+            'success' => true,
             'restaurant' => $restaurant,
-            'crowd_level' => $restaurant->crowd_level
+            'crowd_status' => $status,
+            'occupancy_percentage' => $occupancyPercentage
         ]);
     }
 
@@ -118,7 +143,7 @@ class RestaurantController extends Controller
                     $status = 'orange';
                     $crowdLevel = 'Busy';
                     $waitTime = 25;
-                } else { 
+                } else {
                     $status = 'red';
                     $crowdLevel = 'Very High';
                     $waitTime = 30;

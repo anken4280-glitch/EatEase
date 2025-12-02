@@ -232,9 +232,6 @@ function RestaurantList({
 
             {/* MAIN RESTAURANT LIST */}
             <div className="restaurants-container">
-              <h2>Nearby Restaurants</h2>
-              <p>Found {restaurants.length} restaurants</p>
-
               {/* EMPTY STATE - No restaurants in database */}
               {restaurants.length === 0 ? (
                 <div className="empty-state">
