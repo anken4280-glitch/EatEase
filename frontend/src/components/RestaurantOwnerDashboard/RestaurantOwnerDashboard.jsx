@@ -113,11 +113,6 @@ const handleSaveRestaurant = async (e) => {
 
   return (
     <div className="restaurant-owner-dashboard">
-      <header className="owner-header">
-        <h1>🏪 Your Restaurant Dashboard</h1>
-        <p>Welcome, {user.name}!</p>
-      </header>
-
       {!restaurant ? (
         // No restaurant setup yet
         <div className="setup-prompt">
@@ -153,7 +148,7 @@ const handleSaveRestaurant = async (e) => {
                   setIsEditing(true);
                 }}
               >
-                ✏️ Edit
+                Edit
               </button>
             </div>
 
@@ -198,10 +193,6 @@ const handleSaveRestaurant = async (e) => {
                   {restaurant.occupancy_percentage}%
                 </span>
                 <span className="stat-label">Occupancy Rate</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-number">{restaurant.crowd_level}</span>
-                <span className="stat-label">Crowd Level</span>
               </div>
             </div>
           </div>
