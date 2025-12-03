@@ -427,11 +427,6 @@
   background: #339af0;
 }
 
-.verified-date, .request-date {
-  font-size: 12px;
-  color: #666;
-  margin-left: 10px;
-}
 
 /* Verification CTA Section */
 .verification-cta {

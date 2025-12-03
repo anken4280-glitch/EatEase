@@ -83,9 +83,21 @@ function AdminPanel({ user }) {
     }
   };
 
-  const handleRejectVerification = async (restaurantId, reason) => {
+  const handleRejectVerification = async (restaurantId) => {
     const token = localStorage.getItem("auth_token");
+
+    // Simple confirmation
+    if (
+      !window.confirm(
+        "Reject this verification request?\nThe restaurant owner will be notified."
+      )
+    ) {
+      return;
+    }
+
     try {
+      console.log("Rejecting verification for:", restaurantId);
+
       const response = await fetch(
         `http://localhost:8000/api/admin/reject-verification/${restaurantId}`,
         {
@@ -93,20 +105,27 @@ function AdminPanel({ user }) {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            Accept: "application/json",
           },
-          body: JSON.stringify({ rejection_reason: reason }),
+          body: JSON.stringify({
+            rejection_reason: "Verification request rejected after review.",
+          }),
         }
       );
 
       const data = await response.json();
+      console.log("Reject response:", data);
+
       if (data.success) {
-        alert("❌ Verification request rejected");
+        alert("❌ Verification request rejected.");
         fetchVerificationRequests();
         fetchAdminData();
+      } else {
+        alert(`❌ Failed: ${data.message}`);
       }
     } catch (error) {
       console.error("Reject error:", error);
-      alert("Failed to reject verification");
+      alert(`❌ Error: ${error.message}`);
     }
   };
 
@@ -231,11 +250,7 @@ function AdminPanel({ user }) {
   return (
     <div className="admin-panel">
       <div className="admin-header">
-        <h1>👮‍♂️ EatEase Admin Panel</h1>
-        <p>
-          Welcome, {user.name} ({user.email})
-        </p>
-        <small>Last updated: {new Date().toLocaleTimeString()}</small>
+        <h1>EatEase</h1>
       </div>
 
       <div className="admin-tabs">
@@ -243,25 +258,25 @@ function AdminPanel({ user }) {
           className={activeTab === "dashboard" ? "active" : ""}
           onClick={() => setActiveTab("dashboard")}
         >
-          📊 Dashboard
+          Dashboard
         </button>
         <button
           className={activeTab === "verifications" ? "active" : ""}
           onClick={() => setActiveTab("verifications")}
         >
-          ✅ Verifications ({stats.pendingVerifications || 0})
+          Verifications
         </button>
         <button
           className={activeTab === "restaurants" ? "active" : ""}
           onClick={() => setActiveTab("restaurants")}
         >
-          🏪 Restaurants ({stats.totalRestaurants})
+          Restaurants
         </button>
         <button
           className={activeTab === "users" ? "active" : ""}
           onClick={() => setActiveTab("users")}
         >
-          👥 Users ({stats.totalUsers})
+          Users
         </button>
 
         <button
@@ -269,18 +284,18 @@ function AdminPanel({ user }) {
           onClick={fetchAdminData}
           title="Refresh data"
         >
-          🔄 Refresh
+          Refresh
         </button>
       </div>
 
       <div className="admin-content">
         {activeTab === "dashboard" && (
           <div className="dashboard-view">
-            <h2>📈 System Overview</h2>
+            <h2>Overview</h2>
 
             <div className="stats-grid">
               <div className="stat-card">
-                <div className="stat-icon">🏪</div>
+                <div className="stat-icon"></div>
                 <div className="stat-info">
                   <h3>Total Restaurants</h3>
                   <p className="stat-number">{stats.totalRestaurants}</p>
@@ -288,7 +303,7 @@ function AdminPanel({ user }) {
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon">✅</div>
+                <div className="stat-icon"></div>
                 <div className="stat-info">
                   <h3>Pending Verifications</h3>
                   <p className="stat-number">{stats.pendingVerifications}</p>
@@ -304,7 +319,7 @@ function AdminPanel({ user }) {
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon">👥</div>
+                <div className="stat-icon"></div>
                 <div className="stat-info">
                   <h3>Total Users</h3>
                   <p className="stat-number">{stats.totalUsers}</p>
@@ -312,7 +327,7 @@ function AdminPanel({ user }) {
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon">⚠️</div>
+                <div className="stat-icon"></div>
                 <div className="stat-info">
                   <h3>Suspended</h3>
                   <p className="stat-number">{stats.suspended}</p>
@@ -321,13 +336,13 @@ function AdminPanel({ user }) {
             </div>
 
             <div className="quick-actions">
-              <h3>⚡ Quick Actions</h3>
-              <div className="action-buttons">
+              <h3>Quick Actions</h3>
+              <div className="quick-action-buttons">
                 <button onClick={() => setActiveTab("restaurants")}>
                   Manage Restaurants
                 </button>
                 <button onClick={() => setActiveTab("users")}>
-                  Manage Users
+                  View Users
                 </button>
                 <button
                   onClick={() =>
@@ -344,15 +359,9 @@ function AdminPanel({ user }) {
         {activeTab === "restaurants" && (
           <div className="restaurants-view">
             <div className="view-header">
-              <h2>🏪 Restaurant Management</h2>
+              <h2>Restaurant Management</h2>
               <div className="filters">
-                <button
-                  className={!stats.pendingVerifications ? "disabled" : ""}
-                >
-                  Pending Verification ({stats.pendingVerifications})
-                </button>
-                <button>All Restaurants</button>
-                <button>Suspended ({stats.suspended})</button>
+                <button>Suspended</button>
               </div>
             </div>
 
@@ -364,70 +373,88 @@ function AdminPanel({ user }) {
               ) : (
                 restaurants.map((restaurant) => (
                   <div key={restaurant.id} className="admin-restaurant-card">
-                    <div className="restaurant-header">
-                      <div>
-                        <h3>{restaurant.name}</h3>
-                        <p className="restaurant-meta">
-                          {restaurant.cuisine_type} • {restaurant.address}
-                        </p>
-                      </div>
-                      <div className="status-badges">
-                        {restaurant.is_verified ? (
-                          <span
-                            className="badge verified"
-                            title="Verified restaurant"
-                          >
-                            ✅ Verified
-                          </span>
-                        ) : (
-                          <span className="badge pending" title="Not verified">
-                            ⏳ Pending
-                          </span>
-                        )}
-                        {restaurant.is_suspended && (
-                          <span className="badge suspended" title="Suspended">
-                            ⚠️ Suspended
-                          </span>
-                        )}
-                        {restaurant.is_featured && (
-                          <span className="badge featured" title="Featured">
-                            ✨ Featured
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    {/* RESTAURANT NAME */}
+                    <h3 className="restaurant-title">{restaurant.name}</h3>
 
-                    <div className="restaurant-details">
-                      <div className="detail-row">
-                        <span>
-                          <strong>Owner:</strong> {restaurant.owner_name} (ID:{" "}
-                          {restaurant.owner_id})
+                    {/* RESTAURANT INFO */}
+                    <div className="restaurant-info-grid">
+                      <div className="info-item">
+                        <span className="info-label">Owner:</span>
+                        <span className="info-value">
+                          {restaurant.owner_name}
                         </span>
-                        <span>
-                          <strong>Capacity:</strong>{" "}
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">Address:</span>
+                        <span className="info-value">{restaurant.address}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">Cuisine:</span>
+                        <span className="info-value">
+                          {restaurant.cuisine_type}
+                        </span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">Phone:</span>
+                        <span className="info-value">{restaurant.phone}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="info-label">Capacity:</span>
+                        <span className="info-value">
                           {restaurant.current_occupancy}/
                           {restaurant.max_capacity}
+                          <span className="occupancy-percent">
+                            (
+                            {Math.round(
+                              (restaurant.current_occupancy /
+                                restaurant.max_capacity) *
+                                100
+                            )}
+                            %)
+                          </span>
                         </span>
                       </div>
-                      <div className="detail-row">
-                        <span>
-                          <strong>Status:</strong> {restaurant.crowd_status}
-                        </span>
-                        <span>
-                          <strong>Created:</strong>{" "}
-                          {new Date(restaurant.created_at).toLocaleDateString()}
+                      <div className="info-item">
+                        <span className="info-label">Status:</span>
+                        <span
+                          className={`status-badge ${restaurant.crowd_status}`}
+                        >
+                          {restaurant.crowd_status}
                         </span>
                       </div>
                     </div>
 
-                    <div className="admin-actions">
+                    {/* VERIFICATION STATUS */}
+                    <div className="verification-status-row">
+                      {restaurant.is_verified ? (
+                        <span className="verified-badge">✅ Verified</span>
+                      ) : restaurant.verification_requested ? (
+                        <span className="pending-badge">
+                          ⏳ Verification Requested
+                        </span>
+                      ) : (
+                        <span className="not-verified-badge">
+                          ⚠️ Not Verified
+                        </span>
+                      )}
+
+                      {restaurant.is_featured && (
+                        <span className="featured-badge">✨ Featured</span>
+                      )}
+
+                      {restaurant.is_suspended && (
+                        <span className="suspended-badge">🚫 Suspended</span>
+                      )}
+                    </div>
+
+                    {/* ADMIN ACTIONS */}
+                    <div className="admin-action-buttons">
                       {!restaurant.is_verified && (
                         <button
                           className="action-btn verify-btn"
                           onClick={() => handleVerifyRestaurant(restaurant.id)}
-                          title="Verify this restaurant"
                         >
-                          ✅ Verify
+                          Verify
                         </button>
                       )}
 
@@ -438,42 +465,19 @@ function AdminPanel({ user }) {
                             : "suspend-btn"
                         }`}
                         onClick={() => handleSuspendRestaurant(restaurant.id)}
-                        title={
-                          restaurant.is_suspended
-                            ? "Unsuspend restaurant"
-                            : "Suspend restaurant"
-                        }
                       >
                         {restaurant.is_suspended
-                          ? "🔄 Unsuspend"
-                          : "⚠️ Suspend"}
-                      </button>
-
-                      <button
-                        className="action-btn delete-btn"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              `Permanently delete "${restaurant.name}"?`
-                            )
-                          ) {
-                            // Implement delete
-                            alert("Delete endpoint not implemented yet");
-                          }
-                        }}
-                        title="Delete restaurant"
-                      >
-                        🗑️ Delete
+                          ? "Unsuspend"
+                          : "Suspend"}
                       </button>
 
                       <button
                         className="action-btn view-btn"
                         onClick={() =>
-                          alert("View details - to be implemented")
+                          window.open(`/restaurant/${restaurant.id}`, "_blank")
                         }
-                        title="View restaurant details"
                       >
-                        👁️ View
+                        View
                       </button>
                     </div>
                   </div>
@@ -485,8 +489,7 @@ function AdminPanel({ user }) {
 
         {activeTab === "users" && (
           <div className="users-view">
-            <h2>👥 User Management</h2>
-
+            <h2>User Management</h2>
             <div className="users-list">
               {users.length === 0 ? (
                 <div className="empty-state">
@@ -518,47 +521,6 @@ function AdminPanel({ user }) {
                         <strong>Joined:</strong>{" "}
                         {new Date(user.created_at).toLocaleDateString()}
                       </p>
-                      <p>
-                        <strong>Last Active:</strong>{" "}
-                        {new Date(user.updated_at).toLocaleDateString()}
-                      </p>
-                    </div>
-
-                    <div className="user-actions">
-                      {!user.is_admin && (
-                        <>
-                          <button
-                            className="small-btn"
-                            onClick={() => handleDeleteUser(user.id)}
-                            title="Delete user"
-                          >
-                            Delete
-                          </button>
-                          <button
-                            className="small-btn"
-                            onClick={() => {
-                              if (
-                                window.confirm(`Make ${user.name} an admin?`)
-                              ) {
-                                alert(
-                                  "Make admin endpoint not implemented yet"
-                                );
-                              }
-                            }}
-                            title="Make admin"
-                          >
-                            Make Admin
-                          </button>
-                        </>
-                      )}
-                      <button
-                        className="small-btn"
-                        onClick={() =>
-                          alert("View user details - to be implemented")
-                        }
-                      >
-                        View
-                      </button>
                     </div>
                   </div>
                 ))
@@ -569,72 +531,71 @@ function AdminPanel({ user }) {
 
         {activeTab === "verifications" && (
           <div className="verifications-tab">
-            <h2>✅ Verification Requests</h2>
+            <div className="tab-header">
+              <h2>Verification Requests</h2>
+              <div className="header-actions">
+                <button
+                  onClick={fetchVerificationRequests}
+                  className="refresh-small"
+                >
+                  Refresh
+                </button>
+              </div>
+            </div>
 
             {verificationRequests.length === 0 ? (
-              <div className="empty-state">
-                <p>No pending verification requests! 🎉</p>
+              <div className="empty-state-card">
+                <div className="empty-icon">🎉</div>
+                <h3>No Pending Requests</h3>
+                <p>All verification requests have been processed.</p>
+                <button onClick={fetchVerificationRequests}>Check Again</button>
               </div>
             ) : (
-              <div className="verification-requests-list">
+              <div className="verification-grid">
+                {/* FIX 3 CODE STARTS HERE */}
                 {verificationRequests.map((request) => (
-                  <div key={request.id} className="verification-request-card">
-                    <div className="request-header">
-                      <h3>{request.name}</h3>
-                      <span className="request-date">
-                        Requested:{" "}
-                        {new Date(
-                          request.verification_requested_at
-                        ).toLocaleDateString()}
+                  <div key={request.id} className="verification-card">
+                    {/* 1. RESTAURANT NAME (BIG) */}
+                    <h2 className="restaurant-title">{request.name}</h2>
+
+                    {/* 2. OWNER NAME */}
+                    <div className="owner-section">
+                      <span className="owner-name">
+                        {request.owner?.name || "Unknown Owner"}
                       </span>
                     </div>
 
-                    <div className="request-details">
-                      <p>
-                        <strong>Owner:</strong>{" "}
-                        {request.owner?.name || "Unknown"} (
-                        {request.owner?.email})
-                      </p>
-                      <p>
-                        <strong>Cuisine:</strong> {request.cuisine_type}
-                      </p>
-                      <p>
-                        <strong>Address:</strong> {request.address}
-                      </p>
+                    {/* 3. VIEW RESTAURANT BUTTON */}
+                    <button
+                      className="view-btn"
+                      onClick={() =>
+                        window.open(`/restaurant/${request.id}`, "_blank")
+                      }
+                    >
+                      View Restaurant
+                    </button>
 
-                      <div className="verification-text">
-                        <strong>Verification Request:</strong>
-                        <div className="text-box">
-                          {request.verification_request}
-                        </div>
+                    {/* 4. VERIFICATION REASON BOX */}
+                    <div className="verification-reason-section">
+                      <div className="reason-text-box">
+                        {request.admin_notes || "No details provided by owner"}
                       </div>
+                    </div>
 
-                      <div className="request-actions">
-                        <button
-                          className="approve-btn"
-                          onClick={() => handleApproveVerification(request.id)}
-                        >
-                          ✅ Approve
-                        </button>
-                        <button
-                          className="reject-btn"
-                          onClick={() => {
-                            const reason = prompt("Enter rejection reason:");
-                            if (reason)
-                              handleRejectVerification(request.id, reason);
-                          }}
-                        >
-                          ❌ Reject
-                        </button>
-                        <button
-                          className="view-btn"
-                          onClick={() =>
-                            window.open(`/restaurant/${request.id}`, "_blank")
-                          }
-                        >
-                          👁️ View Restaurant
-                        </button>
-                      </div>
+                    {/* 5. DECISION BUTTONS */}
+                    <div className="decision-buttons">
+                      <button
+                        className="reject-btn"
+                        onClick={() => handleRejectVerification(request.id)}
+                      >
+                        Reject
+                      </button>
+                      <button
+                        className="approve-btn"
+                        onClick={() => handleApproveVerification(request.id)}
+                      >
+                        Approve
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -645,7 +606,6 @@ function AdminPanel({ user }) {
       </div>
 
       <div className="admin-footer">
-        <p>EatEase Admin Panel • v1.0 • {new Date().toLocaleDateString()}</p>
         <button
           className="logout-btn"
           onClick={() => {
@@ -653,7 +613,7 @@ function AdminPanel({ user }) {
             window.location.reload();
           }}
         >
-          🚪 Logout
+          Logout
         </button>
       </div>
     </div>

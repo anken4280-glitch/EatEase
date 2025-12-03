@@ -161,11 +161,6 @@ function RestaurantOwnerDashboard({ user }) {
                 <div className="verification-badge pending">
                   <span className="badge-icon">⏳</span>
                   <span className="badge-text">Verification Pending Review</span>
-                  {restaurant.verification_requested_at && (
-                    <span className="request-date">
-                      Requested: {new Date(restaurant.verification_requested_at).toLocaleDateString()}
-                    </span>
-                  )}
                 </div>
               ) : (
                 <div className="verification-badge not-verified">

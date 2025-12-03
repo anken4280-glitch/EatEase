@@ -5,10 +5,10 @@
 }
 
 .admin-header {
-  background: white;
+  background: #F8F3B7;
   padding: 1.5rem;
   border-radius: 12px;
-  margin-bottom: 1.5rem;
+  margin-bottom: .5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -26,7 +26,7 @@
 .admin-tabs {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: .5rem;
   overflow-x: auto;
   padding-bottom: 0.5rem;
 }
@@ -75,6 +75,10 @@
   border: 1px solid #e1e1e1;
 }
 
+.quick-actions {
+    margin-top: 7px;
+}
+
 .stat-card h3 {
   margin: 0 0 0.5rem 0;
   color: #666;
@@ -105,6 +109,42 @@
   margin: 0 0 0.5rem 0;
   color: #333;
 }
+
+.restaurant-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  text-align: left;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+.occupancy-percent {
+  color: #666;
+  font-size: 13px;
+  margin-left: 5px;
+}
+
 
 .restaurant-info p {
   margin: 0.25rem 0;
@@ -138,13 +178,13 @@
 }
 
 .view-btn {
-  background: #f8f8f8;
+  background: #F8F3B7;
   color: #333;
   border: 1px solid #e1e1e1;
 }
 
 .suspend-btn {
-  background: #FF6B6B;
+  background: #F8F3B7;
   color: white;
 }
 
@@ -154,10 +194,17 @@
 
 /* Admin Restaurant Cards */
 .admin-restaurant-card {
-  border: 1px solid #e1e1e1;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+  background: white;
+  border-radius: 16px;
+  padding: 25px 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 
 .restaurant-header {
@@ -172,6 +219,38 @@
   gap: 0.5rem;
 }
 
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.green {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-badge.yellow {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-badge.orange {
+  background: #ffe8cc;
+  color: #e8590c;
+  border: 1px solid #ffd8a8;
+}
+
+.status-badge.red {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
 .badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
@@ -179,9 +258,457 @@
   font-weight: 600;
 }
 
-.badge.verified {
-  background: #51CF66;
+.verified-badge {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
   color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pending-badge {
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.not-verified-badge {
+  background: #f8f9fa;
+  color: #666;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.featured-badge {
+  background: linear-gradient(135deg, #9775fa 0%, #845ef7 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.suspended-badge {
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== QUICK ACTIONS SECTION ===== */
+/* Container */
+.quick-actions {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Title */
+.quick-actions h3 {
+  margin: 0 0 18px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Button Container - UNIQUE CLASS */
+.quick-actions .quick-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Buttons - Target only buttons inside quick-actions */
+.quick-actions .quick-action-buttons button {
+  background: #F8F3B7;
+  color: white;
+  border: none;
+  padding: 16px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.quick-actions .quick-action-buttons button:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* First button - specific color */
+.quick-actions .quick-action-buttons button:first-child {
+  background: #F8F3B7;
+  color: black;
+}
+
+/* Second button - specific color */
+.quick-actions .quick-action-buttons button:nth-child(2) {
+  background: #F8F3B7;
+  color: black;
+}
+
+/* Third button - specific color */
+.quick-actions .quick-action-buttons button:last-child {
+  background: #F8F3B7;
+  color: black;
+}
+
+/* Tablet - side by side */
+@media (min-width: 768px) {
+  .quick-actions .quick-action-buttons {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 15px;
+  }
+  
+  .quick-actions .quick-action-buttons button {
+    flex: 1;
+    min-width: 0; /* Allow flexible width */
+    padding: 18px 15px;
+    font-size: 15px;
+  }
+}
+
+/* Verification Tab Header */
+.verifications-tab .tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.verifications-tab .tab-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Small Refresh Button */
+.verifications-tab .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verifications-tab .refresh-small {
+  background: #F8F3B7;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  transition: all 0.2s;
+}
+
+.verifications-tab .refresh-small:active {
+  background: #F8F3B7;
+  transform: scale(0.95);
+}
+
+/* Restaurant Management Header */
+.restaurants-view .view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.restaurants-view .view-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.users-view h2 {
+    margin-bottom: 7px;
+}
+/* Filters Container */
+.restaurants-view .filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Suspended Button - Same style as refresh */
+.restaurants-view .filters button {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  transition: all 0.2s;
+}
+
+/* Specific styling for suspended count */
+.restaurants-view .filters button {
+  background: #F8F3B7;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.restaurants-view .filters button:active {
+  background: #F8F3B7;
+  transform: scale(0.95);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .restaurants-view .filters button {
+    padding: 8px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Desktop hover */
+@media (min-width: 1024px) {
+  .restaurants-view .filters button:hover {
+    background: #F8F3B7;
+    border-color: #ffd43b;
+    transform: translateY(-1px);
+  }
+  
+  .restaurants-view .filters button:hover:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Add refresh icon via CSS */
+.verifications-tab .refresh-small::before {
+  content: "↻";
+  font-size: 16px;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .verifications-tab .refresh-small {
+    padding: 8px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Desktop hover */
+@media (min-width: 1024px) {
+  .verifications-tab .refresh-small:hover {
+    background: #F8F3B7;
+    border-color: #ccc;
+    transform: translateY(-1px);
+  }
+  
+  .verifications-tab .refresh-small:hover:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Desktop hover effects */
+@media (min-width: 1024px) {
+  .quick-actions .quick-action-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .quick-actions .quick-action-buttons button:hover:active {
+    transform: scale(0.98);
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .quick-actions {
+    padding: 15px;
+  }
+  
+  .quick-actions .quick-action-buttons button {
+    padding: 14px 16px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+}
+/* Admin Action Buttons */
+.admin-action-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.admin-action-buttons .action-btn {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.admin-action-buttons .action-btn:active {
+  transform: scale(0.97);
+}
+
+.verify-btn {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+  color: white;
+}
+
+.suspend-btn {
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+  color: #333;
+}
+
+.unsuspend-btn {
+  background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
+  color: white;
+}
+
+.view-btn {
+  background: linear-gradient(135deg, #9775fa 0%, #845ef7 100%);
+  color: white;
+}
+
+/* Admin Footer */
+.admin-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+/* Small Logout Button */
+.admin-footer .logout-btn {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  transition: all 0.2s;
+}
+
+.admin-footer .logout-btn:active {
+  background: #e9ecef;
+  transform: scale(0.95);
+}
+
+/* Add logout icon via CSS */
+.admin-footer .logout-btn::before {
+  font-size: 16px;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .admin-footer .logout-btn {
+    padding: 8px 24px;
+    font-size: 15px;
+  }
+}
+
+/* Desktop hover */
+@media (min-width: 1024px) {
+  .admin-footer .logout-btn:hover {
+    background: #e9ecef;
+    border-color: #ccc;
+    transform: translateY(-1px);
+  }
+  
+  .admin-footer .logout-btn:hover:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .restaurant-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .admin-action-buttons {
+    flex-direction: column;
+  }
+  
+  .admin-action-buttons .action-btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-action-buttons .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .admin-action-buttons .action-btn:hover:active {
+    transform: scale(0.97);
+  }
 }
 
 .badge.suspended {
@@ -249,6 +776,212 @@
   text-align: center;
   padding: 3rem;
   color: #666;
+}
+
+/* Verification Card - Column Layout */
+.verification-card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.verification-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  padding: 15px 0;
+  border-top: 1px solid #f1f3f4;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+/* 1. RESTAURANT NAME (BIG) */
+.restaurant-title {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  width: 100%;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f8f3b7;
+}
+
+/* 2. OWNER NAME */
+.owner-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #666;
+  font-size: 18px;
+  font-weight: 500;
+  width: 100%;
+}
+
+.owner-icon {
+  font-size: 20px;
+}
+
+/* 3. VIEW BUTTON */
+.view-btn {
+  background: #4dabf7;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.view-btn:active {
+  background: #339af0;
+  transform: scale(0.98);
+}
+
+/* 4. VERIFICATION REASON BOX */
+.verification-reason-section {
+  width: 100%;
+  text-align: left;
+}
+
+.section-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reason-text-box {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 180px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 2px solid #e9ecef;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+  text-align: left;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* 5. DECISION BUTTONS */
+.decision-buttons {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.decision-buttons button {
+  flex: 1;
+  padding: 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.decision-buttons button:active {
+  transform: scale(0.97);
+}
+
+.reject-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #fa5252 100%);
+  color: white;
+}
+
+.approve-btn {
+  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+  color: white;
+}
+
+/* Tablet Styles */
+@media (min-width: 768px) {
+  .verification-card {
+    padding: 30px 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .restaurant-title {
+    font-size: 32px;
+  }
+  
+  .reason-text-box {
+    min-height: 150px;
+    max-height: 250px;
+  }
+}
+
+/* Desktop Hover Effects */
+@media (min-width: 1024px) {
+  .view-btn:hover {
+    background: #339af0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(77, 171, 247, 0.3);
+  }
+  
+  .decision-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .decision-buttons button:hover:active {
+    transform: scale(0.97);
+  }
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 400px) {
+  .verification-card {
+    padding: 20px 15px;
+  }
+  
+  .restaurant-title {
+    font-size: 24px;
+  }
+  
+  .decision-buttons {
+    flex-direction: column;
+  }
+  
+  .decision-buttons button {
+    width: 100%;
+  }
 }
 
 @media (min-width: 768px) {

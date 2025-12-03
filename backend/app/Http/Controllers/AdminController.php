@@ -214,41 +214,46 @@ class AdminController extends Controller
     }
 
     // Reject verification
-    public function rejectVerification(Request $request, $id)
-    {
-        try {
-            $restaurant = Restaurant::find($id);
-
-            if (!$restaurant) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Restaurant not found'
-                ], 404);
-            }
-
-            $request->validate([
-                'rejection_reason' => 'required|string|min:10|max:500'
-            ]);
-
-            $restaurant->update([
-                'verification_status' => 'rejected',
-                'is_verified' => false,
-                'verification_notes' => $request->rejection_reason,
-                'verification_processed_at' => now(),
-                'verified_by' => Auth::id()
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Verification request rejected',
-                'restaurant' => $restaurant
-            ]);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error()('Reject verification error: ' . $e->getMessage());
+    // In AdminController.php
+public function rejectVerification(Request $request, $id)
+{
+    try {
+        $user = Auth::user();
+        
+        $restaurant = Restaurant::find($id);
+        
+        if (!$restaurant) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to reject verification'
-            ], 500);
+                'message' => 'Restaurant not found'
+            ], 404);
         }
+        
+        // Get reason from request or use default
+        $reason = $request->input('rejection_reason', 'Verification request rejected by admin.');
+        
+        // Update restaurant - reset verification request
+        $restaurant->update([
+            'verification_requested' => false,
+            'is_verified' => false,
+            'suspended_reason' => $reason,
+            'verification_requested_at' => null,
+            'admin_notes' => $restaurant->admin_notes . ' [REJECTED: ' . $reason . ']'
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification request rejected successfully',
+            'restaurant' => $restaurant
+        ]);
+        
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('Reject verification error: ' . $e->getMessage());
+        \Illuminate\Support\Facades\Log::error('Stack trace: ' . $e->getTraceAsString());
+        return response()->json([
+            'success' => false,
+            'message' => 'Server error: ' . $e->getMessage()
+        ], 500);
     }
+}
 }
