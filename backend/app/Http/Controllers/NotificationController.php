@@ -187,48 +187,58 @@ class NotificationController extends Controller
      * Get user's notification preferences
      */
     public function getNotifications()
-    {
-        try {
-            $user = Auth::user();
-            
-            if (!$user) {
-                return response()->json(['message' => 'User not authenticated'], 401);
-            }
-            
-            $notifications = UserNotification::with(['restaurant' => function($query) {
+{
+    try {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+        
+        $notifications = UserNotification::with(['restaurant' => function($query) {
                 $query->select('id', 'name', 'cuisine_type', 'address');
             }])
             ->where('user_id', $user->id)
             ->where('is_active', true)
             ->get()
             ->map(function($notification) {
+                // FIX: Check if restaurant exists before accessing properties
+                $restaurantName = $notification->restaurant ? $notification->restaurant->name : 'Unknown Restaurant';
+                $cuisine = $notification->restaurant ? $notification->restaurant->cuisine_type : 'Unknown';
+                $address = $notification->restaurant ? $notification->restaurant->address : 'Address not available';
+                
                 return [
                     'id' => $notification->id,
                     'restaurant_id' => $notification->restaurant_id,
-                    'restaurant_name' => $notification->restaurant->name,
-                    'cuisine' => $notification->restaurant->cuisine_type,
-                    'address' => $notification->restaurant->address,
+                    'restaurant_name' => $restaurantName, // Use safe access
+                    'cuisine' => $cuisine, // Use safe access
+                    'address' => $address, // Use safe access
                     'notify_when_status' => $notification->notify_when_status,
                     'status_text' => $this->getStatusText($notification->notify_when_status),
                     'created_at' => $notification->created_at
                 ];
-            });
-            
-            return response()->json([
-                'success' => true,
-                'notifications' => $notifications,
-                'count' => $notifications->count()
-            ]);
-            
-        } catch (\Exception $e) {
-            Log::error('Get notifications error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch notifications',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+            })
+            ->filter(function($notification) {
+                // Optional: Filter out notifications for deleted restaurants
+                return $notification['restaurant_name'] !== 'Unknown Restaurant';
+            })
+            ->values(); // Reset array keys after filtering
+        
+        return response()->json([
+            'success' => true,
+            'notifications' => $notifications,
+            'count' => $notifications->count()
+        ]);
+        
+    } catch (\Exception $e) {
+        Log::error('Get notifications error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to fetch notifications',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
     
     /**
      * Remove a notification
