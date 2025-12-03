@@ -78,6 +78,10 @@
   border-bottom: none;
 }
 
+.dropdown-menu button:has(.notification-badge) {
+  padding-right: 40px; /* Extra space for badge */
+}
+
 .logout-btn {
   color: #dc3545 !important;
   font-weight: 500;

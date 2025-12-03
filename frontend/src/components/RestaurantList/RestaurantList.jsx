@@ -37,14 +37,14 @@ function RestaurantList({
   }, []);
 
   useEffect(() => {
-  // Make refresh function available globally for RestaurantCard
-  window.refreshNotificationCount = fetchNotificationCount;
-  
-  // Cleanup
-  return () => {
-    window.refreshNotificationCount = null;
-  };
-}, []);
+    // Make refresh function available globally for RestaurantCard
+    window.refreshNotificationCount = fetchNotificationCount;
+
+    // Cleanup
+    return () => {
+      window.refreshNotificationCount = null;
+    };
+  }, []);
 
   // Effect for fetching restaurants from API on component mount
   useEffect(() => {
@@ -108,26 +108,42 @@ function RestaurantList({
     }
   };
 
-    const fetchNotificationCount = async () => {
+  const fetchNotificationCount = async () => {
     try {
       const token = localStorage.getItem("auth_token");
-      if (!token) return;
+      if (!token) {
+        console.log("No auth token, user might not be logged in");
+        return;
+      }
 
       const response = await fetch("http://localhost:8000/api/notifications", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Notifications API response:", data); // Debug log
+
         if (data.success) {
-          setNotificationCount(data.count || 0);
+          setNotificationCount(data.count || data.notifications?.length || 0);
+        } else {
+          console.warn(
+            "Notifications API returned success: false",
+            data.message
+          );
+          setNotificationCount(0);
         }
+      } else {
+        console.warn("Failed to fetch notifications:", response.status);
+        setNotificationCount(0);
       }
     } catch (error) {
-      console.error("Failed to fetch notification count:", error);
+      console.error("Error fetching notification count:", error);
+      setNotificationCount(0); // Set to 0 on error
     }
   };
 
@@ -162,7 +178,7 @@ function RestaurantList({
 
   const handleNotifications = () => {
     setShowMenu(false);
-        fetchNotificationCount(); // Refresh count before navigating
+    fetchNotificationCount(); // Refresh count before navigating
     if (onNavigateToNotifications) {
       onNavigateToNotifications();
     }
@@ -223,20 +239,25 @@ function RestaurantList({
 
           {/* Dropdown Menu */}
           {showMenu && (
-    <div className="dropdown-menu">
-      <button onClick={handleBookmarks}>⭐ Bookmarks</button>
-      <button onClick={handleNotifications} className="notifications-btn">
-        🔔 Notifications
-        {notificationCount > 0 && (
-          <span className="notification-badge">{notificationCount}</span>
-        )}
-      </button>
-      <button onClick={handleSettings}>⚙️ Settings</button>
-      <button onClick={handleRateApp}>🌟 Rate Our App</button>
-      <button onClick={handleLogout} className="logout-btn">
-        🚪 Log Out
-      </button>
-    </div>
+            <div className="dropdown-menu">
+              <button onClick={handleBookmarks}>⭐ Bookmarks</button>
+              <button
+                onClick={handleNotifications}
+                className="notifications-btn"
+              >
+                🔔 Notifications
+                {notificationCount > 0 && (
+                  <span className="notification-badge">
+                    {notificationCount}
+                  </span>
+                )}
+              </button>
+              <button onClick={handleSettings}>⚙️ Settings</button>
+              <button onClick={handleRateApp}>🌟 Rate Our App</button>
+              <button onClick={handleLogout} className="logout-btn">
+                🚪 Log Out
+              </button>
+            </div>
           )}
         </div>
       </div>
