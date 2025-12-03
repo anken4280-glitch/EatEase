@@ -47,6 +47,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/restaurant/my', [RestaurantController::class, 'getMyRestaurant']);
     Route::post('/restaurant/save', [RestaurantController::class, 'saveRestaurant']);
     Route::put('/restaurant/occupancy', [RestaurantController::class, 'updateOccupancy']);
+
+    // Verification request (for owners) - MOVED HERE
+    Route::post('/restaurant/request-verification', [RestaurantController::class, 'requestVerification']);
 });
 
 // for debugging 
@@ -122,24 +125,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
     Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']);
+
+    // Feature route - MOVED HERE
+    Route::post('/restaurant/request-feature', [RestaurantController::class, 'requestFeature']);
 });
 
+// Admin routes - ALL IN ONE GROUP (FIXED VERSION)
 // Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+    // Restaurants
     Route::get('/restaurants', [AdminController::class, 'getAllRestaurants']);
-    Route::get('/users', [AdminController::class, 'getAllUsers']);
-    Route::post('/verify-restaurant/{id}', [AdminController::class, 'verifyRestaurant']);
     Route::post('/suspend-restaurant/{id}', [AdminController::class, 'suspendRestaurant']);
-});
 
-Route::middleware('auth:sanctum')->group(function () {
-    // Verification request (for owners)
-    Route::post('/restaurant/request-verification', [RestaurantController::class, 'requestVerification']);
+    // Users
+    Route::get('/users', [AdminController::class, 'getAllUsers']);
 
-    // Admin verification management
-    Route::middleware('admin')->prefix('admin')->group(function () {
-        Route::get('/verification-requests', [AdminController::class, 'getVerificationRequests']);
-        Route::post('/verify-restaurant/{id}', [AdminController::class, 'approveVerification']);
-        Route::post('/reject-verification/{id}', [AdminController::class, 'rejectVerification']);
-    });
+    // ✅ VERIFICATION SYSTEM (existing)
+    Route::get('/verification-requests', [AdminController::class, 'getVerificationRequests']);
+    Route::post('/verify-restaurant/{id}', [AdminController::class, 'verifyRestaurant']); // KEEP as verifyRestaurant
+    Route::post('/reject-verification/{id}', [AdminController::class, 'rejectVerification']);
+
+    // 🌟 FEATURED SYSTEM (new)
+    Route::get('/feature-requests', [AdminController::class, 'getFeatureRequests']);
+    Route::post('/approve-feature-request/{id}', [AdminController::class, 'approveFeatureRequest']);
+    Route::post('/reject-feature-request/{id}', [AdminController::class, 'rejectFeatureRequest']);
 });

@@ -7,6 +7,8 @@ function RestaurantOwnerDashboard({ user }) {
   const [restaurant, setRestaurant] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showFeatureModal, setShowFeatureModal] = useState(false); // For Be featured
+  const [featuredDescription, setFeaturedDescription] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     cuisine_type: "",
@@ -21,6 +23,45 @@ function RestaurantOwnerDashboard({ user }) {
   useEffect(() => {
     fetchRestaurant();
   }, []);
+
+  const handleRequestFeature = async () => {
+    const token = localStorage.getItem("auth_token");
+
+    if (!featuredDescription.trim()) {
+      alert("Please enter a description for your featured listing!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/restaurant/request-feature",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            featured_description: featuredDescription,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("✅ Feature request submitted! Our team will review it shortly.");
+        setShowFeatureModal(false);
+        setFeaturedDescription("");
+        fetchRestaurant(); // Refresh restaurant data
+      } else {
+        alert("Failed to submit request: " + (data.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Feature request error:", error);
+      alert("Failed to submit request. Please try again.");
+    }
+  };
 
   const fetchRestaurant = async () => {
     const token = localStorage.getItem("auth_token");
@@ -261,6 +302,20 @@ function RestaurantOwnerDashboard({ user }) {
               </div>
             </div>
           )}
+
+          {/* Be Featured Now CTA - Add this where you want it to appear */}
+          <div className="feature-cta">
+            <h3>🌟 Get Featured</h3>
+            <p>
+              Stand out from the crowd! Get premium placement on our homepage.
+            </p>
+            <button
+              className="feature-cta-btn"
+              onClick={() => setShowFeatureModal(true)}
+            >
+              🚀 Be Featured Now
+            </button>
+          </div>
         </div>
       )}
 
@@ -421,6 +476,64 @@ function RestaurantOwnerDashboard({ user }) {
               }}
               onClose={() => setShowVerificationForm(false)}
             />
+          </div>
+        </div>
+      )}
+      {/* Be Featured Now Modal */}
+      {showFeatureModal && (
+        <div
+          className="modal-overlay"
+          onClick={() => setShowFeatureModal(false)}
+        >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>🚀 Be Featured Now</h3>
+            <p className="modal-subtitle">
+              Get premium visibility on the homepage! Featured restaurants get
+              3x more views.
+            </p>
+
+            <div className="form-group">
+              <label>Why should your restaurant be featured? *</label>
+              <textarea
+                value={featuredDescription}
+                onChange={(e) => setFeaturedDescription(e.target.value)}
+                placeholder="Tell diners what makes your restaurant special... 
+(e.g., 'Best chicken in town! Try our secret recipe!', 
+'Cozy atmosphere perfect for family dinners', 
+'Authentic local cuisine with modern twist')"
+                rows="6"
+                maxLength="300"
+                required
+              />
+              <small className="char-count">
+                {featuredDescription.length}/300 characters
+              </small>
+            </div>
+
+            <div className="benefits-list">
+              <h4>Featured Benefits:</h4>
+              <ul>
+                <li>✅ Top placement on homepage</li>
+                <li>✅ 3x more visibility</li>
+                <li>✅ Special featured badge</li>
+                <li>✅ Custom description display</li>
+                <li>✅ Priority in search results</li>
+              </ul>
+            </div>
+
+            <div className="form-actions">
+              <button type="button" onClick={() => setShowFeatureModal(false)}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleRequestFeature}
+                disabled={!featuredDescription.trim()}
+                className="primary-btn"
+              >
+                Submit Feature Request
+              </button>
+            </div>
           </div>
         </div>
       )}

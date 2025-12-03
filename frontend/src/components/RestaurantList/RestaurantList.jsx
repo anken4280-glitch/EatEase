@@ -290,7 +290,10 @@ function RestaurantList({
         !error && (
           <>
             {/* FEATURED RESTAURANTS CAROUSEL */}
-            <FeatureCarousel restaurants={featuredRestaurants} />
+            <FeatureCarousel
+              restaurants={featuredRestaurants}
+              onRestaurantClick={handleRestaurantClick}
+            />
 
             {/* MAIN RESTAURANT LIST */}
             <div className="restaurants-container">

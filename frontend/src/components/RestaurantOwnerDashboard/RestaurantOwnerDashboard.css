@@ -427,6 +427,86 @@
   background: #339af0;
 }
 
+/* Be Featured CTA */
+.feature-cta {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.feature-cta h3 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+
+.feature-cta p {
+  margin: 0 0 15px 0;
+  opacity: 0.9;
+}
+
+.feature-cta-btn {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.feature-cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Feature Modal */
+.modal-subtitle {
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.char-count {
+  display: block;
+  text-align: right;
+  color: #666;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.benefits-list {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.benefits-list h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.benefits-list ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.benefits-list li {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.primary-btn {
+  background: #667eea;
+  color: white;
+}
+
+.primary-btn:hover {
+  background: #5a6fd8;
+}
 
 /* Verification CTA Section */
 .verification-cta {

@@ -636,6 +636,281 @@
   text-align: center;
 }
 
+/* Feature CSS */
+
+/* ========== FEATURE REQUESTS STYLES ========== */
+.feature-requests-section {
+  padding: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.featured-count {
+  background: #e3f2fd;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1976d2;
+}
+
+.featured-count strong {
+  font-size: 16px;
+}
+
+/* Request Cards */
+.request-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #e9ecef;
+}
+
+.request-header {
+  margin-bottom: 15px;
+}
+
+.request-header h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.request-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: #666;
+}
+
+.owner-info {
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.request-date {
+  color: #6c757d;
+}
+
+/* Featured Description Box */
+.featured-description-box {
+  background: #f8f9ff;
+  border-left: 4px solid #667eea;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.featured-description-box strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+.description-text {
+  margin: 0;
+  color: #555;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Already Featured Badge */
+.already-featured-badge {
+  background: linear-gradient(135deg, #51CF66 0%, #40c057 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.already-featured-badge .badge-icon {
+  font-size: 16px;
+}
+
+/* Request Actions */
+.request-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.approve-btn {
+  background: linear-gradient(135deg, #51CF66 0%, #40c057 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  flex: 1;
+  transition: transform 0.2s;
+}
+
+.approve-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.approve-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reject-btn {
+  background: linear-gradient(135deg, #FF6B6B 0%, #fa5252 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  flex: 1;
+  transition: transform 0.2s;
+}
+
+.reject-btn:hover {
+  transform: translateY(-2px);
+}
+
+.remove-featured-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  flex: 1;
+  transition: transform 0.2s;
+}
+
+.remove-featured-btn:hover {
+  transform: translateY(-2px);
+  background: #5a6268;
+}
+
+/* Currently Featured Restaurants Section */
+.featured-restaurants-section {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.featured-restaurants-section h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+}
+
+.featured-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.featured-item {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.featured-info h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.featured-description {
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.featured-meta {
+  margin: 5px 0 0 0;
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: #c82333;
+}
+
+/* Limit Warning */
+.limit-warning {
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  font-weight: 600;
+}
+
+.limit-warning.warning {
+  background: #fff3cd;
+  border: 2px solid #ffc107;
+  color: #856404;
+}
+
+.limit-warning.danger {
+  background: #f8d7da;
+  border: 2px solid #dc3545;
+  color: #721c24;
+}
+
+/* Refresh Button */
+.refresh-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.refresh-btn:hover {
+  background: #5a6268;
+}
+
 /* Small Logout Button */
 .admin-footer .logout-btn {
   background: #f8f9fa;

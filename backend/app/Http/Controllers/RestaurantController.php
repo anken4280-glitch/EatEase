@@ -6,6 +6,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;  // Add this if not present
 
 class RestaurantController extends Controller
 {
@@ -116,6 +117,61 @@ class RestaurantController extends Controller
             'occupancy_percentage' => $restaurant->occupancy_percentage
         ]);
     }
+
+    /**
+     * Request to be featured
+     */
+public function requestFeature(Request $request)
+{
+    try {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+        
+        $restaurant = Restaurant::where('owner_id', $user->id)->first();
+        
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurant not found'], 404);
+        }
+        
+        $featuredDescription = $request->input('featured_description');
+        
+        if (!$featuredDescription || strlen($featuredDescription) < 5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Description must be at least 5 characters'
+            ], 422);
+        }
+        
+        // Simple insert - submitted_at will auto-fill with CURRENT_TIMESTAMP
+        $result = DB::table('feature_requests')->insert([
+            'restaurant_id' => $restaurant->id,
+            'featured_description' => $featuredDescription,
+            'status' => 'pending'
+            // submitted_at auto-fills
+        ]);
+        
+        if ($result) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Feature request submitted! Admin will review it shortly.'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to save feature request'
+            ], 500);
+        }
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to submit feature request: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
     public function getAllRestaurants()
     {

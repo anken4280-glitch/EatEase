@@ -240,13 +240,13 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
   const getStatusDescription = (status) => {
     switch (status) {
       case "green":
-        return "Get a table easily";
+        return " Get a table easily";
       case "yellow":
-        return "Some wait time";
+        return " Consider going soon";
       case "orange":
-        return "Consider going soon";
+        return " Some wait time";
       case "red":
-        return "Long wait expected";
+        return " Long wait expected";
       default:
         return "";
     }
@@ -360,9 +360,6 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
             onClick={(e) => e.stopPropagation()}
           >
             <h4>Notify me when {restaurant.name} is:</h4>
-            <p className="modal-subtitle">
-              You'll get a notification when crowd reaches this level
-            </p>
 
             <div className="notification-options">
               {["green", "yellow", "orange", "red"].map((status) => (
