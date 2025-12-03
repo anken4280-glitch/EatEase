@@ -13,9 +13,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.restaurant-card.green { border-left-color: #10b981; }
-.restaurant-card.yellow { border-left-color: #f59e0b; }
-.restaurant-card.red { border-left-color: #ef4444; }
+.restaurant-card.green {
+  border-left-color: #10b981;
+}
+.restaurant-card.yellow {
+  border-left-color: #f59e0b;
+}
+.restaurant-card.red {
+  border-left-color: #ef4444;
+}
 
 .card-header {
   display: flex;
@@ -42,22 +48,22 @@
 }
 
 .status-badge.green {
-  background: #51CF66;
+  background: #51cf66;
   color: white;
 }
 
 .status-badge.yellow {
-  background: #FCC419;
+  background: #fcc419;
   color: #333;
 }
 
 .status-badge.red {
-  background: #FF6B6B;
+  background: #ff6b6b;
   color: white;
 }
 
 .status-badge.orange {
-  background: #FF922B;
+  background: #ff922b;
   color: white;
 }
 
@@ -103,7 +109,7 @@
 }
 
 .rating-stars {
-  color: #FFD700; /* Gold color for stars */
+  color: #ffd700; /* Gold color for stars */
   font-size: 0.9rem;
   letter-spacing: 1px;
 }
@@ -121,9 +127,13 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #f0f0f0;
+  align-items: center; /* This is KEY */
+  min-height: 44px; /* Fixed height for container */
+  height: 44px;
 }
 
-.bookmark-btn, .notification-btn {
+.bookmark-btn,
+.notification-btn {
   flex: 1;
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
@@ -134,16 +144,34 @@
   border: 1px solid #e1e1e1;
   background: white;
   color: #333;
+  height: 36px !important; /* Slightly smaller than container */
+  min-height: 36px !important;
+  max-height: 36px !important;
+  /* Prevent content from affecting size */
+  line-height: 36px !important; /* Match height */
+  overflow: hidden !important; /* Hide any overflow */
+  /* Center content properly */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  /* Consistent text rendering */
+  font-size: 14px !important;
+  white-space: nowrap !important;
+  /* Remove any variable padding */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
 }
 
-.bookmark-btn:hover, .notification-btn:hover {
+.bookmark-btn:hover,
+.notification-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .bookmark-btn.active {
-  background: #F8F3B7;
-  border-color: #F8F3B7;
+  background: #f8f3b7;
+  border-color: #f8f3b7;
   color: #333;
 }
 
@@ -209,22 +237,22 @@
 }
 
 .notification-option.green:hover {
-  border-color: #51CF66;
+  border-color: #51cf66;
   background: rgba(81, 207, 102, 0.05);
 }
 
 .notification-option.yellow:hover {
-  border-color: #FCC419;
+  border-color: #fcc419;
   background: rgba(252, 196, 25, 0.05);
 }
 
 .notification-option.orange:hover {
-  border-color: #FF922B;
+  border-color: #ff922b;
   background: rgba(255, 146, 43, 0.05);
 }
 
 .notification-option.red:hover {
-  border-color: #FF6B6B;
+  border-color: #ff6b6b;
   background: rgba(255, 107, 107, 0.05);
 }
 
@@ -236,19 +264,19 @@
 }
 
 .notification-option .status-indicator.green {
-  background: #51CF66;
+  background: #51cf66;
 }
 
 .notification-option .status-indicator.yellow {
-  background: #FCC419;
+  background: #fcc419;
 }
 
 .notification-option .status-indicator.orange {
-  background: #FF922B;
+  background: #ff922b;
 }
 
 .notification-option .status-indicator.red {
-  background: #FF6B6B;
+  background: #ff6b6b;
 }
 
 .notification-option span {
@@ -292,8 +320,8 @@
 
 /* Active notification button */
 .notification-btn.active {
-  background: #F8F3B7;
-  border-color: #F8F3B7;
+  background: #f8f3b7;
+  border-color: #f8f3b7;
   color: #333;
 }
 
@@ -311,22 +339,22 @@
 }
 
 .current-notification .status-green {
-  color: #51CF66;
+  color: #51cf66;
   font-weight: 600;
 }
 
 .current-notification .status-yellow {
-  color: #FCC419;
+  color: #fcc419;
   font-weight: 600;
 }
 
 .current-notification .status-orange {
-  color: #FF922B;
+  color: #ff922b;
   font-weight: 600;
 }
 
 .current-notification .status-red {
-  color: #FF6B6B;
+  color: #ff6b6b;
   font-weight: 600;
 }
 
@@ -342,7 +370,7 @@
 
 .remove-notification-btn:hover {
   background: #ffebee;
-  color: #FF6B6B;
+  color: #ff6b6b;
 }
 
 /* Modal updates */
@@ -357,7 +385,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #51CF66;
+  background: #51cf66;
   color: white;
   width: 20px;
   height: 20px;
@@ -378,7 +406,7 @@
   width: 100%;
   padding: 0.75rem;
   background: #ffebee;
-  color: #FF6B6B;
+  color: #ff6b6b;
   border: 1px solid #ffcdd2;
   border-radius: 8px;
   margin-bottom: 1rem;

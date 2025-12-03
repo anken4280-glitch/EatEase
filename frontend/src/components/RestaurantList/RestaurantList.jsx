@@ -21,6 +21,7 @@ function RestaurantList({
   const [loading, setLoading] = useState(true); // Loading state for API fetch
   const [error, setError] = useState(""); // Error message for failed fetch
   const menuRef = useRef(null); // Ref for detecting clicks outside hamburger menu
+  const [notificationCount, setNotificationCount] = useState(0); // ADD THIS
 
   // ========== USE EFFECTS ==========
   // Effect for closing hamburger menu when clicking outside
@@ -35,9 +36,20 @@ function RestaurantList({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+  // Make refresh function available globally for RestaurantCard
+  window.refreshNotificationCount = fetchNotificationCount;
+  
+  // Cleanup
+  return () => {
+    window.refreshNotificationCount = null;
+  };
+}, []);
+
   // Effect for fetching restaurants from API on component mount
   useEffect(() => {
     fetchRestaurants();
+    fetchNotificationCount(); // ADD THIS
   }, []); // Empty dependency array means this runs once on mount
 
   // ========== API FUNCTIONS ==========
@@ -96,6 +108,29 @@ function RestaurantList({
     }
   };
 
+    const fetchNotificationCount = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) return;
+
+      const response = await fetch("http://localhost:8000/api/notifications", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setNotificationCount(data.count || 0);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch notification count:", error);
+    }
+  };
+
   // ========== HELPER FUNCTIONS ==========
   // Filter featured restaurants for the carousel
   const featuredRestaurants = restaurants.filter(
@@ -127,6 +162,7 @@ function RestaurantList({
 
   const handleNotifications = () => {
     setShowMenu(false);
+        fetchNotificationCount(); // Refresh count before navigating
     if (onNavigateToNotifications) {
       onNavigateToNotifications();
     }
@@ -187,15 +223,20 @@ function RestaurantList({
 
           {/* Dropdown Menu */}
           {showMenu && (
-            <div className="dropdown-menu">
-              <button onClick={handleBookmarks}>⭐ Bookmarks</button>
-              <button onClick={handleNotifications}>🔔 Notifications</button>
-              <button onClick={handleSettings}>⚙️ Settings</button>
-              <button onClick={handleRateApp}>🌟 Rate Our App</button>
-              <button onClick={handleLogout} className="logout-btn">
-                🚪 Log Out
-              </button>
-            </div>
+    <div className="dropdown-menu">
+      <button onClick={handleBookmarks}>⭐ Bookmarks</button>
+      <button onClick={handleNotifications} className="notifications-btn">
+        🔔 Notifications
+        {notificationCount > 0 && (
+          <span className="notification-badge">{notificationCount}</span>
+        )}
+      </button>
+      <button onClick={handleSettings}>⚙️ Settings</button>
+      <button onClick={handleRateApp}>🌟 Rate Our App</button>
+      <button onClick={handleLogout} className="logout-btn">
+        🚪 Log Out
+      </button>
+    </div>
           )}
         </div>
       </div>

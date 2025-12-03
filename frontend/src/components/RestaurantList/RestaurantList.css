@@ -93,3 +93,35 @@
   z-index: 999;
 }
 
+/* Notification badge in hamburger menu */
+.notifications-btn {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #ff6b6b;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Ensure dropdown menu items have relative positioning */
+.dropdown-menu button {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 15px;
+  text-align: left;
+}

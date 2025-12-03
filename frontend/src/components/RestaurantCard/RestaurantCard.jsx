@@ -13,18 +13,19 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
   }, [restaurant.id]);
 
   const checkUserPreferences = async () => {
-    const token = localStorage.getItem("auth_token");
-    if (!token) return;
+  const token = localStorage.getItem("auth_token");
+  if (!token) return;
 
-    try {
-      // Check bookmarks
-      const bookmarksRes = await fetch("http://localhost:8000/api/bookmarks", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+  try {
+    // Check bookmarks
+    const bookmarksRes = await fetch("http://localhost:8000/api/bookmarks", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
 
+    if (bookmarksRes.ok) {
       const bookmarksData = await bookmarksRes.json();
       if (bookmarksData.success && bookmarksData.bookmarks) {
         const bookmarked = bookmarksData.bookmarks.some(
@@ -32,18 +33,20 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
         );
         setIsBookmarked(bookmarked);
       }
+    }
 
-      // Check notifications
-      const notificationsRes = await fetch(
-        "http://localhost:8000/api/notifications",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+    // Check notifications - ADD ERROR HANDLING
+    const notificationsRes = await fetch(
+      "http://localhost:8000/api/notifications",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
 
+    if (notificationsRes.ok) {
       const notificationsData = await notificationsRes.json();
       if (notificationsData.success && notificationsData.notifications) {
         const notification = notificationsData.notifications.find(
@@ -51,10 +54,14 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
         );
         setUserHasNotification(notification?.notify_when_status || null);
       }
-    } catch (error) {
-      console.error("Error checking preferences:", error);
+    } else {
+      console.warn("Notifications API returned:", notificationsRes.status);
+      // Don't set userHasNotification on error
     }
-  };
+  } catch (error) {
+    console.error("Error checking preferences:", error);
+  }
+};
 
   const handleClick = () => {
     onRestaurantClick(restaurant);
@@ -112,45 +119,51 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
     setShowNotificationModal(true);
   };
 
-  const handleSetNotification = async (crowdLevel) => {
-    const token = localStorage.getItem("auth_token");
-    setLoading(true);
+const handleSetNotification = async (crowdLevel) => {
+  const token = localStorage.getItem("auth_token");
+  setLoading(true);
 
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/notifications/${restaurant.id}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({ notify_when_status: crowdLevel }),
-        }
-      );
-
-      const data = await response.json();
-      if (data.success) {
-        setUserHasNotification(crowdLevel);
-        alert(
-          `✅ You'll be notified when ${restaurant.name} has ${getStatusText(
-            crowdLevel
-          )} crowd!`
-        );
-        setShowNotificationModal(false);
-      } else {
-        alert(
-          "Failed to set notification: " + (data.message || "Unknown error")
-        );
+  try {
+    const response = await fetch(
+      `http://localhost:8000/api/notifications/${restaurant.id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ notify_when_status: crowdLevel }),
       }
-    } catch (error) {
-      console.error("Notification error:", error);
-      alert("Failed to set notification. Please try again.");
-    } finally {
-      setLoading(false);
+    );
+
+    const data = await response.json();
+    if (data.success) {
+      setUserHasNotification(crowdLevel);
+      
+      // ADD THIS: Trigger global notification count update
+      if (window.refreshNotificationCount) {
+        window.refreshNotificationCount();
+      }
+      
+      alert(
+        `✅ You'll be notified when ${restaurant.name} has ${getStatusText(
+          crowdLevel
+        )} crowd!`
+      );
+      setShowNotificationModal(false);
+    } else {
+      alert(
+        "Failed to set notification: " + (data.message || "Unknown error")
+      );
     }
-  };
+  } catch (error) {
+    console.error("Notification error:", error);
+    alert("Failed to set notification. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleRemoveNotification = async () => {
     const token = localStorage.getItem("auth_token");

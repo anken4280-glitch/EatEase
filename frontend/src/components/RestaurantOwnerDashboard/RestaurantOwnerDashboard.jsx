@@ -153,20 +153,23 @@ function RestaurantOwnerDashboard({ user }) {
                   <span className="badge-text">Verified Restaurant</span>
                   {restaurant.verified_at && (
                     <span className="verified-date">
-                      Verified on: {new Date(restaurant.verified_at).toLocaleDateString()}
+                      Verified on:{" "}
+                      {new Date(restaurant.verified_at).toLocaleDateString()}
                     </span>
                   )}
                 </div>
               ) : restaurant.verification_requested ? (
                 <div className="verification-badge pending">
                   <span className="badge-icon">⏳</span>
-                  <span className="badge-text">Verification Pending Review</span>
+                  <span className="badge-text">
+                    Verification Pending Review
+                  </span>
                 </div>
               ) : (
                 <div className="verification-badge not-verified">
                   <span className="badge-icon">⚠️</span>
                   <span className="badge-text">Not Verified</span>
-                  <button 
+                  <button
                     className="request-verification-btn"
                     onClick={() => setShowVerificationForm(true)}
                   >
@@ -231,20 +234,30 @@ function RestaurantOwnerDashboard({ user }) {
           {!restaurant.is_verified && !restaurant.verification_requested && (
             <div className="verification-cta">
               <div className="cta-content">
-                <h3>✨ Get Your Restaurant Verified</h3>
+                <h3>✨ Get Verified</h3>
                 <div className="benefits-list">
-                  <p><strong>✅ Build Trust:</strong> Customers prefer verified restaurants</p>
-                  <p><strong>✅ Increased Visibility:</strong> Higher in search results</p>
-                  <p><strong>✅ Official Badge:</strong> Shows on your restaurant card</p>
-                  <p><strong>✅ Free Service:</strong> No cost for verification</p>
+                  <p>
+                    <strong>✅ Build Trust:</strong> Customers prefer verified
+                    restaurants
+                  </p>
+                  <p>
+                    <strong>✅ Increased Visibility:</strong> Higher in search
+                    results
+                  </p>
+                  <p>
+                    <strong>✅ Official Badge:</strong> Shows on your restaurant
+                    card
+                  </p>
+                  <p>
+                    <strong>✅ Free Service:</strong> No cost for verification
+                  </p>
                 </div>
-                <button 
+                <button
                   className="cta-button"
                   onClick={() => setShowVerificationForm(true)}
                 >
-                  🚀 Request Verification Now
+                  Request Verification Now
                 </button>
-                <small>Approval typically takes 24-48 hours</small>
               </div>
             </div>
           )}
@@ -256,8 +269,8 @@ function RestaurantOwnerDashboard({ user }) {
         <div className="modal-overlay" onClick={() => setIsEditing(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>{restaurant ? "Edit Restaurant" : "Setup Restaurant"}</h3>
+
             <form onSubmit={handleSaveRestaurant}>
-              {/* Your existing form fields... */}
               <div className="form-group">
                 <label>Restaurant Name *</label>
                 <input
@@ -270,7 +283,121 @@ function RestaurantOwnerDashboard({ user }) {
                   required
                 />
               </div>
-              {/* ... other form fields ... */}
+
+              <div className="form-group">
+                <label>Cuisine Type *</label>
+                <input
+                  type="text"
+                  value={formData.cuisine_type}
+                  onChange={(e) =>
+                    setFormData({ ...formData, cuisine_type: e.target.value })
+                  }
+                  placeholder="e.g., Fast Food, Cafe, Filipino"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Address *</label>
+                <textarea
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                  placeholder="Full address"
+                  required
+                  rows="3"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Phone Number *</label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                  placeholder="(555) 123-4567"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Operating Hours *</label>
+                <input
+                  type="text"
+                  value={formData.hours}
+                  onChange={(e) =>
+                    setFormData({ ...formData, hours: e.target.value })
+                  }
+                  placeholder="e.g., 9AM-10PM, Mon-Sun"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Max Capacity *</label>
+                <input
+                  type="number"
+                  value={formData.max_capacity}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      max_capacity: parseInt(e.target.value) || 50,
+                    })
+                  }
+                  placeholder="Maximum number of customers"
+                  min="1"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Current Occupancy</label>
+                <input
+                  type="number"
+                  value={formData.current_occupancy}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      current_occupancy: Number(e.target.value) || 0,
+                    })
+                  }
+                  placeholder="Current number of customers"
+                  min="0"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Features (optional)</label>
+                <div className="features-checkboxes">
+                  {[
+                    "WiFi",
+                    "Parking",
+                    "Air Conditioned",
+                    "Outdoor Seating",
+                    "Takeout",
+                    "Delivery",
+                  ].map((feature) => (
+                    <label key={feature} className="feature-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={formData.features.includes(feature)}
+                        onChange={(e) => {
+                          const newFeatures = e.target.checked
+                            ? [...formData.features, feature]
+                            : formData.features.filter((f) => f !== feature);
+                          setFormData({ ...formData, features: newFeatures });
+                        }}
+                      />
+                      {feature}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
               <div className="form-actions">
                 <button type="button" onClick={() => setIsEditing(false)}>
                   Cancel
@@ -286,7 +413,7 @@ function RestaurantOwnerDashboard({ user }) {
       {showVerificationForm && (
         <div className="modal-overlay">
           <div className="modal-content verification-modal">
-            <VerificationRequest 
+            <VerificationRequest
               restaurant={restaurant}
               onRequestSubmitted={() => {
                 // Refresh restaurant data after submission

@@ -149,42 +149,46 @@ function NotificationsPage({ user, onBack }) {
 
               <div className="notifications-list">
                 {notifications.map((notification) => (
-                  <div key={notification.id} className="notification-item">
-                    <div className="notification-info">
-                      <h3>{notification.restaurant_name}</h3>
-                      <div className="notification-setting">
-                        <span className="setting-label">Notify me when:</span>
-                        <span
-                          className="status-badge"
-                          style={{
-                            backgroundColor: getStatusColor(
-                              notification.notify_when_status
-                            ),
-                          }}
-                        >
-                          {getStatusText(notification.notify_when_status)}
-                        </span>
-                      </div>
-                      <p className="cuisine">{notification.cuisine}</p>
-                      <p className="address">{notification.address}</p>
-                      <p className="set-date">
-                        Set on {formatDate(notification.created_at)}
-                      </p>
-                    </div>
+  <div key={notification.id} className="notification-item">
+    <div className="notification-info">
+      <h3>{notification.restaurant_name || 'Unknown Restaurant'}</h3>
+      <div className="notification-setting">
+        <span className="setting-label">Notify me when:</span>
+        <span
+          className="status-badge"
+          style={{
+            backgroundColor: getStatusColor(
+              notification.notify_when_status
+            ),
+          }}
+        >
+          {getStatusText(notification.notify_when_status)}
+        </span>
+      </div>
+      {notification.cuisine && (
+        <p className="cuisine">{notification.cuisine}</p>
+      )}
+      {notification.address && notification.address !== 'Address not available' && (
+        <p className="address">{notification.address}</p>
+      )}
+      <p className="set-date">
+        Set on {formatDate(notification.created_at)}
+      </p>
+    </div>
 
-                    <div className="notification-actions">
-                      <button
-                        className="remove-btn"
-                        onClick={() =>
-                          handleRemoveNotification(notification.id)
-                        }
-                        title="Remove notification"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-                ))}
+    <div className="notification-actions">
+      <button
+        className="remove-btn"
+        onClick={() =>
+          handleRemoveNotification(notification.id)
+        }
+        title="Remove notification"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+))}
               </div>
             </div>
           )}
