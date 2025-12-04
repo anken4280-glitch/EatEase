@@ -7,42 +7,21 @@
   min-height: 100vh;
   background: #f8f9fa;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  padding-bottom: 80px; /* Space for action bar */
-}
-
-/* ===== BACK BUTTON ===== */
-.back-btn {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 100;
-  background: white;
-  border: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: #333;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s;
-}
-
-.back-btn:hover {
-  transform: translateX(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding-bottom: 80px;
+  overflow-x: hidden; /* PREVENT HORIZONTAL SCROLLING */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ===== RESTAURANT HEADER ===== */
 .restaurant-header {
   background: white;
-  padding: 70px 20px 20px 20px;
+  padding: 70px 16px 20px 16px; /* Reduced horizontal padding */
   border-radius: 0 0 24px 24px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .restaurant-image-placeholder {
@@ -93,11 +72,13 @@
 }
 
 .restaurant-name {
-  font-size: 28px;
+  font-size: 24px; /* Slightly smaller on mobile */
   font-weight: 700;
   color: #222;
   margin: 0 0 12px 0;
   line-height: 1.2;
+  padding: 0 8px; /* Add padding to prevent edge touching */
+  word-break: break-word; /* Allow long names to wrap */
 }
 
 .restaurant-meta {
@@ -177,34 +158,42 @@
 .quick-stats-bar {
   background: white;
   margin: 0 16px 16px 16px;
-  padding: 16px;
+  padding: 12px; /* Reduced padding */
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: space-around;
   align-items: center;
+  width: calc(100% - 32px);
+  box-sizing: border-box;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px; /* Reduced gap */
   flex: 1;
+  min-width: 0; /* Allow stat items to shrink */
 }
 
 .stat-value {
-  font-size: 20px;
+  font-size: 16px; /* Smaller font */
   font-weight: 700;
   color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 10px; /* Smaller font */
   color: #666;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .stat-divider {
@@ -221,14 +210,16 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   display: flex;
   overflow: hidden;
+  width: calc(100% - 32px); /* Ensure it stays within bounds */
+  box-sizing: border-box;
 }
 
 .tab-btn {
   flex: 1;
-  padding: 16px 8px;
+  padding: 16px 4px; /* Reduced horizontal padding */
   background: transparent;
   border: none;
-  font-size: 14px;
+  font-size: 13px; /* Smaller font */
   font-weight: 500;
   color: #666;
   cursor: pointer;
@@ -237,7 +228,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px; /* Reduced gap */
+  min-width: 0; /* Allow tab to shrink */
+  overflow: hidden;
 }
 
 .tab-btn.active {
@@ -259,11 +252,12 @@
 .tab-badge {
   background: #667eea;
   color: white;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  min-width: 18px;
+  font-size: 10px; /* Smaller badge */
+  padding: 1px 4px; /* Reduced padding */
+  border-radius: 8px;
+  min-width: 16px;
   text-align: center;
+  flex-shrink: 0; /* Prevent badge from shrinking */
 }
 
 /* ===== TAB CONTENT ===== */
@@ -275,8 +269,10 @@
 .overview-tab {
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px; /* Reduced padding */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .info-section {
@@ -288,36 +284,38 @@
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 15px; /* Smaller */
   font-weight: 600;
   color: #333;
-  margin: 0 0 12px 0;
+  margin: 0 0 10px 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .section-content {
-  font-size: 15px;
+  font-size: 14px; /* Smaller */
   color: #222;
   line-height: 1.5;
   margin: 0;
+  word-break: break-word; /* Prevent long text from overflowing */
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 8px; /* Reduced gap */
 }
 
 .feature-tag {
   background: #f8f9fa;
-  padding: 8px 12px;
-  border-radius: 12px;
-  font-size: 13px;
+  padding: 6px 8px; /* Reduced padding */
+  border-radius: 10px;
+  font-size: 12px; /* Smaller */
   color: #333;
   font-weight: 500;
   text-align: center;
+  word-break: break-word; /* Allow long feature names to wrap */
 }
 
 .status-details {
@@ -703,24 +701,38 @@
   background: white;
   padding: 12px 16px;
   display: flex;
-  gap: 12px;
+  gap: 8px; /* Reduced from 12px */
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
   z-index: 90;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .action-btn {
   flex: 1;
-  padding: 14px;
+  padding: 12px 8px; /* Reduced padding */
   border: none;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 13px; /* Smaller font */
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px; /* Reduced gap */
   transition: all 0.2s;
+  min-width: 0; /* Allow button to shrink */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ===== FIX CONTAINER WIDTHS ===== */
+.tab-content,
+.restaurant-header,
+.quick-stats-bar,
+.tab-navigation {
+  max-width: 100%;
 }
 
 .directions-btn {
@@ -744,7 +756,8 @@
 }
 
 .btn-icon {
-  font-size: 16px;
+  font-size: 14px; /* Smaller icon */
+  flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 /* ===== LOADING & ERROR STATES ===== */
@@ -800,6 +813,42 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
+}
+
+
+/* ===== MOBILE-SPECIFIC FIXES ===== */
+@media (max-width: 375px) {
+  /* Extra small phones */
+  .action-btn {
+    font-size: 12px;
+    padding: 10px 4px;
+    gap: 4px;
+  }
+  
+  .tab-btn {
+    font-size: 12px;
+    padding: 14px 2px;
+  }
+  
+  .restaurant-name {
+    font-size: 22px;
+  }
+  
+  .stat-value {
+    font-size: 14px;
+  }
+  
+  .stat-label {
+    font-size: 9px;
+  }
+}
+
+/* ===== PREVENT BODY OVERFLOW ===== */
+body {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 /* ===== RESPONSIVE DESIGNS ===== */

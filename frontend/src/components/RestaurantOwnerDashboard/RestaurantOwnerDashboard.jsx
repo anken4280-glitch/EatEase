@@ -2,13 +2,20 @@ import React, { useState, useEffect } from "react";
 import VerificationRequest from "../VerificationRequest/VerificationRequest";
 import "./RestaurantOwnerDashboard.css";
 
+// Import tab components (we'll create owner versions)
+import OwnerOverviewTab from "./OwnerOverviewTab";
+import OwnerMenuTab from "./OwnerMenuTab";
+import OwnerReviewsTab from "./OwnerReviewsTab";
+import OwnerPhotosTab from "./OwnerPhotosTab";
+
 function RestaurantOwnerDashboard({ user }) {
   const [showVerificationForm, setShowVerificationForm] = useState(false);
   const [restaurant, setRestaurant] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showFeatureModal, setShowFeatureModal] = useState(false); // For Be featured
+  const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [featuredDescription, setFeaturedDescription] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
   const [formData, setFormData] = useState({
     name: "",
     cuisine_type: "",
@@ -24,12 +31,10 @@ function RestaurantOwnerDashboard({ user }) {
     fetchRestaurant();
   }, []);
 
-  // In RestaurantOwnerDashboard.jsx, add this function after the useEffect hooks:
-
   const handleLogout = () => {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
-    window.location.href = "/"; // Redirect to home/login
+    window.location.href = "/";
   };
 
   const handleRequestFeature = async () => {
@@ -61,7 +66,7 @@ function RestaurantOwnerDashboard({ user }) {
         alert("✅ Feature request submitted! Our team will review it shortly.");
         setShowFeatureModal(false);
         setFeaturedDescription("");
-        fetchRestaurant(); // Refresh restaurant data
+        fetchRestaurant();
       } else {
         alert("Failed to submit request: " + (data.message || "Unknown error"));
       }
@@ -82,7 +87,6 @@ function RestaurantOwnerDashboard({ user }) {
       });
 
       if (response.status === 404) {
-        // No restaurant yet
         setRestaurant(null);
       } else if (response.ok) {
         const data = await response.json();
@@ -146,10 +150,65 @@ function RestaurantOwnerDashboard({ user }) {
     }
   };
 
+  // Render tab content based on active tab
+  const renderTabContent = () => {
+    if (!restaurant) return null;
+
+    switch (activeTab) {
+      case "overview":
+        return (
+          <OwnerOverviewTab
+            restaurant={restaurant}
+            onEdit={() => {
+              setFormData({
+                name: restaurant.name,
+                cuisine_type: restaurant.cuisine_type,
+                address: restaurant.address,
+                phone: restaurant.phone,
+                hours: restaurant.hours,
+                max_capacity: restaurant.max_capacity,
+                current_occupancy: restaurant.current_occupancy,
+                features: restaurant.features || [],
+              });
+              setIsEditing(true);
+            }}
+          />
+        );
+      case "menu":
+        return <OwnerMenuTab restaurantId={restaurant.id} />;
+      case "reviews":
+        return <OwnerReviewsTab restaurantId={restaurant.id} />;
+      case "photos":
+        return <OwnerPhotosTab restaurantId={restaurant.id} />;
+      default:
+        return (
+          <OwnerOverviewTab
+            restaurant={restaurant}
+            onEdit={() => {
+              setFormData({
+                name: restaurant.name,
+                cuisine_type: restaurant.cuisine_type,
+                address: restaurant.address,
+                phone: restaurant.phone,
+                hours: restaurant.hours,
+                max_capacity: restaurant.max_capacity,
+                current_occupancy: restaurant.current_occupancy,
+                features: restaurant.features || [],
+              });
+              setIsEditing(true);
+            }}
+          />
+        );
+    }
+  };
+
   if (loading) {
     return (
       <div className="restaurant-owner-dashboard">
-        <p>Loading...</p>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading your restaurant...</p>
+        </div>
       </div>
     );
   }
@@ -164,166 +223,158 @@ function RestaurantOwnerDashboard({ user }) {
             <h3>No Restaurant Setup Yet</h3>
             <p>Set up your restaurant profile to start receiving diners</p>
             <button className="setup-btn" onClick={() => setIsEditing(true)}>
-              🎯 Set Up My Restaurant
+              Set Up My Restaurant
             </button>
           </div>
         </div>
       ) : (
-        // Restaurant exists - show dashboard
-        <div className="restaurant-dashboard">
-          <div className="restaurant-card">
-            <div className="card-header">
-              <h2>{restaurant.name}</h2>
-              <button
-                className="edit-btn"
-                onClick={() => {
-                  setFormData({
-                    name: restaurant.name,
-                    cuisine_type: restaurant.cuisine_type,
-                    address: restaurant.address,
-                    phone: restaurant.phone,
-                    hours: restaurant.hours,
-                    max_capacity: restaurant.max_capacity,
-                    current_occupancy: restaurant.current_occupancy,
-                    features: restaurant.features || [],
-                  });
-                  setIsEditing(true);
-                }}
-              >
-                Edit
-              </button>
-              <button onClick={handleLogout} className="logout-btn">
-                🚪 Logout
+        // Restaurant exists - show enhanced dashboard
+        <div className="restaurant-owner-view">
+          {/* Header with Title and Logout */}
+          <div className="owner-header">
+            <div className="owner-title-row">
+              <h1 className="owner-title">My Restaurant</h1>
+              <button onClick={handleLogout} className="owner-logout-btn">
+                Logout
               </button>
             </div>
 
-            {/* VERIFICATION STATUS BADGE */}
-            <div className="verification-status">
-              {restaurant.is_verified ? (
-                <div className="verification-badge verified">
-                  <span className="badge-icon">✅</span>
-                  <span className="badge-text">Verified Restaurant</span>
-                  {restaurant.verified_at && (
-                    <span className="verified-date">
-                      Verified on:{" "}
-                      {new Date(restaurant.verified_at).toLocaleDateString()}
-                    </span>
-                  )}
-                </div>
-              ) : restaurant.verification_requested ? (
-                <div className="verification-badge pending">
-                  <span className="badge-icon">⏳</span>
-                  <span className="badge-text">
-                    Verification Pending Review
-                  </span>
-                </div>
-              ) : (
-                <div className="verification-badge not-verified">
-                  <span className="badge-icon">⚠️</span>
-                  <span className="badge-text">Not Verified</span>
-                </div>
-              )}
-            </div>
-
-            <div className="restaurant-info">
-              <div className="info-item">
-                <span className="info-label">Cuisine: {restaurant.cuisine_type}</span>
+            {/* Restaurant Name and Verification Status */}
+            <div className="restaurant-header-info">
+              <div className="restaurant-title-section">
+                <h2 className="restaurant-name">{restaurant.name}</h2>
+                <button
+                  className="edit-profile-btn"
+                  onClick={() => {
+                    setFormData({
+                      name: restaurant.name,
+                      cuisine_type: restaurant.cuisine_type,
+                      address: restaurant.address,
+                      phone: restaurant.phone,
+                      hours: restaurant.hours,
+                      max_capacity: restaurant.max_capacity,
+                      current_occupancy: restaurant.current_occupancy,
+                      features: restaurant.features || [],
+                    });
+                    setIsEditing(true);
+                  }}
+                >
+                  Edit Restaurant
+                </button>
               </div>
 
-              <div className="info-item">
-                <span className="info-label">Address: {restaurant.address} </span>
-                <span className="info-value"></span>
-              </div>
-
-              <div className="info-item">
-                <span className="info-label">Contact: {restaurant.phone}</span>
-              </div>
-
-              <div className="info-item">
-                <span className="info-label">Hours: {restaurant.hours}</span>
-              </div>
-
-              <div className="info-item status-item">
-                <span className="info-label">Current Status: {restaurant.crowd_status}</span>
-              </div>
-
-              <div className="info-item">
-                <span className="info-label">Capacity: {restaurant.current_occupancy}/{restaurant.max_capacity}{" "}
-                  people</span>
+              {/* Verification Status */}
+              <div className="owner-verification-status">
+                {restaurant.is_verified ? (
+                  <div className="verification-badge verified">
+                    <span className="badge-icon">✅</span>
+                    <span className="badge-text">Verified Restaurant</span>
+                  </div>
+                ) : restaurant.verification_requested ? (
+                  <div className="verification-badge pending">
+                    <span className="badge-icon">⏳</span>
+                    <span className="badge-text">Verification Pending</span>
+                  </div>
+                ) : (
+                  <div className="verification-badge not-verified">
+                    <span className="badge-icon">⚠️</span>
+                    <span className="badge-text">Not Verified</span>
+                    <button
+                      className="request-verification-btn"
+                      onClick={() => setShowVerificationForm(true)}
+                    >
+                      Request Verification
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
 
-          {/* Quick stats */}
-          <div className="stats-overview">
-            <h3>Live Overview</h3>
-            <div className="stats-grid">
-              <div className="stat-card">
-                <span className="stat-number">
-                  {restaurant.current_occupancy}
+            {/* Quick Stats */}
+            <div className="owner-quick-stats">
+              <div className="owner-stat-card">
+                <span className="owner-stat-value">
+                  {restaurant.current_occupancy}/{restaurant.max_capacity}
                 </span>
-                <span className="stat-label">Current Customers</span>
+                <span className="owner-stat-label">Current Capacity</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-number">
+              <div className="owner-stat-card">
+                <span className="owner-stat-value">
                   {restaurant.occupancy_percentage}%
                 </span>
-                <span className="stat-label">Occupancy Rate</span>
+                <span className="owner-stat-label">Occupancy</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-number">
-                  {restaurant.is_verified ? "✅" : "❌"}
+              <div className="owner-stat-card">
+                <span
+                  className={`owner-stat-value status-${restaurant.crowd_status}`}
+                >
+                  {restaurant.crowd_status === "green"
+                    ? "😊 Low"
+                    : restaurant.crowd_status === "yellow"
+                    ? "😐 Moderate"
+                    : restaurant.crowd_status === "orange"
+                    ? "😟 Busy"
+                    : "😖 Very High"}
                 </span>
-                <span className="stat-label">Verification Status</span>
+                <span className="owner-stat-label">Crowd Status</span>
               </div>
             </div>
           </div>
 
-          {/* Verification CTA Section */}
-          {!restaurant.is_verified && !restaurant.verification_requested && (
-            <div className="verification-cta">
-              <div className="cta-content">
-                <h3>✨ Get Verified</h3>
-                <div className="benefits-list">
-                  <p>
-                    <strong>✅ Build Trust:</strong> Customers prefer verified
-                    restaurants
-                  </p>
-                  <p>
-                    <strong>✅ Increased Visibility:</strong> Higher in search
-                    results
-                  </p>
-                  <p>
-                    <strong>✅ Official Badge:</strong> Shows on your restaurant
-                    card
-                  </p>
-                  <p>
-                    <strong>✅ Free Service:</strong> No cost for verification
-                  </p>
-                </div>
+          {/* Tab Navigation */}
+          <div className="owner-tab-navigation">
+            <button
+              className={`owner-tab-btn ${
+                activeTab === "overview" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("overview")}
+            >
+              📋 Overview
+            </button>
+            <button
+              className={`owner-tab-btn ${
+                activeTab === "menu" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("menu")}
+            >
+              🍽️ Menu
+            </button>
+            <button
+              className={`owner-tab-btn ${
+                activeTab === "reviews" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("reviews")}
+            >
+              ⭐ Reviews
+            </button>
+            <button
+              className={`owner-tab-btn ${
+                activeTab === "photos" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("photos")}
+            >
+              📸 Photos
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="owner-tab-content">{renderTabContent()}</div>
+
+          {/* Feature CTA */}
+          {!restaurant.is_featured && (
+            <div className="owner-feature-cta">
+              <div className="feature-cta-content">
+                <h3>🌟 Want more customers?</h3>
+                <p>Get featured on our homepage and get 3x more visibility!</p>
                 <button
-                  className="cta-button"
-                  onClick={() => setShowVerificationForm(true)}
+                  className="feature-cta-button"
+                  onClick={() => setShowFeatureModal(true)}
                 >
-                  Request Verification Now
+                  🚀 Be Featured Now
                 </button>
               </div>
             </div>
           )}
-
-          {/* Be Featured Now CTA - Add this where you want it to appear */}
-          <div className="feature-cta">
-            <h3>🌟 Get Featured</h3>
-            <p>
-              Stand out from the crowd! Get premium placement on our homepage.
-            </p>
-            <button
-              className="feature-cta-btn"
-              onClick={() => setShowFeatureModal(true)}
-            >
-              🚀 Be Featured Now
-            </button>
-          </div>
         </div>
       )}
 
@@ -444,7 +495,7 @@ function RestaurantOwnerDashboard({ user }) {
                     "Takeout",
                     "Delivery",
                   ].map((feature) => (
-                    <label key={feature} className="feature-checkbox">
+                    <label className="feature-checkbox">
                       <input
                         type="checkbox"
                         checked={formData.features.includes(feature)}
@@ -455,7 +506,7 @@ function RestaurantOwnerDashboard({ user }) {
                           setFormData({ ...formData, features: newFeatures });
                         }}
                       />
-                      {feature}
+                      <span className="checkbox-label">{feature}</span>
                     </label>
                   ))}
                 </div>
@@ -465,7 +516,7 @@ function RestaurantOwnerDashboard({ user }) {
                 <button type="button" onClick={() => setIsEditing(false)}>
                   Cancel
                 </button>
-                <button type="submit">Save Restaurant</button>
+                <button type="submit">Save</button>
               </div>
             </form>
           </div>
@@ -479,7 +530,6 @@ function RestaurantOwnerDashboard({ user }) {
             <VerificationRequest
               restaurant={restaurant}
               onRequestSubmitted={() => {
-                // Refresh restaurant data after submission
                 fetchRestaurant();
               }}
               onClose={() => setShowVerificationForm(false)}
@@ -487,6 +537,7 @@ function RestaurantOwnerDashboard({ user }) {
           </div>
         </div>
       )}
+
       {/* Be Featured Now Modal */}
       {showFeatureModal && (
         <div
@@ -505,10 +556,7 @@ function RestaurantOwnerDashboard({ user }) {
               <textarea
                 value={featuredDescription}
                 onChange={(e) => setFeaturedDescription(e.target.value)}
-                placeholder="Tell diners what makes your restaurant special... 
-(e.g., 'Best chicken in town! Try our secret recipe!', 
-'Cozy atmosphere perfect for family dinners', 
-'Authentic local cuisine with modern twist')"
+                placeholder="Tell diners what makes your restaurant special..."
                 rows="6"
                 maxLength="300"
                 required

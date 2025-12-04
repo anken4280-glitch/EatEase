@@ -54,8 +54,7 @@ const MenuTab = ({ restaurantId }) => {
     return (
       <div className="menu-tab empty">
         <div className="empty-icon">🍽️</div>
-        <h3>Menu Coming Soon</h3>
-        <p>This restaurant hasn't added their menu yet.</p>
+        <h3>Coming Soon</h3>
       </div>
     );
   }

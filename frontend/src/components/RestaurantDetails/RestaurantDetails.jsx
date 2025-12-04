@@ -172,7 +172,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
           
           {stats && (
             <div className="rating-summary">
-              <span className="average-rating">⭐ {stats.average_rating || 'N/A'}</span>
+              <span className="average-rating">⭐ {stats.average_rating}</span>
               <span className="review-count">({stats.total_reviews || 0} reviews)</span>
             </div>
           )}

@@ -60,10 +60,6 @@ const PhotosTab = ({ restaurantId }) => {
       <div className="photos-tab empty">
         <div className="empty-icon">📸</div>
         <h3>No Photos Yet</h3>
-        <p>Be the first to add photos of this restaurant!</p>
-        <button className="upload-photo-btn">
-          📤 Upload Photo
-        </button>
       </div>
     );
   }
@@ -185,7 +181,7 @@ const PhotosTab = ({ restaurantId }) => {
       {/* Upload Button */}
       <div className="upload-section">
         <button className="upload-photo-btn">
-          📤 Add Your Photos
+          📤 Add Photos
         </button>
         <p className="upload-note">
           Share your dining experience with others
