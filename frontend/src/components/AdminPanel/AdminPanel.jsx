@@ -354,11 +354,10 @@ const handleRejectFeature = async (requestId) => {
     <div className="admin-panel">
       {/* HEADER */}
       <div className="admin-header">
-        <h1>🛡️ EatEase Admin Panel</h1>
+        <h1>EatEase Admin Panel</h1>
         <div className="admin-info">
-          <span>Welcome, {user?.name}</span>
           <button onClick={handleLogout} className="logout-btn">
-            🚪 Logout
+            Logout
           </button>
         </div>
       </div>
@@ -383,7 +382,7 @@ const handleRejectFeature = async (requestId) => {
         {/* ========== DASHBOARD TAB ========== */}
         {activeTab === "Dashboard" && (
           <div className="dashboard">
-            <h2>📊 System Overview</h2>
+            <h2>Overview</h2>
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-number">{stats.totalRestaurants}</div>
@@ -411,22 +410,6 @@ const handleRejectFeature = async (requestId) => {
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="quick-actions">
-              <h3>⚡ Quick Actions</h3>
-              <div className="action-buttons">
-                <button onClick={() => setActiveTab("Verifications")} className="action-btn">
-                  📝 Review Verifications ({stats.pendingVerifications})
-                </button>
-                <button onClick={() => setActiveTab("Feature Requests")} className="action-btn">
-                  🌟 Review Feature Requests ({stats.pendingFeatureRequests})
-                </button>
-                <button onClick={() => setActiveTab("Restaurants")} className="action-btn">
-                  🏪 Manage Restaurants
-                </button>
-              </div>
-            </div>
-
             {/* Featured Limit Warning */}
             {stats.featuredRestaurants >= 8 && (
               <div className={`limit-warning ${stats.featuredRestaurants >= 10 ? 'danger' : 'warning'}`}>
@@ -443,22 +426,20 @@ const handleRejectFeature = async (requestId) => {
         {activeTab === "Feature Requests" && (
           <div className="feature-requests-section">
             <div className="section-header">
-              <h2>🌟 Feature Requests Management</h2>
+              <h2>Feature Requests</h2>
               <div className="header-info">
                 <span className="featured-count">
-                  Currently Featured: <strong>{stats.featuredRestaurants}/10</strong>
+                  Featured: <strong>{stats.featuredRestaurants}/10</strong>
                 </span>
                 <button onClick={fetchFeatureRequests} className="refresh-btn">
-                  🔄 Refresh
+                  Refresh
                 </button>
               </div>
             </div>
 
             {featureRequests.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">✅</div>
-                <h3>No Pending Feature Requests</h3>
-                <p>All feature requests have been processed.</p>
+                <h3>No Pending Requests</h3>
               </div>
             ) : (
               <div className="requests-container">
@@ -503,13 +484,13 @@ const handleRejectFeature = async (requestId) => {
                               disabled={stats.featuredRestaurants >= 10}
                               title={stats.featuredRestaurants >= 10 ? "Max 10 featured restaurants reached" : ""}
                             >
-                              ✅ Approve & Feature
+                              Approve
                             </button>
                             <button 
                               className="reject-btn"
                               onClick={() => handleRejectFeature(request.id)}
                             >
-                              ❌ Reject
+                              Reject
                             </button>
                           </>
                         ) : (
@@ -517,7 +498,7 @@ const handleRejectFeature = async (requestId) => {
                             className="remove-featured-btn"
                             onClick={() => handleRemoveFromFeatured(request.restaurant_id)}
                           >
-                            🗑️ Remove From Featured
+                            Remove From Featured
                           </button>
                         )}
                       </div>
@@ -529,10 +510,10 @@ const handleRejectFeature = async (requestId) => {
 
             {/* Currently Featured Restaurants List */}
             <div className="featured-restaurants-section">
-              <h3>✅ Currently Featured Restaurants ({stats.featuredRestaurants}/10)</h3>
+              <h3>Currently Featured Restaurants</h3>
               {restaurants.filter(r => r.is_featured).length === 0 ? (
                 <div className="empty-state">
-                  <p>No restaurants are currently featured.</p>
+                  <p>No Restaurants Are Featured.</p>
                 </div>
               ) : (
                 <div className="featured-list">
@@ -551,7 +532,7 @@ const handleRejectFeature = async (requestId) => {
                           className="remove-btn"
                           onClick={() => handleRemoveFromFeatured(restaurant.id)}
                         >
-                          🗑️ Remove
+                          Remove
                         </button>
                       </div>
                     ))
@@ -565,11 +546,11 @@ const handleRejectFeature = async (requestId) => {
         {/* ========== VERIFICATIONS TAB ========== */}
         {activeTab === "Verifications" && (
           <div className="admin-section">
-            <h2>✅ Verification Requests</h2>
+            <h2>Verification Requests</h2>
             <div className="section-header">
               <p>Restaurants requesting verification</p>
               <button onClick={fetchVerificationRequests} className="refresh-btn">
-                🔄 Refresh
+                Refresh
               </button>
             </div>
             
@@ -593,13 +574,13 @@ const handleRejectFeature = async (requestId) => {
                         className="approve-btn"
                         onClick={() => handleApproveVerification(request.restaurant_id)}
                       >
-                        ✅ Approve
+                        Approve
                       </button>
                       <button 
                         className="reject-btn"
                         onClick={() => handleRejectVerification(request.restaurant_id)}
                       >
-                        ❌ Reject
+                        Reject
                       </button>
                     </div>
                   </div>
@@ -612,11 +593,10 @@ const handleRejectFeature = async (requestId) => {
         {/* ========== RESTAURANTS TAB ========== */}
         {activeTab === "Restaurants" && (
           <div className="admin-section">
-            <h2>🏪 All Restaurants</h2>
+            <h2>Restaurants</h2>
             <div className="section-header">
-              <p>Manage all registered restaurants</p>
               <button onClick={fetchRestaurants} className="refresh-btn">
-                🔄 Refresh
+                Refresh
               </button>
             </div>
             
@@ -641,7 +621,7 @@ const handleRejectFeature = async (requestId) => {
                         className={restaurant.is_suspended ? "unsuspend-btn" : "suspend-btn"}
                         onClick={() => handleToggleSuspend(restaurant.id, restaurant.is_suspended)}
                       >
-                        {restaurant.is_suspended ? "👁️ Unsuspend" : "🚫 Suspend"}
+                        {restaurant.is_suspended ? "Unsuspend" : "Suspend"}
                       </button>
                     </div>
                   </div>
@@ -654,11 +634,9 @@ const handleRejectFeature = async (requestId) => {
         {/* ========== USERS TAB ========== */}
         {activeTab === "Users" && (
           <div className="admin-section">
-            <h2>👥 All Users</h2>
             <div className="section-header">
-              <p>View all registered users</p>
               <button onClick={fetchUsers} className="refresh-btn">
-                🔄 Refresh
+                Refresh
               </button>
             </div>
             
