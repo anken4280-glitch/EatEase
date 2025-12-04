@@ -24,6 +24,14 @@ function RestaurantOwnerDashboard({ user }) {
     fetchRestaurant();
   }, []);
 
+  // In RestaurantOwnerDashboard.jsx, add this function after the useEffect hooks:
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user");
+    window.location.href = "/"; // Redirect to home/login
+  };
+
   const handleRequestFeature = async () => {
     const token = localStorage.getItem("auth_token");
 
@@ -184,6 +192,9 @@ function RestaurantOwnerDashboard({ user }) {
               >
                 Edit
               </button>
+              <button onClick={handleLogout} className="logout-btn">
+                🚪 Logout
+              </button>
             </div>
 
             {/* VERIFICATION STATUS BADGE */}
@@ -210,39 +221,36 @@ function RestaurantOwnerDashboard({ user }) {
                 <div className="verification-badge not-verified">
                   <span className="badge-icon">⚠️</span>
                   <span className="badge-text">Not Verified</span>
-                  <button
-                    className="request-verification-btn"
-                    onClick={() => setShowVerificationForm(true)}
-                  >
-                    Request Verification
-                  </button>
                 </div>
               )}
             </div>
 
             <div className="restaurant-info">
-              <p>
-                <strong>Cuisine:</strong> {restaurant.cuisine_type}
-              </p>
-              <p>
-                <strong>Address:</strong> {restaurant.address}
-              </p>
-              <p>
-                <strong>Contact:</strong> {restaurant.phone}
-              </p>
-              <p>
-                <strong>Hours:</strong> {restaurant.hours}
-              </p>
-              <p>
-                <strong>Current Status:</strong>
-                <span className={`status-${restaurant.crowd_status}`}>
-                  {restaurant.crowd_level} ({restaurant.occupancy_percentage}%)
-                </span>
-              </p>
-              <p>
-                <strong>Capacity:</strong> {restaurant.current_occupancy}/
-                {restaurant.max_capacity} people
-              </p>
+              <div className="info-item">
+                <span className="info-label">Cuisine: {restaurant.cuisine_type}</span>
+              </div>
+
+              <div className="info-item">
+                <span className="info-label">Address: {restaurant.address} </span>
+                <span className="info-value"></span>
+              </div>
+
+              <div className="info-item">
+                <span className="info-label">Contact: {restaurant.phone}</span>
+              </div>
+
+              <div className="info-item">
+                <span className="info-label">Hours: {restaurant.hours}</span>
+              </div>
+
+              <div className="info-item status-item">
+                <span className="info-label">Current Status: {restaurant.crowd_status}</span>
+              </div>
+
+              <div className="info-item">
+                <span className="info-label">Capacity: {restaurant.current_occupancy}/{restaurant.max_capacity}{" "}
+                  people</span>
+              </div>
             </div>
           </div>
 

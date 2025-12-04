@@ -37,15 +37,6 @@ function FeatureCarousel({ restaurants, onRestaurantClick }) {
             Be the first to feature your restaurant! Get premium visibility 
             and attract more customers with our featured listing.
           </p>
-          <button 
-            className="cta-button"
-            onClick={() => {
-              // This could navigate to a "Be Featured" page or open a modal
-              alert("Contact admin@eatease.com to feature your restaurant!");
-            }}
-          >
-            🚀 Be Featured Now
-          </button>
         </div>
       </div>
     );

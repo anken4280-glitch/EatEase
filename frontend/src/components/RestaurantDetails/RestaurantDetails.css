@@ -1,138 +1,898 @@
+/* ============================================
+   RESTAURANT DETAILS PAGE - MOBILE FIRST PWA
+   ============================================ */
+
+/* ===== BASE STYLES ===== */
 .restaurant-details-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  padding-bottom: 80px; /* Space for action bar */
+}
+
+/* ===== BACK BUTTON ===== */
+.back-btn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
   background: white;
-  margin: 0 -1rem;
-  min-height: calc(100vh - 80px);
-}
-
-.restaurant-hero {
-  position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem 1rem;
-}
-
-.restaurant-image {
-  height: 200px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
 }
 
-.image-placeholder {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
+.back-btn:hover {
+  transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.restaurant-basic-info h1 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.8rem;
-}
-
-.status-badge.large {
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  font-size: 1rem;
-  display: inline-block;
-  margin-bottom: 0.5rem;
-}
-
-.cuisine-type {
-  margin: 0;
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-.quick-stats {
-  display: flex;
-  justify-content: space-around;
-  padding: 1.5rem 1rem;
+/* ===== RESTAURANT HEADER ===== */
+.restaurant-header {
   background: white;
-  border-bottom: 1px solid #e1e1e1;
+  padding: 70px 20px 20px 20px;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
 }
 
-.stat {
+.restaurant-image-placeholder {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.image-fallback {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.restaurant-icon {
+  font-size: 48px;
+}
+
+.verified-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.restaurant-basic-info {
   text-align: center;
 }
 
-.stat-value {
-  display: block;
-  font-size: 1.5rem;
+.restaurant-name {
+  font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: #222;
+  margin: 0 0 12px 0;
+  line-height: 1.2;
+}
+
+.restaurant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.crowd-status {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: inline-block;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.crowd-status.green {
+  background: rgba(76, 175, 80, 0.15);
+  color: #2E7D32;
+}
+
+.crowd-status.yellow {
+  background: rgba(255, 193, 7, 0.15);
+  color: #F57C00;
+}
+
+.crowd-status.orange {
+  background: rgba(255, 152, 0, 0.15);
+  color: #EF6C00;
+}
+
+.crowd-status.red {
+  background: rgba(244, 67, 54, 0.15);
+  color: #D32F2F;
+}
+
+.occupancy-rate {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.cuisine-type {
+  font-size: 16px;
+  color: #667eea;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+}
+
+.rating-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 8px 16px;
+  border-radius: 12px;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.average-rating {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FF9800;
+}
+
+.review-count {
+  font-size: 14px;
+  color: #666;
+}
+
+/* ===== QUICK STATS BAR ===== */
+.quick-stats-bar {
+  background: white;
+  margin: 0 16px 16px 16px;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
 }
 
 .stat-label {
-  display: block;
-  font-size: 0.8rem;
+  font-size: 12px;
   color: #666;
-  margin-top: 0.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.detailed-info {
-  padding: 1.5rem 1rem;
+.stat-divider {
+  width: 1px;
+  height: 32px;
+  background: #eee;
+}
+
+/* ===== TAB NAVIGATION ===== */
+.tab-navigation {
+  background: white;
+  margin: 0 16px 16px 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  overflow: hidden;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 16px 8px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tab-btn.active {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: #667eea;
+  border-radius: 3px 3px 0 0;
+}
+
+.tab-badge {
+  background: #667eea;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ===== TAB CONTENT ===== */
+.tab-content {
+  margin: 0 16px;
+}
+
+/* ===== OVERVIEW TAB ===== */
+.overview-tab {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .info-section {
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
 }
 
-.info-section h3 {
-  margin: 0 0 0.75rem 0;
+.info-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
   color: #333;
-  font-size: 1.1rem;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.info-section p {
-  margin: 0 0 1rem 0;
-  color: #666;
+.section-content {
+  font-size: 15px;
+  color: #222;
   line-height: 1.5;
+  margin: 0;
 }
 
-.action-btn {
-  background: #F8F3B7;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.feature-tag {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #333;
   font-weight: 500;
+  text-align: center;
+}
+
+.status-details {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
 }
 
 .status-indicator {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 12px;
 }
 
-.status-dot {
-  width: 10px;
-  height: 10px;
+.status-light {
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.status-dot.green { background: #10b981; }
-.status-dot.yellow { background: #f59e0b; }
-.status-dot.red { background: #ef4444; }
+.status-light.green { background: #4CAF50; }
+.status-light.yellow { background: #FFC107; }
+.status-light.orange { background: #FF9800; }
+.status-light.red { background: #F44336; }
 
-.action-buttons {
-  padding: 1.5rem 1rem;
-  display: flex;
-  gap: 1rem;
-}
-
-.primary-btn {
+.status-info {
   flex: 1;
-  padding: 0.75rem;
-  background: #F8F3B7;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+.status-update {
+  font-size: 12px;
+  color: #666;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* ===== MENU TAB ===== */
+.menu-tab {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.menu-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.menu-count {
+  background: #f8f9fa;
+  color: #666;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.menu-category {
+  margin-bottom: 28px;
+}
+
+.menu-category:last-child {
+  margin-bottom: 0;
+}
+
+.category-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.menu-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu-item-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.menu-item-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.menu-item-info {
+  flex: 1;
+}
+
+.menu-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  flex: 1;
+}
+
+.item-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #667eea;
+  margin-left: 12px;
+}
+
+.item-unavailable {
+  font-size: 12px;
+  color: #f44336;
+  background: #ffebee;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.item-description {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.menu-item-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.menu-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== REVIEWS TAB ===== */
+.reviews-tab {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.rating-summary-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  color: white;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.rating-overview {
+  margin-bottom: 20px;
+}
+
+.average-rating-large {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.rating-number {
+  font-size: 48px;
+}
+
+.rating-max {
+  font-size: 24px;
+  opacity: 0.8;
+}
+
+.rating-stars-large {
+  font-size: 24px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+
+.total-reviews {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.add-review-btn {
+  background: white;
+  color: #667eea;
   border: none;
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.add-review-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.reviews-list {
+  margin-top: 24px;
+}
+
+.reviews-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 20px 0;
+}
+
+.review-card {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.review-card:last-child {
+  margin-bottom: 0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reviewer-avatar {
+  width: 40px;
+  height: 40px;
+  background: #667eea;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.reviewer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reviewer-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.review-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.review-rating {
+  font-size: 16px;
+  color: #FF9800;
+}
+
+.review-comment {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+.review-images {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.review-image {
+  width: 80px;
+  height: 80px;
   border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.review-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.no-reviews-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-reviews h4 {
+  font-size: 18px;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.no-reviews p {
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.first-review-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
 
-.primary-btn:hover {
-  background: #f5ef9e;
+/* ===== PHOTOS TAB STYLES (Already provided earlier - include them here) ===== */
+/* Copy all the Photos Tab CSS from my previous message here */
+
+/* ===== ACTION BAR ===== */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+  z-index: 90;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.directions-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.bookmark-btn {
+  background: #FF9800;
+  color: white;
+}
+
+.notify-btn {
+  background: #667eea;
+  color: white;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-icon {
+  font-size: 16px;
+}
+
+/* ===== LOADING & ERROR STATES ===== */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.error-container h3 {
+  font-size: 20px;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.error-container p {
+  color: #666;
+  margin: 0 0 24px 0;
+}
+
+.retry-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ===== RESPONSIVE DESIGNS ===== */
+@media (min-width: 768px) {
+  .restaurant-details-page {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+  
+  .restaurant-header {
+    padding: 90px 40px 30px 40px;
+  }
+  
+  .restaurant-image-placeholder {
+    height: 240px;
+  }
+  
+  .restaurant-name {
+    font-size: 32px;
+  }
+  
+  .restaurant-meta {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .menu-item-card {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .restaurant-details-page {
+    max-width: 900px;
+    padding: 24px;
+  }
+  
+  .back-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+  }
+  
+  .action-bar {
+    position: sticky;
+    bottom: 24px;
+    left: auto;
+    right: auto;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 24px auto;
+    border-radius: 16px;
+  }
+}
+
+/* ===== TOUCH OPTIMIZATIONS ===== */
+@media (hover: none) and (pointer: coarse) {
+  .action-btn,
+  .tab-btn,
+  .back-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .action-bar {
+    padding: 16px;
+  }
+  
+  .tab-btn {
+    padding: 20px 8px;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overview-tab,
+.menu-tab,
+.reviews-tab,
+.photos-tab {
+  animation: fadeIn 0.3s ease;
 }

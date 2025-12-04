@@ -281,7 +281,7 @@ function RestaurantList({
       {selectedRestaurant ? (
         // DETAIL VIEW - When a restaurant is selected
         <RestaurantDetails
-          restaurant={selectedRestaurant}
+          restaurantId={selectedRestaurant.id} // Changed from restaurant to restaurantId
           onBack={handleBackToList}
         />
       ) : (

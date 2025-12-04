@@ -14,3 +14,23 @@ body {
   min-height: 100vh;
   text-align: center;
 }
+
+.logout-btn {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.logout-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}

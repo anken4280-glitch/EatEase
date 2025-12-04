@@ -8,6 +8,7 @@ use App\Http\Controllers\RestaurantController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReviewController;  // Add this line
 
 Route::get('/test-db', function () {
     try {
@@ -114,6 +115,18 @@ Route::get('/restaurants', [RestaurantController::class, 'getAllRestaurants']);
 
 // for single restaurant details
 Route::get('/restaurants/{id}', [RestaurantController::class, 'getRestaurantById']);
+// Restaurant Details Endpoints
+Route::get('/restaurants/{id}/menu', [RestaurantController::class, 'getMenuItems']);
+Route::get('/restaurants/{id}/reviews', [RestaurantController::class, 'getReviews']);
+Route::get('/restaurants/{id}/photos', [RestaurantController::class, 'getPhotos']);
+Route::get('/restaurants/{id}/stats', [RestaurantController::class, 'getRestaurantStats']);
+
+// Review Endpoints (Protected)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/restaurants/{id}/review', [ReviewController::class, 'addReview']);
+    Route::put('/reviews/{id}', [ReviewController::class, 'updateReview']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'deleteReview']);
+});
 
 // Notification
 Route::middleware('auth:sanctum')->group(function () {
