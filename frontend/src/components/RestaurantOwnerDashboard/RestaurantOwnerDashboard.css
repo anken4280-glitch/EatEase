@@ -422,13 +422,6 @@
 }
 
 
-.form-group:nth-child(2) label::before { content: '🍽️'; }
-.form-group:nth-child(3) label::before { content: '📍'; }
-.form-group:nth-child(4) label::before { content: '📞'; }
-.form-group:nth-child(5) label::before { content: '🕒'; }
-.form-group:nth-child(6) label::before { content: '👥'; }
-.form-group:nth-child(7) label::before { content: '🧍'; }
-
 .form-group input,
 .form-group textarea,
 .form-group select {

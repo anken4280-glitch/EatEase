@@ -259,7 +259,7 @@ function RestaurantOwnerDashboard({ user }) {
                     setIsEditing(true);
                   }}
                 >
-                  Edit Restaurant
+                  Edit
                 </button>
               </div>
 
@@ -364,7 +364,7 @@ function RestaurantOwnerDashboard({ user }) {
           {!restaurant.is_featured && (
             <div className="owner-feature-cta">
               <div className="feature-cta-content">
-                <h3>🌟 Want more customers?</h3>
+                <h3>Want more customers?</h3>
                 <p>Get featured on our homepage and get 3x more visibility!</p>
                 <button
                   className="feature-cta-button"
@@ -545,7 +545,7 @@ function RestaurantOwnerDashboard({ user }) {
           onClick={() => setShowFeatureModal(false)}
         >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>🚀 Be Featured Now</h3>
+            <h3>Be Featured Now</h3>
             <p className="modal-subtitle">
               Get premium visibility on the homepage! Featured restaurants get
               3x more views.
@@ -569,11 +569,11 @@ function RestaurantOwnerDashboard({ user }) {
             <div className="benefits-list">
               <h4>Featured Benefits:</h4>
               <ul>
-                <li>✅ Top placement on homepage</li>
-                <li>✅ 3x more visibility</li>
-                <li>✅ Special featured badge</li>
-                <li>✅ Custom description display</li>
-                <li>✅ Priority in search results</li>
+                <li>Top placement on homepage</li>
+                <li>3x more visibility</li>
+                <li>Special featured badge</li>
+                <li>Custom description display</li>
+                <li>Priority in search results</li>
               </ul>
             </div>
 

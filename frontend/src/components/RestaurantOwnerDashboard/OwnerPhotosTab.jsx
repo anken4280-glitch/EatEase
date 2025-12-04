@@ -40,10 +40,10 @@ const OwnerPhotosTab = ({ restaurantId }) => {
   return (
     <div className="owner-photos-tab">
       <div className="tab-header">
-        <h3>📸 Restaurant Photos</h3>
+        <h3>Restaurant Photos</h3>
         <div className="upload-section">
           <label htmlFor="photo-upload" className="upload-btn">
-            {uploading ? 'Uploading...' : '📤 Upload Photos'}
+            {uploading ? 'Uploading...' : 'Upload Photos'}
           </label>
           <input
             id="photo-upload"
@@ -85,7 +85,7 @@ const OwnerPhotosTab = ({ restaurantId }) => {
                   {photo.is_primary ? '✓ Primary' : 'Set as Primary'}
                 </button>
                 <button className="delete-photo-btn">
-                  🗑️ Delete
+                  Delete
                 </button>
               </div>
               {photo.caption && (

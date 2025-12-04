@@ -26,7 +26,7 @@ const OwnerMenuTab = ({ restaurantId }) => {
   return (
     <div className="owner-menu-tab">
       <div className="tab-header">
-        <h3>🍽️ Menu Management</h3>
+        <h3>Your Menu</h3>
         <button 
           className="add-item-btn"
           onClick={() => setShowAddModal(true)}

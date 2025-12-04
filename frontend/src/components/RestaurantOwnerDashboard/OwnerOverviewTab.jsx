@@ -48,7 +48,7 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
 
       <div className="tab-section">
         <div className="section-header">
-          <h3>📊 Current Status</h3>
+          <h3>Current Status</h3>
           <button className="section-edit-btn" onClick={onEdit}>
             ✏️ Update
           </button>

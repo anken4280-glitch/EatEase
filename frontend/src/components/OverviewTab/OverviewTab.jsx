@@ -36,7 +36,7 @@ const OverviewTab = ({ restaurant, stats }) => {
 
       {/* Crowd Status Details */}
       <div className="info-section status-details">
-        <h3 className="section-title">👥 Current Status</h3>
+        <h3 className="section-title">Current Status</h3>
         <div className="status-indicator">
           <div className={`status-light ${restaurant.crowd_status}`}></div>
           <div className="status-info">
