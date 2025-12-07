@@ -261,14 +261,6 @@ function RestaurantDetails({ restaurantId, onBack }) {
                     0
                 ).toFixed(1)}
               </span>
-              <span className="review-count">
-                (
-                {reviewsData.total_reviews ||
-                  stats?.total_reviews ||
-                  restaurant?.total_reviews ||
-                  0}{" "}
-                reviews)
-              </span>
             </div>
           </div>
         </div>
@@ -284,8 +276,32 @@ function RestaurantDetails({ restaurantId, onBack }) {
         </div>
         <div className="stat-divider"></div>
         <div className="stat-item">
-          <span className="stat-value">{restaurant.crowd_status}</span>
-          <span className="stat-label">Status</span>
+             <span className="stat-value">
+      {/* COLORED CIRCLES BASED ON STATUS */}
+      {restaurant.crowd_status === 'green' && (
+        <span className="status-circle green" title="Low Crowd">🟢</span>
+      )}
+      {restaurant.crowd_status === 'yellow' && (
+        <span className="status-circle yellow" title="Moderate Crowd">🟡</span>
+      )}
+      {restaurant.crowd_status === 'orange' && (
+        <span className="status-circle orange" title="Busy">🟠</span>
+      )}
+      {restaurant.crowd_status === 'red' && (
+        <span className="status-circle red" title="Very High Crowd">🔴</span>
+      )}
+      {/* Fallback if status is unknown */}
+      {!['green', 'yellow', 'orange', 'red'].includes(restaurant.crowd_status) && (
+        <span className="status-circle gray" title="Unknown">⚪</span>
+      )}
+    </span>
+    <span className="stat-label">
+      {/* Optional: Show text next to circle */}
+      {restaurant.crowd_status === 'green' && 'Low'}
+      {restaurant.crowd_status === 'yellow' && 'Moderate'}
+      {restaurant.crowd_status === 'orange' && 'Busy'}
+      {restaurant.crowd_status === 'red' && 'Very High'}
+    </span>
         </div>
         <div className="stat-divider"></div>
         <div className="stat-item">
