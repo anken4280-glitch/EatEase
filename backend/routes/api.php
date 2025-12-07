@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReviewController;  // Add this line
+use App\Http\Controllers\MenuController;
 
 Route::get('/test-db', function () {
     try {
@@ -163,3 +164,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::post('/approve-feature-request/{id}', [AdminController::class, 'approveFeatureRequest']);
     Route::post('/reject-feature-request/{id}', [AdminController::class, 'rejectFeatureRequest']);
 });
+
+// Menu routes
+Route::get('/restaurants/{id}/menu', [MenuController::class, 'show']);
+Route::middleware('auth:sanctum')->put('/restaurants/{id}/menu-text', [MenuController::class, 'update']);
+// Add this with your other restaurant routes
+Route::get('/restaurants/{id}/menu-text', [MenuController::class, 'show']);

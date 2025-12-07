@@ -33,26 +33,6 @@ const OverviewTab = ({ restaurant, stats }) => {
           </div>
         </div>
       )}
-
-      {/* Crowd Status Details */}
-      <div className="info-section status-details">
-        <h3 className="section-title">Current Status</h3>
-        <div className="status-indicator">
-          <div className={`status-light ${restaurant.crowd_status}`}></div>
-          <div className="status-info">
-            <span className="status-text">
-              {restaurant.crowd_status === 'green' ? 'Low Crowd - Great time to visit!' : 
-               restaurant.crowd_status === 'yellow' ? 'Moderate - Short wait expected' : 
-               restaurant.crowd_status === 'orange' ? 'Busy - Consider waiting' : 
-               'Very High - Long wait likely'}
-            </span>
-            <span className="status-update">
-              Last updated: Just now
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Restaurant Description */}
       <div className="info-section">
         <h3 className="section-title">📝 About</h3>

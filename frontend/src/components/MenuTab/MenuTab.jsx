@@ -1,104 +1,116 @@
 import React, { useState, useEffect } from 'react';
-import '../RestaurantDetails/RestaurantDetails.css';
 
 const MenuTab = ({ restaurantId }) => {
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuDescription, setMenuDescription] = useState('');
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [restaurantName, setRestaurantName] = useState('');
 
   useEffect(() => {
-    fetchMenuItems();
+    console.log('MenuTab: Loading menu for restaurant', restaurantId);
+    fetchMenu();
   }, [restaurantId]);
 
-  const fetchMenuItems = async () => {
-  try {
-    const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantId}/menu`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    // Handle both array and object responses
-    if (Array.isArray(data)) {
-      setMenuItems(data);
+  const fetchMenu = async () => {
+    setLoading(true);
+    try {
+      // FIX: Change from /menu to /menu-text
+      const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantId}/menu-text`);
+      const data = await response.json();
+      console.log('MenuTab API response:', data);
       
-      // Extract unique categories
-      const uniqueCategories = [...new Set(data.map(item => item.category))];
-      setCategories(uniqueCategories);
-    } else if (data.error) {
-      // API returned an error object
-      console.error('API Error:', data.error);
-      setMenuItems([]);
+      if (data.success) {
+        // FIX: Change from data.menu.description to data.menu_description
+        setMenuDescription(data.menu_description || '');
+        setRestaurantName(data.restaurant_name || '');
+        
+        if (!data.menu_description) {
+          setMenuDescription('This restaurant hasn\'t added a menu yet.');
+        }
+      } else {
+        setMenuDescription('Error loading menu: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error fetching menu:', error);
+      setMenuDescription('Unable to load menu. Please try again later.');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
-  } catch (error) {
-    console.error('Error fetching menu items:', error);
-    setMenuItems([]);
-    setLoading(false);
-  }
-};
+  };
 
   if (loading) {
     return (
       <div className="menu-tab loading">
-        <div className="loading-spinner"></div>
+        <div className="spinner"></div>
         <p>Loading menu...</p>
       </div>
     );
   }
 
-  if (menuItems.length === 0) {
-    return (
-      <div className="menu-tab empty">
-        <div className="empty-icon">🍽️</div>
-        <h3>Coming Soon</h3>
-      </div>
-    );
-  }
+  // Parse the menu text with formatting
+  const renderMenuContent = () => {
+    if (!menuDescription || menuDescription.includes('hasn\'t added') || menuDescription.includes('Error') || menuDescription.includes('Unable')) {
+      return <p className="empty-menu">{menuDescription}</p>;
+    }
+    
+    const lines = menuDescription.split('\n');
+    return lines.map((line, index) => {
+      const trimmedLine = line.trim();
+      
+      // Check for headers (ends with colon)
+      if (trimmedLine.endsWith(':')) {
+        return <h4 key={index} className="menu-header">{trimmedLine}</h4>;
+      }
+      
+      // Check for bullet points
+      else if (trimmedLine.startsWith('•') || trimmedLine.startsWith('-')) {
+        return (
+          <div key={index} className="menu-item">
+            <span className="bullet">•</span>
+            <span>{trimmedLine.substring(1).trim()}</span>
+          </div>
+        );
+      }
+      
+      // Check for price items (contains $)
+      else if (trimmedLine.includes('$')) {
+        // Try to split by dash for price
+        if (trimmedLine.includes(' - ')) {
+          const parts = trimmedLine.split(' - ');
+          if (parts.length === 2) {
+            return (
+              <div key={index} className="menu-item-with-price">
+                <span className="item-name">{parts[0].trim()}</span>
+                <span className="item-price">{parts[1].trim()}</span>
+              </div>
+            );
+          }
+        }
+        return <p key={index} className="menu-line">{trimmedLine}</p>;
+      }
+      
+      // Regular paragraph
+      else if (trimmedLine) {
+        return <p key={index} className="menu-line">{trimmedLine}</p>;
+      }
+      
+      // Empty line (preserve spacing)
+      return <br key={index} />;
+    });
+  };
 
   return (
     <div className="menu-tab">
-      <div className="menu-header">
-        <h3 className="menu-title">📋 Menu</h3>
-        <span className="menu-count">{menuItems.length} items</span>
+      <div className="menu-header-section">
+        <h2>{restaurantName ? `${restaurantName} Menu` : 'Menu & Pricing'}</h2>
       </div>
-
-      {categories.map(category => {
-        const categoryItems = menuItems.filter(item => item.category === category);
-        
-        return (
-          <div key={category} className="menu-category">
-            <h4 className="category-title">{category || 'Uncategorized'}</h4>
-            <div className="menu-items-list">
-              {categoryItems.map(item => (
-                <div key={item.id} className="menu-item-card">
-                  <div className="menu-item-info">
-                    <div className="menu-item-header">
-                      <span className="item-name">{item.name}</span>
-                      {item.is_available ? (
-                        <span className="item-price">₱{item.price}</span>
-                      ) : (
-                        <span className="item-unavailable">Unavailable</span>
-                      )}
-                    </div>
-                    {item.description && (
-                      <p className="item-description">{item.description}</p>
-                    )}
-                  </div>
-                  {item.image_url && (
-                    <div className="menu-item-image">
-                      <img src={item.image_url} alt={item.name} />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+      
+      <div className="menu-content">
+        {renderMenuContent()}
+      </div>
+      
+      <div className="menu-footer">
+        <p>💡 <strong>Note:</strong> Menu items and prices are subject to change.</p>
+      </div>
     </div>
   );
 };

@@ -782,6 +782,213 @@
   margin-bottom: 20px;
 }
 
+/* MenuTab CSs */
+/* ===== MENU TAB STYLES ===== */
+.menu-tab {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.menu-tab.loading {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.menu-header-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.menu-header-section h2 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.menu-subtitle {
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.menu-content {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  line-height: 1.8;
+  color: #333;
+}
+
+.menu-header {
+  color: #FF922B;
+  margin: 25px 0 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #F8F3B7;
+  font-size: 18px;
+}
+
+.menu-header:first-child {
+  margin-top: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.menu-item .bullet {
+  position: absolute;
+  left: 0;
+  color: #FF922B;
+  font-size: 18px;
+}
+
+.menu-item-with-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.menu-item-with-price:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.item-price {
+  color: #FF6B6B;
+  font-weight: 600;
+  background: #fff5f5;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.menu-line {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.menu-footer {
+  margin-top: 30px;
+  padding: 20px;
+  background: #F8F3B7;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #5c4700;
+  text-align: center;
+}
+
+/* Owner Menu Tab */
+.owner-menu-tab {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.menu-editor-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.menu-editor-header h3 {
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.menu-editor-header p {
+  color: #666;
+}
+
+.menu-textarea {
+  width: 100%;
+  padding: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace, sans-serif;
+  min-height: 400px;
+}
+
+.menu-textarea:focus {
+  outline: none;
+  border-color: #F8F3B7;
+  box-shadow: 0 0 0 3px rgba(248, 243, 183, 0.3);
+}
+
+.editor-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.save-btn, .clear-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #51CF66 0%, #40c057 100%);
+  color: white;
+}
+
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(81, 207, 102, 0.3);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: #f8f9fa;
+  color: #666;
+  border: 2px solid #e0e0e0;
+}
+
+.clear-btn:hover {
+  background: #e9ecef;
+}
+
+.message {
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.message.success {
+  background: #d3f9d8;
+  color: #2b8a3e;
+  border: 1px solid #b2f2bb;
+}
+
+.message.error {
+  background: #ffe3e3;
+  color: #c92a2a;
+  border: 1px solid #ffc9c9;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

@@ -29,7 +29,8 @@ class Restaurant extends Model
         'is_suspended',
         'suspended_at',
         'suspended_reason',
-        'admin_notes'
+        'admin_notes',
+        'menu-description'
     ];
 
     protected $casts = [

@@ -83,6 +83,22 @@
   white-space: nowrap;
 }
 
+.restaurant-owner-dashboard .setup-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
 .edit-profile-btn:hover {
   background: #5a6fd8;
   transform: translateY(-1px);

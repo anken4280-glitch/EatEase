@@ -1,87 +1,114 @@
 import React, { useState, useEffect } from 'react';
 
 const OwnerMenuTab = ({ restaurantId }) => {
-  const [menuItems, setMenuItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editItem, setEditItem] = useState(null);
+  const [menuDescription, setMenuDescription] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState('');
 
+  // Load existing menu
   useEffect(() => {
-    fetchMenuItems();
+    fetchMenu();
   }, [restaurantId]);
 
-  const fetchMenuItems = async () => {
+  const fetchMenu = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantId}/menu`);
+      const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantId}/menu-text`);
       const data = await response.json();
-      setMenuItems(Array.isArray(data) ? data : []);
-      setLoading(false);
+      
+      if (data.success && data.menu) {
+        setMenuDescription(data.menu_description || '');
+      }
     } catch (error) {
-      console.error('Error fetching menu items:', error);
-      setMenuItems([]);
-      setLoading(false);
+      console.error('Error fetching menu:', error);
+    }
+  };
+
+  const saveMenu = async () => {
+    setIsSaving(true);
+    setMessage('');
+    
+    const token = localStorage.getItem('auth_token');
+    try {
+      const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantId}/menu-text`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ menu_description: menuDescription })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        setMessage('✅ Menu saved successfully!');
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        setMessage('❌ Failed to save menu');
+      }
+    } catch (error) {
+      console.error('Error saving menu:', error);
+      setMessage('❌ Error saving menu');
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <div className="owner-menu-tab">
-      <div className="tab-header">
-        <h3>Your Menu</h3>
-        <button 
-          className="add-item-btn"
-          onClick={() => setShowAddModal(true)}
-        >
-          ➕ Add Menu Item
-        </button>
+      <div className="menu-editor-header">
+        <h3>Edit Your Restaurant Menu</h3>
+        <p>Describe your menu items, prices, specials, etc.</p>
       </div>
-
-      {loading ? (
-        <div className="loading-state">Loading menu...</div>
-      ) : menuItems.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📋</div>
-          <h4>No Menu Items Yet</h4>
-          <button 
-            className="add-first-btn"
-            onClick={() => setShowAddModal(true)}
-          >
-            Add Your First Item
-          </button>
-        </div>
-      ) : (
-        <div className="menu-items-list">
-          {menuItems.map(item => (
-            <div key={item.id} className="menu-item-card">
-              <div className="item-info">
-                <div className="item-header">
-                  <span className="item-name">{item.name}</span>
-                  <span className="item-price">₱{item.price}</span>
-                </div>
-                {item.description && (
-                  <p className="item-description">{item.description}</p>
-                )}
-                <div className="item-meta">
-                  <span className="item-category">{item.category}</span>
-                  <span className={`item-availability ${item.is_available ? 'available' : 'unavailable'}`}>
-                    {item.is_available ? '✅ Available' : '❌ Unavailable'}
-                  </span>
-                </div>
-              </div>
-              <div className="item-actions">
-                <button 
-                  className="edit-item-btn"
-                  onClick={() => setEditItem(item)}
-                >
-                  ✏️ Edit
-                </button>
-                <button className="delete-item-btn">
-                  🗑️ Delete
-                </button>
-              </div>
-            </div>
-          ))}
+      
+      {message && (
+        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+          {message}
         </div>
       )}
+      
+      <div className="menu-editor">
+        <textarea
+          value={menuDescription}
+          onChange={(e) => setMenuDescription(e.target.value)}
+          placeholder="Enter your menu description here. Example:
+
+🍔 Main Courses:
+• Classic Burger - $12.99
+• Chicken Parmesan - $15.99
+• Veggie Pizza - $14.99
+
+🥗 Salads:
+• Caesar Salad - $9.99
+• Greek Salad - $10.99
+
+🍹 Drinks:
+• Fresh Lemonade - $3.99
+• Iced Tea - $2.99
+
+Daily Specials:
+- Monday: 20% off all pizzas
+- Tuesday: Buy one burger, get one free"
+          rows="20"
+          className="menu-textarea"
+        />
+        
+        <div className="editor-actions">
+          <button 
+            onClick={saveMenu} 
+            disabled={isSaving}
+            className="save-btn"
+          >
+            {isSaving ? 'Saving...' : 'Save Menu'}
+          </button>
+          <button 
+            onClick={() => setMenuDescription('')}
+            className="clear-btn"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

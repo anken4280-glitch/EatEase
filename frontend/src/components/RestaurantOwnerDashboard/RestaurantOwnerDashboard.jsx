@@ -16,6 +16,7 @@ function RestaurantOwnerDashboard({ user }) {
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [featuredDescription, setFeaturedDescription] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
+  const [menuText, setMenuText] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     cuisine_type: "",
@@ -31,6 +32,13 @@ function RestaurantOwnerDashboard({ user }) {
     fetchRestaurant();
   }, []);
 
+  const saveMenuText = async () => {
+    await fetch(`/api/restaurants/${restaurantId}/menu-text`, {
+      method: "POST",
+      body: JSON.stringify({ menu_text: menuText }),
+    });
+  };
+  
   const handleLogout = () => {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
@@ -458,11 +466,11 @@ function RestaurantOwnerDashboard({ user }) {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      max_capacity: parseInt(e.target.value) || 50,
+                      max_capacity: parseInt(e.target.value) || 0,
                     })
                   }
                   placeholder="Maximum number of customers"
-                  min="1"
+                  min="0"
                   required
                 />
               </div>

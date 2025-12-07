@@ -6,24 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateMenuItemsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+            $table->text('description')->nullable(); // Simple text description
             $table->timestamps();
+            
+            //Ensure One menu per restaurant
+            $table->unique(['restaurant_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('menu_items');

@@ -6,151 +6,154 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB; 
-use App\Models\MenuItem;     
-use App\Models\Review;        
-use App\Models\RestaurantPhoto; 
+use Illuminate\Support\Facades\DB;
+use App\Models\MenuItem;
+use App\Models\Review;
+use App\Models\RestaurantPhoto;
 
 class RestaurantController extends Controller
 {
     // Get restaurant for current owner
 
     public function show($id)
-{
-    $restaurant = Restaurant::find($id);
-    
-    if (!$restaurant) {
-        return response()->json([
-            'error' => 'Restaurant not found',
-            'id' => $id
-        ], 404);
-    }
-    
-    return response()->json([
-        'id' => $restaurant->id,
-        'name' => $restaurant->name,
-        'cuisine_type' => $restaurant->cuisine_type,
-        'address' => $restaurant->address,
-        'phone' => $restaurant->phone,
-        'hours' => $restaurant->hours,
-        'max_capacity' => (int) $restaurant->max_capacity,
-        'current_occupancy' => (int) $restaurant->current_occupancy,
-        'occupancy_percentage' => (int) $restaurant->occupancy_percentage,
-        'crowd_status' => $restaurant->crowd_status,
-        'is_verified' => (bool) $restaurant->is_verified,
-        'is_featured' => (bool) $restaurant->is_featured,
-        'features' => $restaurant->features ? json_decode($restaurant->features, true) : [],
-    ]);
-}
-
-private function getCrowdLevelText($status)
-{
-    switch($status) {
-        case 'green': return 'Low';
-        case 'yellow': return 'Moderate';
-        case 'orange': return 'Busy';
-        case 'red': return 'Very High';
-        default: return 'Unknown';
-    }
-}
-
-public function getRestaurantStats($id)
-{
-    $restaurant = Restaurant::find($id);
-    
-    if (!$restaurant) {
-        return response()->json(['error' => 'Restaurant not found'], 404);
-    }
-    
-    // For now, return placeholder stats
-    return response()->json([
-        'average_rating' => 0,
-        'total_reviews' => 0,
-        'rating_breakdown' => [],
-        'menu_items_count' => 0,
-        'photos_count' => 0,
-    ]);
-}
-
-public function getMenuItems($id)
-{
-    try {
-        // Check if restaurant exists
+    {
         $restaurant = Restaurant::find($id);
-        
+
+        if (!$restaurant) {
+            return response()->json([
+                'error' => 'Restaurant not found',
+                'id' => $id
+            ], 404);
+        }
+
+        return response()->json([
+            'id' => $restaurant->id,
+            'name' => $restaurant->name,
+            'cuisine_type' => $restaurant->cuisine_type,
+            'address' => $restaurant->address,
+            'phone' => $restaurant->phone,
+            'hours' => $restaurant->hours,
+            'max_capacity' => (int) $restaurant->max_capacity,
+            'current_occupancy' => (int) $restaurant->current_occupancy,
+            'occupancy_percentage' => (int) $restaurant->occupancy_percentage,
+            'crowd_status' => $restaurant->crowd_status,
+            'is_verified' => (bool) $restaurant->is_verified,
+            'is_featured' => (bool) $restaurant->is_featured,
+            'features' => $restaurant->features ? json_decode($restaurant->features, true) : [],
+            'menu_description' => $restaurant->menu_description
+        ]);
+    }
+
+    private function getCrowdLevelText($status)
+    {
+        switch ($status) {
+            case 'green':
+                return 'Low';
+            case 'yellow':
+                return 'Moderate';
+            case 'orange':
+                return 'Busy';
+            case 'red':
+                return 'Very High';
+            default:
+                return 'Unknown';
+        }
+    }
+
+    public function getRestaurantStats($id)
+    {
+        $restaurant = Restaurant::find($id);
+
         if (!$restaurant) {
             return response()->json(['error' => 'Restaurant not found'], 404);
         }
-        
-        // Get menu items
-        $menuItems = MenuItem::where('restaurant_id', $id)
-            ->where('is_available', true)
-            ->orderBy('category')
-            ->orderBy('name')
-            ->get();
-        
-        // Return empty array if no menu items
-        return response()->json($menuItems);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Failed to fetch menu items',
-            'message' => $e->getMessage()
-        ], 500);
-    }
-}
 
-public function getReviews($id)
-{
-    try {
-        // Check if restaurant exists
-        $restaurant = Restaurant::find($id);
-        
-        if (!$restaurant) {
-            return response()->json(['error' => 'Restaurant not found'], 404);
-        }
-        
-        // Get reviews with user info
-        $reviews = Review::with('user:id,name')
-            ->where('restaurant_id', $id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        return response()->json($reviews);
-        
-    } catch (\Exception $e) {
+        // For now, return placeholder stats
         return response()->json([
-            'error' => 'Failed to fetch reviews',
-            'message' => $e->getMessage()
-        ], 500);
+            'average_rating' => 0,
+            'total_reviews' => 0,
+            'rating_breakdown' => [],
+            'menu_items_count' => 0,
+            'photos_count' => 0,
+        ]);
     }
-}
 
-public function getPhotos($id)
-{
-    try {
-        // Check if restaurant exists
-        $restaurant = Restaurant::find($id);
-        
-        if (!$restaurant) {
-            return response()->json(['error' => 'Restaurant not found'], 404);
+    public function getMenuItems($id)
+    {
+        try {
+            // Check if restaurant exists
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json(['error' => 'Restaurant not found'], 404);
+            }
+
+            // Get menu items
+            $menuItems = MenuItem::where('restaurant_id', $id)
+                ->where('is_available', true)
+                ->orderBy('category')
+                ->orderBy('name')
+                ->get();
+
+            // Return empty array if no menu items
+            return response()->json($menuItems);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to fetch menu items',
+                'message' => $e->getMessage()
+            ], 500);
         }
-        
-        // Get photos
-        $photos = RestaurantPhoto::where('restaurant_id', $id)
-            ->orderBy('is_primary', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        return response()->json($photos);
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Failed to fetch photos',
-            'message' => $e->getMessage()
-        ], 500);
     }
-}
+
+    public function getReviews($id)
+    {
+        try {
+            // Check if restaurant exists
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json(['error' => 'Restaurant not found'], 404);
+            }
+
+            // Get reviews with user info
+            $reviews = Review::with('user:id,name')
+                ->where('restaurant_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json($reviews);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to fetch reviews',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getPhotos($id)
+    {
+        try {
+            // Check if restaurant exists
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json(['error' => 'Restaurant not found'], 404);
+            }
+
+            // Get photos
+            $photos = RestaurantPhoto::where('restaurant_id', $id)
+                ->orderBy('is_primary', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json($photos);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to fetch photos',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
     // Get restaurant for current owner - FIXED VERSION
     public function getMyRestaurant()
     {
@@ -261,57 +264,56 @@ public function getPhotos($id)
     /**
      * Request to be featured
      */
-public function requestFeature(Request $request)
-{
-    try {
-        $user = Auth::user();
-        
-        if (!$user) {
-            return response()->json(['message' => 'User not authenticated'], 401);
-        }
-        
-        $restaurant = Restaurant::where('owner_id', $user->id)->first();
-        
-        if (!$restaurant) {
-            return response()->json(['message' => 'Restaurant not found'], 404);
-        }
-        
-        $featuredDescription = $request->input('featured_description');
-        
-        if (!$featuredDescription || strlen($featuredDescription) < 5) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Description must be at least 5 characters'
-            ], 422);
-        }
-        
-        // Simple insert - submitted_at will auto-fill with CURRENT_TIMESTAMP
-        $result = DB::table('feature_requests')->insert([
-            'restaurant_id' => $restaurant->id,
-            'featured_description' => $featuredDescription,
-            'status' => 'pending'
-            // submitted_at auto-fills
-        ]);
-        
-        if ($result) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Feature request submitted! Admin will review it shortly.'
+    public function requestFeature(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                return response()->json(['message' => 'Restaurant not found'], 404);
+            }
+
+            $featuredDescription = $request->input('featured_description');
+
+            if (!$featuredDescription || strlen($featuredDescription) < 5) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Description must be at least 5 characters'
+                ], 422);
+            }
+
+            // Simple insert - submitted_at will auto-fill with CURRENT_TIMESTAMP
+            $result = DB::table('feature_requests')->insert([
+                'restaurant_id' => $restaurant->id,
+                'featured_description' => $featuredDescription,
+                'status' => 'pending'
+                // submitted_at auto-fills
             ]);
-        } else {
+
+            if ($result) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Feature request submitted! Admin will review it shortly.'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to save feature request'
+                ], 500);
+            }
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to save feature request'
+                'message' => 'Failed to submit feature request: ' . $e->getMessage()
             ], 500);
         }
-        
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to submit feature request: ' . $e->getMessage()
-        ], 500);
     }
-}
 
     public function getAllRestaurants()
     {
