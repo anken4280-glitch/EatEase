@@ -30,7 +30,9 @@ class Restaurant extends Model
         'suspended_at',
         'suspended_reason',
         'admin_notes',
-        'menu-description'
+        'menu-description',
+        'average_rating',
+        'total_reviews'
     ];
 
     protected $casts = [
@@ -52,9 +54,9 @@ class Restaurant extends Model
         static::saving(function ($restaurant) {
             // Calculate occupancy percentage
             if ($restaurant->max_capacity > 0) {
-                $restaurant->occupancy_percentage = 
+                $restaurant->occupancy_percentage =
                     round(($restaurant->current_occupancy / $restaurant->max_capacity) * 100);
-                
+
                 // 4-tier crowd status
                 if ($restaurant->occupancy_percentage <= 50) {
                     $restaurant->crowd_status = 'green';
@@ -73,20 +75,25 @@ class Restaurant extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
-    
+
     public function verifier()
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
-    
+
     public function getCrowdLevelAttribute()
     {
         switch ($this->crowd_status) {
-            case 'green': return 'Low';
-            case 'yellow': return 'Moderate';
-            case 'orange': return 'High';
-            case 'red': return 'Full';
-            default: return 'Unknown';
+            case 'green':
+                return 'Low';
+            case 'yellow':
+                return 'Moderate';
+            case 'orange':
+                return 'High';
+            case 'red':
+                return 'Full';
+            default:
+                return 'Unknown';
         }
     }
 
@@ -95,12 +102,12 @@ class Restaurant extends Model
     {
         return $this->verification_requested && !$this->is_verified;
     }
-    
+
     public function canRequestVerification()
     {
         return !$this->is_verified && !$this->verification_requested;
     }
-    
+
     public function getVerificationStatusAttribute()
     {
         if ($this->is_verified) {

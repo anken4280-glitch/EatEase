@@ -40,7 +40,9 @@ class RestaurantController extends Controller
             'is_verified' => (bool) $restaurant->is_verified,
             'is_featured' => (bool) $restaurant->is_featured,
             'features' => $restaurant->features ? json_decode($restaurant->features, true) : [],
-            'menu_description' => $restaurant->menu_description
+            'menu_description' => $restaurant->menu_description,
+            'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0.00,
+            'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0,
         ]);
     }
 
@@ -105,30 +107,30 @@ class RestaurantController extends Controller
         }
     }
 
-    public function getReviews($id)
-    {
-        try {
-            // Check if restaurant exists
-            $restaurant = Restaurant::find($id);
+    // public function getReviews($id)
+    // {
+    //     try {
+    //         // Check if restaurant exists
+    //         $restaurant = Restaurant::find($id);
 
-            if (!$restaurant) {
-                return response()->json(['error' => 'Restaurant not found'], 404);
-            }
+    //         if (!$restaurant) {
+    //             return response()->json(['error' => 'Restaurant not found'], 404);
+    //         }
 
-            // Get reviews with user info
-            $reviews = Review::with('user:id,name')
-                ->where('restaurant_id', $id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+    //         // Get reviews with user info
+    //         $reviews = Review::with('user:id,name')
+    //             ->where('restaurant_id', $id)
+    //             ->orderBy('created_at', 'desc')
+    //             ->get();
 
-            return response()->json($reviews);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to fetch reviews',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
+    //         return response()->json($reviews);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => 'Failed to fetch reviews',
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     public function getPhotos($id)
     {
@@ -361,6 +363,8 @@ class RestaurantController extends Controller
                     'occupancy' => $occupancyPercentage,
                     'waitTime' => $waitTime,
                     'isFeatured' => $restaurant->is_featured ?? false,
+                    'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0.00,
+                    'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0
                 ];
             });
 
@@ -405,6 +409,8 @@ class RestaurantController extends Controller
                 'waitTime' => $restaurant->estimated_wait_time,
                 'isFeatured' => $restaurant->is_featured ?? false,
                 'features' => $restaurant->features ?? [],
+                'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0.00,
+                'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0,
                 'created_at' => $restaurant->created_at,
                 'updated_at' => $restaurant->updated_at,
             ]

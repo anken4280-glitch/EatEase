@@ -118,7 +118,6 @@ Route::get('/restaurants', [RestaurantController::class, 'getAllRestaurants']);
 Route::get('/restaurants/{id}', [RestaurantController::class, 'getRestaurantById']);
 // Restaurant Details Endpoints
 Route::get('/restaurants/{id}/menu', [RestaurantController::class, 'getMenuItems']);
-Route::get('/restaurants/{id}/reviews', [RestaurantController::class, 'getReviews']);
 Route::get('/restaurants/{id}/photos', [RestaurantController::class, 'getPhotos']);
 Route::get('/restaurants/{id}/stats', [RestaurantController::class, 'getRestaurantStats']);
 
@@ -170,3 +169,12 @@ Route::get('/restaurants/{id}/menu', [MenuController::class, 'show']);
 Route::middleware('auth:sanctum')->put('/restaurants/{id}/menu-text', [MenuController::class, 'update']);
 // Add this with your other restaurant routes
 Route::get('/restaurants/{id}/menu-text', [MenuController::class, 'show']);
+
+// Review Routes - PUBLIC
+Route::get('/restaurants/{id}/reviews', [ReviewController::class, 'index']);
+
+// Protected review routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/restaurants/{id}/reviews', [ReviewController::class, 'store']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+});

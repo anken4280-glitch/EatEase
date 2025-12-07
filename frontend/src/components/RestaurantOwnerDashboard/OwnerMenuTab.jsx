@@ -71,24 +71,7 @@ const OwnerMenuTab = ({ restaurantId }) => {
         <textarea
           value={menuDescription}
           onChange={(e) => setMenuDescription(e.target.value)}
-          placeholder="Enter your menu description here. Example:
-
-🍔 Main Courses:
-• Classic Burger - $12.99
-• Chicken Parmesan - $15.99
-• Veggie Pizza - $14.99
-
-🥗 Salads:
-• Caesar Salad - $9.99
-• Greek Salad - $10.99
-
-🍹 Drinks:
-• Fresh Lemonade - $3.99
-• Iced Tea - $2.99
-
-Daily Specials:
-- Monday: 20% off all pizzas
-- Tuesday: Buy one burger, get one free"
+          placeholder="Enter"
           rows="20"
           className="menu-textarea"
         />

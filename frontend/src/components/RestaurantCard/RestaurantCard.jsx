@@ -270,10 +270,46 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
               )}
             </div>
 
-            {/* Rating Display - Static for now */}
+            {/* Rating Display - Real Data */}
             <div className="rating-display">
-              <span className="rating-stars">★★★★★</span>
-              <span className="rating-text">(4.2)</span>
+              {/* Check if restaurant has ratings */}
+              {restaurant.average_rating > 0 ? (
+                <>
+                  <div className="star-rating-small">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={`star ${
+                          star <= Math.round(restaurant.average_rating)
+                            ? "filled"
+                            : ""
+                        }`}
+                        style={{
+                          color:
+                            star <= Math.round(restaurant.average_rating)
+                              ? "#FFD700"
+                              : "#ddd",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {star <= Math.round(restaurant.average_rating)
+                          ? "★"
+                          : "☆"}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="rating-info-small">
+                    <span className="rating-value">
+                      {parseFloat(restaurant.average_rating).toFixed(1)}
+                    </span>
+                    <span className="review-count">
+                      ({restaurant.total_reviews || 0})
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <span className="no-reviews">No reviews</span>
+              )}
             </div>
           </div>
 

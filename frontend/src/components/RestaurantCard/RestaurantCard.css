@@ -23,6 +23,51 @@
   border-left-color: #ef4444;
 }
 
+/* Star Rating Styles */
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star-rating .star {
+  color: #ddd;
+  font-size: 14px;
+}
+
+.star-rating .star.filled {
+  color: #FFD700; /* Gold color for filled stars */
+}
+
+.rating-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rating-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.review-count {
+  color: #666;
+  font-size: 12px;
+}
+
+.no-reviews-text {
+  color: #999;
+  font-size: 12px;
+  font-style: italic;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
