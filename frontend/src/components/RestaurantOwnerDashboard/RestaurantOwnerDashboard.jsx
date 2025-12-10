@@ -7,6 +7,7 @@ import OwnerOverviewTab from "./OwnerOverviewTab";
 import OwnerMenuTab from "./OwnerMenuTab";
 import OwnerReviewsTab from "./OwnerReviewsTab";
 import OwnerPhotosTab from "./OwnerPhotosTab";
+import AnalyticsTab from "./AnalyticsTab";
 
 function RestaurantOwnerDashboard({ user }) {
   const [showVerificationForm, setShowVerificationForm] = useState(false);
@@ -17,6 +18,9 @@ function RestaurantOwnerDashboard({ user }) {
   const [featuredDescription, setFeaturedDescription] = useState("");
   const [activeTab, setActiveTab] = useState("overview");
   const [menuText, setMenuText] = useState("");
+  const [showCreateRestaurant, setShowCreateRestaurant] = useState(false);
+  const [tier, setTier] = useState("basic");
+  const [canBeFeatured, setCanBeFeatured] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     cuisine_type: "",
@@ -29,6 +33,97 @@ function RestaurantOwnerDashboard({ user }) {
   });
 
   useEffect(() => {
+    if (user && user.user_type === "restaurant_owner") {
+      fetchTier();
+      fetchRestaurant();
+    }
+  }, [user]);
+
+  const fetchTier = async () => {
+    const token = localStorage.getItem("auth_token");
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/subscription/tier",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+      console.log("Tier API Response:", data);
+
+      if (data.success) {
+        setTier(data.tier);
+        setCanBeFeatured(data.can_be_featured);
+
+        // Handle case where user needs to create restaurant first
+        if (data.needs_setup) {
+          console.log("User needs to create a restaurant first");
+          setShowCreateRestaurant(true);
+        }
+      } else {
+        console.error("Tier API error:", data.message);
+
+        // If restaurant not found, default to basic tier
+        if (
+          data.message === "Restaurant not found" ||
+          data.message === "No restaurant found"
+        ) {
+          setTier("basic");
+          setCanBeFeatured(false);
+          setShowCreateRestaurant(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching tier:", error);
+      // Default to basic on error
+      setTier("basic");
+      setCanBeFeatured(false);
+    }
+  };
+
+  const handleUpgrade = async () => {
+    if (
+      !confirm(
+        "Upgrade to Premium tier? This will unlock all features including the ability to apply for featured status."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        "http://localhost:8000/api/subscription/upgrade",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert("Successfully upgraded to Premium tier!");
+        setTier("premium");
+        setCanBeFeatured(true);
+      } else {
+        alert("Upgrade failed: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error upgrading tier:", error);
+      alert("Error upgrading tier");
+    }
+  };
+
+  useEffect(() => {
     fetchRestaurant();
   }, []);
 
@@ -38,7 +133,7 @@ function RestaurantOwnerDashboard({ user }) {
       body: JSON.stringify({ menu_text: menuText }),
     });
   };
-  
+
   const handleLogout = () => {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("user");
@@ -92,16 +187,32 @@ function RestaurantOwnerDashboard({ user }) {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
+        credentials: "include",
       });
+
+      const data = await response.json();
+      console.log("Restaurant API Response:", data);
 
       if (response.status === 404) {
         setRestaurant(null);
-      } else if (response.ok) {
-        const data = await response.json();
+        // Check if it's the "needs_setup" 404
+        if (data.needs_setup) {
+          setShowCreateRestaurant(true);
+        }
+      } else if (response.ok && data.success) {
         setRestaurant(data.restaurant);
+        setShowCreateRestaurant(false);
+
+        // Update tier based on restaurant data
+        if (data.restaurant) {
+          setTier(data.restaurant.subscription_tier || "basic");
+          setCanBeFeatured(data.restaurant.can_be_featured || false);
+        }
       }
     } catch (error) {
       console.error("Error fetching restaurant:", error);
+      setRestaurant(null);
+      setShowCreateRestaurant(true);
     } finally {
       setLoading(false);
     }
@@ -160,53 +271,60 @@ function RestaurantOwnerDashboard({ user }) {
 
   // Render tab content based on active tab
   const renderTabContent = () => {
-    if (!restaurant) return null;
+            if (!restaurant) return null;
 
-    switch (activeTab) {
-      case "overview":
-        return (
-          <OwnerOverviewTab
-            restaurant={restaurant}
-            onEdit={() => {
-              setFormData({
-                name: restaurant.name,
-                cuisine_type: restaurant.cuisine_type,
-                address: restaurant.address,
-                phone: restaurant.phone,
-                hours: restaurant.hours,
-                max_capacity: restaurant.max_capacity,
-                current_occupancy: restaurant.current_occupancy,
-                features: restaurant.features || [],
-              });
-              setIsEditing(true);
-            }}
-          />
-        );
-      case "menu":
-        return <OwnerMenuTab restaurantId={restaurant.id} />;
-      case "reviews":
-        return <OwnerReviewsTab restaurantId={restaurant.id} />;
-      case "photos":
-        return <OwnerPhotosTab restaurantId={restaurant.id} />;
-      default:
-        return (
-          <OwnerOverviewTab
-            restaurant={restaurant}
-            onEdit={() => {
-              setFormData({
-                name: restaurant.name,
-                cuisine_type: restaurant.cuisine_type,
-                address: restaurant.address,
-                phone: restaurant.phone,
-                hours: restaurant.hours,
-                max_capacity: restaurant.max_capacity,
-                current_occupancy: restaurant.current_occupancy,
-                features: restaurant.features || [],
-              });
-              setIsEditing(true);
-            }}
-          />
-        );
+        switch (activeTab) {
+          case "overview":
+            return (
+              <OwnerOverviewTab
+                restaurant={restaurant}
+                onEdit={() => {
+                  setFormData({
+                    name: restaurant.name,
+                    cuisine_type: restaurant.cuisine_type,
+                    address: restaurant.address,
+                    phone: restaurant.phone,
+                    hours: restaurant.hours,
+                    max_capacity: restaurant.max_capacity,
+                    current_occupancy: restaurant.current_occupancy,
+                    features: restaurant.features || [],
+                  });
+                  setIsEditing(true);
+                }}
+              />
+            );
+          case "menu":
+            return <OwnerMenuTab restaurantId={restaurant.id} />;
+          case "reviews":
+            return <OwnerReviewsTab restaurantId={restaurant.id} />;
+          case "photos":
+            return <OwnerPhotosTab restaurantId={restaurant.id} />;
+          case "analytics": // NEW TAB
+            return (
+              <AnalyticsTab
+                restaurantId={restaurant.id}
+                isPremium={tier === "premium"}
+              />
+            );
+          default:
+            return (
+              <OwnerOverviewTab
+                restaurant={restaurant}
+                onEdit={() => {
+                  setFormData({
+                    name: restaurant.name,
+                    cuisine_type: restaurant.cuisine_type,
+                    address: restaurant.address,
+                    phone: restaurant.phone,
+                    hours: restaurant.hours,
+                    max_capacity: restaurant.max_capacity,
+                    current_occupancy: restaurant.current_occupancy,
+                    features: restaurant.features || [],
+                  });
+                  setIsEditing(true);
+                }}
+              />
+            );
     }
   };
 
@@ -230,6 +348,22 @@ function RestaurantOwnerDashboard({ user }) {
             <div className="empty-icon">🏪</div>
             <h3>No Restaurant Setup Yet</h3>
             <p>Set up your restaurant profile to start receiving diners</p>
+
+            {/* Tier info for new users */}
+            <div className="tier-info-prompt">
+              <h4>
+                Subscription:{" "}
+                <span className={`tier-badge ${tier}`}>
+                  {tier === "premium" ? "⭐ Premium" : "Free Tier"}
+                </span>
+              </h4>
+              <p>
+                {tier === "basic"
+                  ? "Start with Free tier. Upgrade after creating your restaurant."
+                  : "You're on Premium tier! Create your restaurant to unlock all features."}
+              </p>
+            </div>
+
             <button className="setup-btn" onClick={() => setIsEditing(true)}>
               Set Up My Restaurant
             </button>
@@ -242,9 +376,24 @@ function RestaurantOwnerDashboard({ user }) {
           <div className="owner-header">
             <div className="owner-title-row">
               <h1 className="owner-title">My Restaurant</h1>
-              <button onClick={handleLogout} className="owner-logout-btn">
-                Logout
-              </button>
+
+              {/* Header tier badge and logout */}
+              <div className="header-tier-badge">
+                <span className={`tier-badge ${tier}`}>
+                  {tier === "premium" ? "⭐ Premium" : "Free"}
+                </span>
+                {tier === "basic" && (
+                  <button
+                    className="upgrade-header-btn"
+                    onClick={handleUpgrade}
+                  >
+                    Upgrade
+                  </button>
+                )}
+                <button onClick={handleLogout} className="owner-logout-btn">
+                  Logout
+                </button>
+              </div>
             </div>
 
             {/* Restaurant Name and Verification Status */}
@@ -271,6 +420,41 @@ function RestaurantOwnerDashboard({ user }) {
                 </button>
               </div>
 
+              {/* Tier Section */}
+              <div className="tier-section">
+                <h3>Subscription Tier</h3>
+                <div className="tier-info">
+                  {tier === "basic" ? (
+                    <div className="basic-tier">
+                      <span className="tier-badge basic">Free Tier</span>
+                      <p className="tier-description">
+                        • Manual updates only
+                        <br />
+                        • Cannot apply for featured status
+                        <br />• Basic features only
+                      </p>
+                      <button className="upgrade-btn" onClick={handleUpgrade}>
+                        ⭐ Upgrade to Premium (PHP 1,499/month)
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="premium-tier">
+                      <span className="tier-badge premium">
+                        ⭐ Premium Tier
+                      </span>
+                      <p className="tier-description">
+                        • Automatic IoT updates
+                        <br />
+                        • Can apply for featured status
+                        <br />
+                        • Full analytics access
+                        <br />• Advertisement capabilities
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Verification Status */}
               <div className="owner-verification-status">
                 {restaurant.is_verified ? (
@@ -287,12 +471,23 @@ function RestaurantOwnerDashboard({ user }) {
                   <div className="verification-badge not-verified">
                     <span className="badge-icon">⚠️</span>
                     <span className="badge-text">Not Verified</span>
-                    <button
-                      className="request-verification-btn"
-                      onClick={() => setShowVerificationForm(true)}
-                    >
-                      Request Verification
-                    </button>
+                    {/* Conditional feature button */}
+                    {canBeFeatured ? (
+                      <button
+                        className="request-verification-btn"
+                        onClick={() => setShowVerificationForm(true)}
+                      >
+                        Request Verification
+                      </button>
+                    ) : (
+                      <button
+                        className="request-verification-btn disabled"
+                        disabled
+                        title="Upgrade to Premium to verify"
+                      >
+                        Upgrade for Verification
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -363,23 +558,48 @@ function RestaurantOwnerDashboard({ user }) {
             >
               📸 Photos
             </button>
+            <button
+              className={`owner-tab-btn ${
+                activeTab === "analytics" ? "active" : ""
+              } ${tier === "premium" ? "premium-unlocked" : "premium-locked"}`}
+              onClick={() => setActiveTab("analytics")}
+              title={
+                tier === "basic"
+                  ? "Upgrade to Premium to access analytics"
+                  : "View analytics"
+              }
+            >
+              {tier === "premium" ? "📊 Analytics" : "🔒 Analytics"}
+            </button>
           </div>
 
           {/* Tab Content */}
           <div className="owner-tab-content">{renderTabContent()}</div>
 
-          {/* Feature CTA */}
+          {/* Feature CTA - Conditional based on tier */}
           {!restaurant.is_featured && (
             <div className="owner-feature-cta">
               <div className="feature-cta-content">
                 <h3>Want more customers?</h3>
                 <p>Get featured on our homepage and get 3x more visibility!</p>
-                <button
-                  className="feature-cta-button"
-                  onClick={() => setShowFeatureModal(true)}
-                >
-                  🚀 Be Featured Now
-                </button>
+
+                {/* Conditional feature button */}
+                {canBeFeatured ? (
+                  <button
+                    className="feature-cta-button"
+                    onClick={() => setShowFeatureModal(true)}
+                  >
+                    🚀 Be Featured Now
+                  </button>
+                ) : (
+                  <button
+                    className="feature-cta-button disabled"
+                    disabled
+                    title="Upgrade to Premium to be featured"
+                  >
+                    ⭐ Upgrade to Be Featured
+                  </button>
+                )}
               </div>
             </div>
           )}

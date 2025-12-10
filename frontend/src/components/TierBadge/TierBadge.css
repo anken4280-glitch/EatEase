@@ -1,0 +1,28 @@
+.tier-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tier-badge.basic {
+  background-color: #e9ecef;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.tier-badge.premium {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.tier-badge.loading {
+  background-color: #f8f9fa;
+  color: #adb5bd;
+  min-width: 40px;
+  text-align: center;
+}

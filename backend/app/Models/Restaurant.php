@@ -20,7 +20,6 @@ class Restaurant extends Model
         'current_occupancy',
         'features',
         'is_featured',
-        // Add verification fields
         'is_verified',
         'verification_requested',
         'verification_requested_at',
@@ -32,20 +31,66 @@ class Restaurant extends Model
         'admin_notes',
         'menu-description',
         'average_rating',
-        'total_reviews'
+        'total_reviews',
+        'subscription_tier',
+        'subscription_ends_at',
+        'can_be_featured',
+        'can_run_ads',
+        'has_analytics_access',
+        'has_api_access'
     ];
 
     protected $casts = [
         'features' => 'array',
         'is_featured' => 'boolean',
-        // Add verification casts
         'is_verified' => 'boolean',
         'verification_requested' => 'boolean',
         'is_suspended' => 'boolean',
         'verification_requested_at' => 'datetime',
         'verified_at' => 'datetime',
-        'suspended_at' => 'datetime'
+        'suspended_at' => 'datetime',
+        'subscription_ends_at' => 'datetime',
+        'can_be_featured' => 'boolean',
+        'can_run_ads' => 'boolean',
+        'has_analytics_access' => 'boolean',
+        'has_api_access' => 'boolean',
     ];
+
+    public function isPremium(): bool
+    {
+        return $this->subscription_tier === 'premium' &&
+            ($this->subscription_ends_at === null ||
+                $this->subscription_ends_at->isFuture());
+    }
+
+    public function isBasic(): bool
+    {
+        return $this->subscription_tier === 'basic';
+    }
+
+    public function upgradeToPremium(): void
+    {
+        $this->update([
+            'subscription_tier' => 'premium',
+            'subscription_ends_at' => now()->addMonth(), // 1 month from now
+            'can_be_featured' => true,
+            'can_run_ads' => true,
+            'has_analytics_access' => true,
+            'has_api_access' => true,
+        ]);
+    }
+
+    public function downgradeToBasic(): void
+    {
+        $this->update([
+            'subscription_tier' => 'basic',
+            'subscription_ends_at' => null,
+            'can_be_featured' => false,
+            'can_run_ads' => false,
+            'has_analytics_access' => false,
+            'has_api_access' => false,
+        ]);
+    }
 
     protected static function boot()
     {

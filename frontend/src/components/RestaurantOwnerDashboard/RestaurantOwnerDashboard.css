@@ -800,3 +800,197 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Tier Badge Styles */
+.tier-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 10px;
+}
+
+.tier-badge.basic,
+.tier-badge.free {
+  background-color: #e9ecef;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.tier-badge.premium {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+/* Header Tier Badge */
+.header-tier-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upgrade-header-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.upgrade-header-btn:hover {
+  background-color: #218838;
+}
+
+/* Tier Info Prompt */
+.tier-info-prompt {
+  background: #e7f5ff;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.tier-info-prompt h4 {
+  margin: 0 0 10px 0;
+  color: #495057;
+}
+
+.tier-info-prompt p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Tier Section */
+.tier-section {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  border: 1px solid #dee2e6;
+}
+
+.tier-section h3 {
+  margin: 0 0 10px 0;
+  color: #495057;
+  font-size: 16px;
+}
+
+.tier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.basic-tier,
+.premium-tier {
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.basic-tier {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.premium-tier {
+  background: #fff9db;
+  border: 1px solid #ffe066;
+}
+
+.tier-description {
+  margin: 10px 0;
+  color: #6c757d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.upgrade-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.upgrade-btn:hover {
+  background-color: #218838;
+}
+
+/* Disabled buttons */
+.feature-cta-button.disabled,
+.request-verification-btn.disabled {
+  background-color: #6c757d !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+/* Restaurant header info layout */
+.restaurant-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@media (min-width: 768px) {
+  .restaurant-header-info {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  
+  .restaurant-title-section {
+    flex: 1;
+  }
+  
+  .tier-section {
+    flex: 1;
+    margin: 0;
+  }
+  
+  .owner-verification-status {
+    flex: 1;
+  }
+}
+
+/* Analytics Tab Button */
+.owner-tab-btn.analytics-tab.premium-locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.owner-tab-btn.analytics-tab.premium-locked:hover::after {
+  content: "Upgrade to Premium";
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.owner-tab-btn.analytics-tab.premium-locked:hover::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+}

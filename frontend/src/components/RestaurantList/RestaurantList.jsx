@@ -22,6 +22,7 @@ function RestaurantList({
   const [error, setError] = useState(""); // Error message for failed fetch
   const menuRef = useRef(null); // Ref for detecting clicks outside hamburger menu
   const [notificationCount, setNotificationCount] = useState(0); // ADD THIS
+  const [showOnlyPremium, setShowOnlyPremium] = useState(false);
 
   // ========== USE EFFECTS ==========
   // Effect for closing hamburger menu when clicking outside
@@ -107,6 +108,24 @@ function RestaurantList({
       setLoading(false);
     }
   };
+
+  const filteredRestaurants = restaurants.filter((restaurant) => {
+    // Premium filter
+    if (showOnlyPremium && !restaurant.isPremium) {
+      return false;
+    }
+
+    // Search filter (keep your existing search logic)
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      return (
+        restaurant.name.toLowerCase().includes(query) ||
+        restaurant.cuisine.toLowerCase().includes(query) ||
+        restaurant.address.toLowerCase().includes(query)
+      );
+    }
+    return true;
+  });
 
   const fetchNotificationCount = async () => {
     try {
@@ -219,6 +238,27 @@ function RestaurantList({
         {/* Search Bar */}
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
+        {/* ========== ADD PREMIUM FILTER HERE ========== */}
+        <div className="premium-filter-container">
+          <button
+            className={`premium-filter-btn ${showOnlyPremium ? "active" : ""}`}
+            onClick={() => setShowOnlyPremium(!showOnlyPremium)}
+            title={
+              showOnlyPremium
+                ? "Show all restaurants"
+                : "Show only Premium restaurants"
+            }
+          >
+            {showOnlyPremium ? "⭐ Premium Only" : "⭐ Premium"}
+            {showOnlyPremium && (
+              <span className="premium-filter-count">
+                ({filteredRestaurants.length})
+              </span>
+            )}
+          </button>
+        </div>
+        {/* ========== END PREMIUM FILTER ========== */}
+
         {/* Filters Toggle */}
         <Filters
           filters={filters}
@@ -281,7 +321,7 @@ function RestaurantList({
       {selectedRestaurant ? (
         // DETAIL VIEW - When a restaurant is selected
         <RestaurantDetails
-          restaurantId={selectedRestaurant.id} // Changed from restaurant to restaurantId
+          restaurantId={selectedRestaurant.id}
           onBack={handleBackToList}
         />
       ) : (
@@ -298,16 +338,32 @@ function RestaurantList({
             {/* MAIN RESTAURANT LIST */}
             <div className="restaurants-container">
               {/* EMPTY STATE - No restaurants in database */}
-              {restaurants.length === 0 ? (
+              {filteredRestaurants.length === 0 ? (
                 <div className="empty-state">
-                  <p>No restaurants available yet.</p>
-                  <p>
-                    Restaurant owners can add their restaurants to appear here.
-                  </p>
+                  {showOnlyPremium ? (
+                    <>
+                      <p>No Premium restaurants available.</p>
+                      <p>Try showing all restaurants instead.</p>
+                      <button
+                        className="show-all-btn"
+                        onClick={() => setShowOnlyPremium(false)}
+                      >
+                        Show All Restaurants
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p>No restaurants available yet.</p>
+                      <p>
+                        Restaurant owners can add their restaurants to appear
+                        here.
+                      </p>
+                    </>
+                  )}
                 </div>
               ) : (
-                // RESTAURANT CARDS GRID
-                restaurants.map((restaurant) => (
+                // RESTAURANT CARDS GRID - Use filteredRestaurants instead of restaurants
+                filteredRestaurants.map((restaurant) => (
                   <RestaurantCard
                     key={restaurant.id}
                     restaurant={restaurant}

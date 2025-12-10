@@ -10,6 +10,8 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ReviewController;  // Add this line
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\AnalyticsController;
 
 Route::get('/test-db', function () {
     try {
@@ -177,4 +179,16 @@ Route::get('/restaurants/{id}/reviews', [ReviewController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/restaurants/{id}/reviews', [ReviewController::class, 'store']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+});
+
+// Subscription routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/subscription/tier', [SubscriptionController::class, 'getCurrentTier']);
+    Route::post('/subscription/upgrade', [SubscriptionController::class, 'upgradeToPremium']);
+    Route::get('/subscription/can-apply-featured', [SubscriptionController::class, 'canApplyForFeatured']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Analytics routes (premium only)
+    Route::get('/restaurants/{id}/analytics', [AnalyticsController::class, 'getRestaurantAnalytics']);
 });

@@ -129,3 +129,75 @@
   padding: 12px 15px;
   text-align: left;
 }
+
+/* Premium Filter Styles */
+.premium-filter-container {
+  display: flex;
+  align-items: center;
+}
+
+.premium-filter-btn {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.premium-filter-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.premium-filter-btn.active {
+  background: #fff3cd;
+  border-color: #ffd43b;
+  color: #856404;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px rgba(255, 212, 59, 0.2);
+}
+
+.premium-filter-count {
+  background: #ffd43b;
+  color: #856404;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+/* Adjust header layout for the new filter */
+.restaurant-list-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px;
+  background: #fff;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Empty state for premium filter */
+.empty-state .show-all-btn {
+  background: #4dabf7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.empty-state .show-all-btn:hover {
+  background: #339af0;
+}

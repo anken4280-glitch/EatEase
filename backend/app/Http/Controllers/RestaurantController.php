@@ -320,8 +320,12 @@ class RestaurantController extends Controller
     public function getAllRestaurants()
     {
         try {
-            // Get all restaurants (no is_active filter)
-            $restaurants = \App\Models\Restaurant::all(); // Add full namespace
+            // Get all restaurants with premium ones FIRST
+            $restaurants = \App\Models\Restaurant::orderByRaw("subscription_tier = 'premium' DESC")
+                ->orderBy('is_featured', 'DESC')
+                ->orderBy('is_verified', 'DESC')
+                ->orderBy('created_at', 'DESC')
+                ->get();
 
             // Transform for frontend
             $transformedRestaurants = $restaurants->map(function ($restaurant) {
@@ -363,17 +367,24 @@ class RestaurantController extends Controller
                     'occupancy' => $occupancyPercentage,
                     'waitTime' => $waitTime,
                     'isFeatured' => $restaurant->is_featured ?? false,
+                    'isVerified' => $restaurant->is_verified ?? false,
+                    'isPremium' => $restaurant->subscription_tier === 'premium',
+                    'subscription_tier' => $restaurant->subscription_tier ?? 'basic',
                     'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0.00,
                     'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0
                 ];
             });
 
+            // Count premium restaurants
+            $premiumCount = $restaurants->where('subscription_tier', 'premium')->count();
+
             return response()->json([
                 'restaurants' => $transformedRestaurants,
-                'count' => $transformedRestaurants->count()
+                'count' => $transformedRestaurants->count(),
+                'premium_count' => $premiumCount,
+                'featured_count' => $restaurants->where('is_featured', true)->count()
             ]);
         } catch (\Exception $e) {
-            // Fix: Use Illuminate\Support\Facades\Log
             \Illuminate\Support\Facades\Log::error('Error fetching restaurants: ' . $e->getMessage());
 
             return response()->json([

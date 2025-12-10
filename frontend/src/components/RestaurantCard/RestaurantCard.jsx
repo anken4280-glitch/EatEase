@@ -259,15 +259,18 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
   return (
     <>
       <div className="restaurant-card" onClick={handleClick}>
+        <div className="card-badges">
+          {restaurant.isPremium && (
+            <div className="premium-restaurant-badge">⭐</div>
+          )}
+          {restaurant.isVerified && (
+            <div className="verified-badge">✅ Verified</div>
+          )}
+        </div>
         <div className="card-header">
           <div className="card-title-section">
             <div className="restaurant-title-row">
               <h3 className="restaurant-name">{restaurant.name}</h3>
-              {restaurant.is_verified && (
-                <span className="verified-badge" title="Verified Restaurant">
-                  ✅ Verified
-                </span>
-              )}
             </div>
 
             {/* Rating Display - Real Data */}
