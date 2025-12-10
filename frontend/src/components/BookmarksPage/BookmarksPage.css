@@ -43,14 +43,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.bookmarks-count {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #f0f0f0;
-}
-
 .bookmarks-list {
   display: flex;
   flex-direction: column;

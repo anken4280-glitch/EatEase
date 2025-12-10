@@ -305,9 +305,6 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
                     <span className="rating-value">
                       {parseFloat(restaurant.average_rating).toFixed(1)}
                     </span>
-                    <span className="review-count">
-                      ({restaurant.total_reviews || 0})
-                    </span>
                   </div>
                 </>
               ) : (

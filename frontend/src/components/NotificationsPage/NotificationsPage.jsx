@@ -112,7 +112,7 @@ function NotificationsPage({ user, onBack }) {
     <div className="notifications-page">
       <div className="page-header">
         <button className="back-button" onClick={onBack}>
-          ← Back
+          ←
         </button>
         <h1>🔔 My Notifications</h1>
       </div>
@@ -144,7 +144,7 @@ function NotificationsPage({ user, onBack }) {
           ) : (
             <div className="notifications-container">
               <p className="notifications-count">
-                {notifications.length} notification(s) set
+                {notifications.length} notification/s set
               </p>
 
               <div className="notifications-list">

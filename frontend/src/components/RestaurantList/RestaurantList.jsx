@@ -231,7 +231,7 @@ function RestaurantList({
         {/* Back button - Only shown in detail view */}
         {selectedRestaurant && (
           <button className="back-button" onClick={handleBackToList}>
-            ← Back
+          ←
           </button>
         )}
 
@@ -249,12 +249,8 @@ function RestaurantList({
                 : "Show only Premium restaurants"
             }
           >
-            {showOnlyPremium ? "⭐ Premium Only" : "⭐ Premium"}
-            {showOnlyPremium && (
-              <span className="premium-filter-count">
-                ({filteredRestaurants.length})
-              </span>
-            )}
+            {showOnlyPremium ? "⭐" : "⭐"}
+            {showOnlyPremium}
           </button>
         </div>
         {/* ========== END PREMIUM FILTER ========== */}

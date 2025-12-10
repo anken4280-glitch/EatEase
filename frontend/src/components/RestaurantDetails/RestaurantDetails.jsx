@@ -304,14 +304,6 @@ function RestaurantDetails({ restaurantId, onBack }) {
     </span>
         </div>
         <div className="stat-divider"></div>
-        <div className="stat-item">
-          <span className="stat-value">
-            {restaurant.is_featured ? "🌟" : "⭐"}
-          </span>
-          <span className="stat-label">
-            {restaurant.is_featured ? "Featured" : "Standard"}
-          </span>
-        </div>
       </div>
 
       {/* Tab Navigation */}

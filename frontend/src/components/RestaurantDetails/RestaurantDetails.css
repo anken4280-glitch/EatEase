@@ -16,10 +16,9 @@
 /* ===== RESTAURANT HEADER ===== */
 .restaurant-header {
   background: white;
-  padding: 70px 16px 20px 16px; /* Reduced horizontal padding */
+  padding: 20px 16px 20px 16px; /* Reduced horizontal padding */
   border-radius: 0 0 24px 24px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  margin-bottom: 16px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -492,14 +491,9 @@
 .reviews-tab {
   background: white;
   border-radius: 16px;
-  padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-
-.rating-overview {
-  margin-bottom: 20px;
-}
 
 .average-rating-large {
   font-size: 48px;
@@ -1069,7 +1063,6 @@
 
 /* Reviews Tab Styles */
 .reviews-tab {
-  padding: 20px;
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -1083,11 +1076,11 @@
 .rating-summary-card {
   background: white;
   border-radius: 16px;
-  padding: 30px;
-  margin-bottom: 30px;
+  padding: 8px;
+  margin-bottom: 8px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   display: flex;
-  gap: 40px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -1097,7 +1090,7 @@
 }
 
 .average-rating {
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .rating-number {
@@ -1131,6 +1124,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-bottom: 2px;
 }
 
 .distribution-item {
@@ -1184,7 +1178,7 @@
   background: white;
   border-radius: 16px;
   padding: 30px;
-  margin-bottom: 30px;
+  margin-bottom: 8px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
@@ -1285,7 +1279,7 @@
 .reviews-list-section {
   background: white;
   border-radius: 16px;
-  padding: 30px;
+  padding: 10px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
@@ -1536,7 +1530,7 @@
 @media (max-width: 768px) {
   .rating-summary-card {
     flex-direction: column;
-    gap: 25px;
+    gap: 5px;
   }
   
   .section-header {
@@ -1610,7 +1604,7 @@ body {
   }
   
   .restaurant-header {
-    padding: 90px 40px 30px 40px;
+    padding: 60px 40px 30px 40px;
   }
   
   .restaurant-image-placeholder {

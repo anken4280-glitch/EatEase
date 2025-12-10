@@ -333,7 +333,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
         </div>
       )}
 
-      {/* Reviews List */}
+       {/* Reviews List */}
       <div className="reviews-list-section">
         <h2>Reviews ({totalReviews})</h2>
         <div className="reviews-list">

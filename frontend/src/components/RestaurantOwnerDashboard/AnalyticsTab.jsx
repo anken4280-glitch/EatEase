@@ -120,20 +120,12 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
               <span className="feature-text">Advanced occupancy analytics</span>
             </div>
             <div className="feature-item">
-              <span className="feature-icon">📈</span>
-              <span className="feature-text">Revenue projections</span>
-            </div>
-            <div className="feature-item">
               <span className="feature-icon">👥</span>
               <span className="feature-text">Customer demographics</span>
             </div>
             <div className="feature-item">
               <span className="feature-icon">⏰</span>
               <span className="feature-text">Peak hour analysis</span>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">💰</span>
-              <span className="feature-text">ROI calculations</span>
             </div>
           </div>
         </div>
@@ -206,29 +198,11 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-icon">💰</div>
-          <div className="kpi-content">
-            <h3>₱{currentRevenue.toLocaleString()}</h3>
-            <p>Estimated Monthly Revenue</p>
-            <span className="kpi-trend positive">{revenueGrowth}</span>
-          </div>
-        </div>
-
-        <div className="kpi-card">
           <div className="kpi-icon">⭐</div>
           <div className="kpi-content">
             <h3>{averageRating.toFixed(1)}</h3>
             <p>Average Rating</p>
             <span className="kpi-trend positive">{reviewTrend} new reviews</span>
-          </div>
-        </div>
-
-        <div className="kpi-card">
-          <div className="kpi-icon">🔄</div>
-          <div className="kpi-content">
-            <h3>{customersData.repeat || 0}%</h3>
-            <p>Repeat Customers</p>
-            <span className="kpi-trend positive">+12% loyalty</span>
           </div>
         </div>
       </div>

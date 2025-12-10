@@ -82,7 +82,7 @@ function BookmarksPage({ user, onBack }) {
     <div className="bookmarks-page">
       <div className="page-header">
         <button className="back-button" onClick={onBack}>
-          ← Back
+          ←
         </button>
         <h1>⭐ My Bookmarks</h1>
       </div>
@@ -110,10 +110,6 @@ function BookmarksPage({ user, onBack }) {
             </div>
           ) : (
             <div className="bookmarks-container">
-              <p className="bookmarks-count">
-                {bookmarks.length} bookmarked restaurant(s)
-              </p>
-
               <div className="bookmarks-list">
                 {bookmarks.map((bookmark) => (
                   <div key={bookmark.id} className="bookmark-item">

@@ -46,9 +46,7 @@
 .notifications-count {
   color: #666;
   font-size: 0.9rem;
-  margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #f0f0f0;
 }
 
 .notifications-list {
