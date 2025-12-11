@@ -12,6 +12,7 @@ use App\Http\Controllers\ReviewController;  // Add this line
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\RecommendationController;
 
 Route::get('/test-db', function () {
     try {
@@ -192,3 +193,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Analytics routes (premium only)
     Route::get('/restaurants/{id}/analytics', [AnalyticsController::class, 'getRestaurantAnalytics']);
 });
+
+// In the public routes section (no auth needed for recommendations)
+Route::get('/restaurants/premium/recommendations', [RecommendationController::class, 'getPremiumRecommendations']);

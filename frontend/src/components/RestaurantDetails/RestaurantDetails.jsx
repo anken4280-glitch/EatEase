@@ -6,6 +6,7 @@ import OverviewTab from "../OverviewTab/OverviewTab";
 import MenuTab from "../MenuTab/MenuTab";
 import ReviewsTab from "../ReviewsTab/ReviewsTab";
 import PhotosTab from "../PhotosTab/PhotosTab";
+import PremiumRecommendations from "../PremiumRecommendations/PremiumRecommendations";
 
 function RestaurantDetails({ restaurantId, onBack }) {
   const [activeTab, setActiveTab] = useState("overview");
@@ -227,12 +228,10 @@ function RestaurantDetails({ restaurantId, onBack }) {
           </div>
           <p className="cuisine-type">{restaurant.cuisine_type}</p>
 
-          {/* Always show rating, even if zero */}
-          {/* Always show rating, even if zero */}
+          {/* Rating Summary */}
           <div className="rating-summary">
             <div className="rating-stars">
               {[1, 2, 3, 4, 5].map((star) => {
-                // Use this priority: 1. reviewsData, 2. stats, 3. restaurant, 4. 0
                 const rating =
                   reviewsData.average_rating ||
                   stats?.average_rating ||
@@ -276,32 +275,41 @@ function RestaurantDetails({ restaurantId, onBack }) {
         </div>
         <div className="stat-divider"></div>
         <div className="stat-item">
-             <span className="stat-value">
-      {/* COLORED CIRCLES BASED ON STATUS */}
-      {restaurant.crowd_status === 'green' && (
-        <span className="status-circle green" title="Low Crowd">🟢</span>
-      )}
-      {restaurant.crowd_status === 'yellow' && (
-        <span className="status-circle yellow" title="Moderate Crowd">🟡</span>
-      )}
-      {restaurant.crowd_status === 'orange' && (
-        <span className="status-circle orange" title="Busy">🟠</span>
-      )}
-      {restaurant.crowd_status === 'red' && (
-        <span className="status-circle red" title="Very High Crowd">🔴</span>
-      )}
-      {/* Fallback if status is unknown */}
-      {!['green', 'yellow', 'orange', 'red'].includes(restaurant.crowd_status) && (
-        <span className="status-circle gray" title="Unknown">⚪</span>
-      )}
-    </span>
-    <span className="stat-label">
-      {/* Optional: Show text next to circle */}
-      {restaurant.crowd_status === 'green' && 'Low'}
-      {restaurant.crowd_status === 'yellow' && 'Moderate'}
-      {restaurant.crowd_status === 'orange' && 'Busy'}
-      {restaurant.crowd_status === 'red' && 'Very High'}
-    </span>
+          <span className="stat-value">
+            {restaurant.crowd_status === "green" && (
+              <span className="status-circle green" title="Low Crowd">
+                🟢
+              </span>
+            )}
+            {restaurant.crowd_status === "yellow" && (
+              <span className="status-circle yellow" title="Moderate Crowd">
+                🟡
+              </span>
+            )}
+            {restaurant.crowd_status === "orange" && (
+              <span className="status-circle orange" title="Busy">
+                🟠
+              </span>
+            )}
+            {restaurant.crowd_status === "red" && (
+              <span className="status-circle red" title="Very High Crowd">
+                🔴
+              </span>
+            )}
+            {!["green", "yellow", "orange", "red"].includes(
+              restaurant.crowd_status
+            ) && (
+              <span className="status-circle gray" title="Unknown">
+                ⚪
+              </span>
+            )}
+          </span>
+          <span className="stat-label">
+            {restaurant.crowd_status === "green" && "Low"}
+            {restaurant.crowd_status === "yellow" && "Moderate"}
+            {restaurant.crowd_status === "orange" && "Busy"}
+            {restaurant.crowd_status === "red" && "Very High"}
+          </span>
         </div>
         <div className="stat-divider"></div>
       </div>
@@ -343,7 +351,10 @@ function RestaurantDetails({ restaurantId, onBack }) {
       {/* Tab Content */}
       <div className="tab-content">{renderTabContent()}</div>
 
-      {/* Action Buttons (Fixed at Bottom for Mobile) */}
+      {/* Premium Recommendations */}
+      <PremiumRecommendations currentRestaurantId={restaurantId} limit={1} />
+
+      {/* Action Buttons */}
       <div className="action-bar">
         <button className="action-btn directions-btn">
           <span className="btn-icon">📍</span>
