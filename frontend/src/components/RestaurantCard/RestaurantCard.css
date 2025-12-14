@@ -28,12 +28,18 @@
 .rating-display {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 2px;
 }
 
 .star-rating {
   display: flex;
+  gap: 2px;
+}
+
+.star-rating-small {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
   gap: 2px;
 }
 
@@ -89,6 +95,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-top: 5px;
 }
 
 .status-badge.green {
@@ -149,7 +156,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.25rem;
 }
 
 .rating-stars {

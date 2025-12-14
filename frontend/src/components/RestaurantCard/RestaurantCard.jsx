@@ -271,45 +271,40 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
           <div className="card-title-section">
             <div className="restaurant-title-row">
               <h3 className="restaurant-name">{restaurant.name}</h3>
-            </div>
-
-            {/* Rating Display - Real Data */}
-            <div className="rating-display">
-              {/* Check if restaurant has ratings */}
-              {restaurant.average_rating > 0 ? (
-                <>
-                  <div className="star-rating-small">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span
-                        key={star}
-                        className={`star ${
-                          star <= Math.round(restaurant.average_rating)
-                            ? "filled"
-                            : ""
-                        }`}
-                        style={{
-                          color:
+              <div className="rating-display">
+                {/* Check if restaurant has ratings */}
+                {restaurant.average_rating > 0 ? (
+                  <>
+                    <div className="star-rating-small">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`star ${
                             star <= Math.round(restaurant.average_rating)
-                              ? "#FFD700"
-                              : "#ddd",
-                          fontSize: "14px",
-                        }}
-                      >
-                        {star <= Math.round(restaurant.average_rating)
-                          ? "★"
-                          : "☆"}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="rating-info-small">
-                    <span className="rating-value">
+                              ? "filled"
+                              : ""
+                          }`}
+                          style={{
+                            color:
+                              star <= Math.round(restaurant.average_rating)
+                                ? "#FFD700"
+                                : "#ddd",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {star <= Math.round(restaurant.average_rating)
+                            ? "★"
+                            : "☆"}
+                        </span>
+                      ))}
                       {parseFloat(restaurant.average_rating).toFixed(1)}
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <span className="no-reviews">No reviews</span>
-              )}
+                    </div>
+
+                  </>
+                ) : (
+                  <span className="no-reviews">No reviews</span>
+                )}
+              </div>
             </div>
           </div>
 

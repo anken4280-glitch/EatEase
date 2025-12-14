@@ -184,7 +184,6 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
       {/* KPI Cards */}
       <div className="kpi-cards">
         <div className="kpi-card">
-          <div className="kpi-icon">👥</div>
           <div className="kpi-content">
             <h3>
               {currentOccupancyData.length > 0 
@@ -198,7 +197,6 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-icon">⭐</div>
           <div className="kpi-content">
             <h3>{averageRating.toFixed(1)}</h3>
             <p>Average Rating</p>
@@ -253,7 +251,7 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
 
       {/* Recommendations */}
       <div className="recommendations-section">
-        <h3>📋 Recommendations</h3>
+        <h3>Recommendations</h3>
         <div className="recommendations-list">
           <div className="recommendation-card positive">
             <div className="rec-icon">✅</div>

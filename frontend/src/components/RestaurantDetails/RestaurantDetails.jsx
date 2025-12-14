@@ -164,7 +164,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
       <div className="restaurant-details-page">
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Loading restaurant details...</p>
+          <p>Loading</p>
         </div>
       </div>
     );
@@ -189,13 +189,13 @@ function RestaurantDetails({ restaurantId, onBack }) {
   const getCrowdStatusText = (status) => {
     switch (status) {
       case "green":
-        return "😊 Low Crowd";
+        return "Low Crowd";
       case "yellow":
-        return "😐 Moderate";
+        return "Moderate";
       case "orange":
-        return "😟 Busy";
+        return "Busy";
       case "red":
-        return "😖 Very High";
+        return "Very High";
       default:
         return "Unknown";
     }

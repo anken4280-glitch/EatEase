@@ -15,7 +15,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
 
   useEffect(() => {
     console.log("ReviewsTab mounted for restaurant:", restaurantId);
-    
+
     const userData = localStorage.getItem("user");
     if (userData) {
       try {
@@ -26,7 +26,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
         console.error("Error parsing user data:", e);
       }
     }
-    
+
     fetchReviews();
   }, [restaurantId]);
 
@@ -34,28 +34,28 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
     console.log("Fetching reviews...");
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch(
         `http://localhost:8000/api/restaurants/${restaurantId}/reviews`
       );
-      
+
       console.log("Response status:", response.status);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Reviews data received:", data);
-      
+
       // Check if API returned success
       if (data.success !== false) {
         setReviews(data.reviews || []);
         setAverageRating(data.average_rating || 0);
         setTotalReviews(data.total_reviews || 0);
         setUserReview(data.user_review || null);
-        
+
         // Pre-fill form if user has reviewed
         if (data.user_review) {
           setNewReview({
@@ -63,7 +63,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
             comment: data.user_review.comment || "",
           });
         }
-        
+
         console.log("Reviews state updated. Count:", data.reviews?.length || 0);
       } else {
         setError(data.error || "Failed to load reviews");
@@ -231,7 +231,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
     reviewsCount: reviews.length,
     averageRating,
     totalReviews,
-    user: user?.name
+    user: user?.name,
   });
 
   if (loading) {
@@ -271,10 +271,6 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
           <p className="total-reviews">
             {totalReviews} {totalReviews === 1 ? "review" : "reviews"}
           </p>
-        </div>
-
-        <div className="rating-distribution-section">
-          {renderRatingDistribution()}
         </div>
       </div>
 
@@ -333,7 +329,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
         </div>
       )}
 
-       {/* Reviews List */}
+      {/* Reviews List */}
       <div className="reviews-list-section">
         <h2>Reviews ({totalReviews})</h2>
         <div className="reviews-list">
@@ -351,13 +347,20 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
                     <div className="reviewer-avatar">
                       {review.user?.name?.charAt(0)?.toUpperCase() || "U"}
                     </div>
+
                     <div className="reviewer-details">
-                      <span className="reviewer-name">
-                        {review.user?.name || "Anonymous"}
-                      </span>
-                      <span className="review-date">
-                        {new Date(review.created_at).toLocaleDateString()}
-                      </span>
+                      <div className="reviewer-name-date">
+                        <span className="reviewer-name">
+                          {review.user?.name || "Anonymous"}
+                        </span>
+                        <span className="review-date">
+                          {new Date(review.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="review-rating">
+                      {renderStars(review.rating)}
                     </div>
                   </div>
 
@@ -372,12 +375,6 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
                     </button>
                   )}
                 </div>
-
-                {/* Middle: Star Rating */}
-                <div className="review-rating">
-                  {renderStars(review.rating)}
-                </div>
-
                 {/* Bottom: Review Comment */}
                 {review.comment && (
                   <div className="review-content">

@@ -422,7 +422,6 @@ function RestaurantOwnerDashboard({ user }) {
 
               {/* Tier Section */}
               <div className="tier-section">
-                <h3>Subscription Tier</h3>
                 <div className="tier-info">
                   {tier === "basic" ? (
                     <div className="basic-tier">
@@ -434,13 +433,13 @@ function RestaurantOwnerDashboard({ user }) {
                         <br />• Basic features only
                       </p>
                       <button className="upgrade-btn" onClick={handleUpgrade}>
-                        ⭐ Upgrade to Premium (PHP 1,499/month)
+                        ⭐ Upgrade to Premium
                       </button>
                     </div>
                   ) : (
                     <div className="premium-tier">
                       <span className="tier-badge premium">
-                        ⭐ Premium Tier
+                        ⭐ Premium
                       </span>
                       <p className="tier-description">
                         • Automatic IoT updates
@@ -512,12 +511,12 @@ function RestaurantOwnerDashboard({ user }) {
                   className={`owner-stat-value status-${restaurant.crowd_status}`}
                 >
                   {restaurant.crowd_status === "green"
-                    ? "😊 Low"
+                    ? "Low"
                     : restaurant.crowd_status === "yellow"
-                    ? "😐 Moderate"
+                    ? "Moderate"
                     : restaurant.crowd_status === "orange"
-                    ? "😟 Busy"
-                    : "😖 Very High"}
+                    ? "Busy"
+                    : "Very High"}
                 </span>
                 <span className="owner-stat-label">Crowd Status</span>
               </div>
