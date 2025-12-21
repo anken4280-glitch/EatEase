@@ -256,11 +256,6 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
                     </div>
                     
                     <div className="review-rating-section">
-                      <div className="rating-display">
-                        {renderStars(review.rating)}
-                        <span className="rating-value">{review.rating} out of 5</span>
-                      </div>
-                      
                       <button 
                         onClick={() => deleteReview(review.id)}
                         className="delete-review-btn"

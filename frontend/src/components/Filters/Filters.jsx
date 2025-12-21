@@ -32,6 +32,14 @@ function Filters({ filters, setFilters, showFilters, setShowFilters }) {
               <option>High Crowd</option>
             </select>
           </div>
+          <div>
+            <label>Type</label>
+            <select name="" id="">
+              <option value="">All</option>
+              <option value="">Basic</option>
+              <option value="">Premium</option>
+            </select>
+          </div>
         </div>
       )}
     </div>

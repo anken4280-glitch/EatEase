@@ -33,7 +33,7 @@
   background: #f8f9fa;
   color: #666;
   border: 1px solid #dee2e6;
-  padding: 8px 16px;
+  padding: 4px 10px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
@@ -63,7 +63,7 @@
   font-size: 22px;
   font-weight: 600;
   color: #222;
-  margin: 0;
+  margin-bottom: 4px;
 }
 
 /* Smaller Edit Restaurant Button */
@@ -128,6 +128,7 @@
   .request-verification-btn {
     padding: 5px 10px;
     font-size: 11px;
+    background-color: #FF9800;
   }
 }
 
@@ -546,9 +547,6 @@
 .form-actions {
   display: flex;
   gap: 12px;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #eee;
 }
 
 .form-actions button {
@@ -833,16 +831,6 @@
   gap: 10px;
 }
 
-.upgrade-header-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
 .upgrade-header-btn:hover {
   background-color: #218838;
 }
@@ -890,7 +878,7 @@
 
 .basic-tier,
 .premium-tier {
-  padding: 15px;
+  padding: 8px;
   border-radius: 6px;
 }
 
@@ -912,7 +900,7 @@
 }
 
 .upgrade-btn {
-  background-color: #28a745;
+  background-color: #FF9800;
   color: white;
   border: none;
   padding: 10px 15px;

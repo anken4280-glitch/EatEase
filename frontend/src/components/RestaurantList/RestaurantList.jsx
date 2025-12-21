@@ -231,39 +231,48 @@ function RestaurantList({
         {/* Back button - Only shown in detail view */}
         {selectedRestaurant && (
           <button className="back-button" onClick={handleBackToList}>
-          ←
+            ←
           </button>
         )}
 
         {/* Search Bar */}
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        {!selectedRestaurant && (
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        )}
 
         {/* ========== ADD PREMIUM FILTER HERE ========== */}
-         {!selectedRestaurant && (
-        <div className="premium-filter-container">
-          <button
-            className={`premium-filter-btn ${showOnlyPremium ? "active" : ""}`}
-            onClick={() => setShowOnlyPremium(!showOnlyPremium)}
-            title={
-              showOnlyPremium
-                ? "Show all restaurants"
-                : "Show only Premium restaurants"
-            }
-          >
-            {showOnlyPremium ? "⭐" : "⭐"}
-            {showOnlyPremium}
-          </button>
-        </div>
-         )}
+        {!selectedRestaurant && (
+          <div className="premium-filter-container">
+            <button
+              className={`premium-filter-btn ${
+                showOnlyPremium ? "active" : ""
+              }`}
+              onClick={() => setShowOnlyPremium(!showOnlyPremium)}
+              title={
+                showOnlyPremium
+                  ? "Show all restaurants"
+                  : "Show only Premium restaurants"
+              }
+            >
+              {showOnlyPremium ? "⭐" : "⭐"}
+              {showOnlyPremium}
+            </button>
+          </div>
+        )}
         {/* ========== END PREMIUM FILTER ========== */}
 
         {/* Filters Toggle */}
-        <Filters
-          filters={filters}
-          setFilters={setFilters}
-          showFilters={showFilters}
-          setShowFilters={setShowFilters}
-        />
+        {!selectedRestaurant && (
+          <Filters
+            filters={filters}
+            setFilters={setFilters}
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+          />
+        )}
 
         {/* Hamburger Menu with Dropdown */}
         <div className="menu-container" ref={menuRef}>

@@ -271,60 +271,60 @@ function RestaurantOwnerDashboard({ user }) {
 
   // Render tab content based on active tab
   const renderTabContent = () => {
-            if (!restaurant) return null;
+    if (!restaurant) return null;
 
-        switch (activeTab) {
-          case "overview":
-            return (
-              <OwnerOverviewTab
-                restaurant={restaurant}
-                onEdit={() => {
-                  setFormData({
-                    name: restaurant.name,
-                    cuisine_type: restaurant.cuisine_type,
-                    address: restaurant.address,
-                    phone: restaurant.phone,
-                    hours: restaurant.hours,
-                    max_capacity: restaurant.max_capacity,
-                    current_occupancy: restaurant.current_occupancy,
-                    features: restaurant.features || [],
-                  });
-                  setIsEditing(true);
-                }}
-              />
-            );
-          case "menu":
-            return <OwnerMenuTab restaurantId={restaurant.id} />;
-          case "reviews":
-            return <OwnerReviewsTab restaurantId={restaurant.id} />;
-          case "photos":
-            return <OwnerPhotosTab restaurantId={restaurant.id} />;
-          case "analytics": // NEW TAB
-            return (
-              <AnalyticsTab
-                restaurantId={restaurant.id}
-                isPremium={tier === "premium"}
-              />
-            );
-          default:
-            return (
-              <OwnerOverviewTab
-                restaurant={restaurant}
-                onEdit={() => {
-                  setFormData({
-                    name: restaurant.name,
-                    cuisine_type: restaurant.cuisine_type,
-                    address: restaurant.address,
-                    phone: restaurant.phone,
-                    hours: restaurant.hours,
-                    max_capacity: restaurant.max_capacity,
-                    current_occupancy: restaurant.current_occupancy,
-                    features: restaurant.features || [],
-                  });
-                  setIsEditing(true);
-                }}
-              />
-            );
+    switch (activeTab) {
+      case "overview":
+        return (
+          <OwnerOverviewTab
+            restaurant={restaurant}
+            onEdit={() => {
+              setFormData({
+                name: restaurant.name,
+                cuisine_type: restaurant.cuisine_type,
+                address: restaurant.address,
+                phone: restaurant.phone,
+                hours: restaurant.hours,
+                max_capacity: restaurant.max_capacity,
+                current_occupancy: restaurant.current_occupancy,
+                features: restaurant.features || [],
+              });
+              setIsEditing(true);
+            }}
+          />
+        );
+      case "menu":
+        return <OwnerMenuTab restaurantId={restaurant.id} />;
+      case "reviews":
+        return <OwnerReviewsTab restaurantId={restaurant.id} />;
+      case "photos":
+        return <OwnerPhotosTab restaurantId={restaurant.id} />;
+      case "analytics": // NEW TAB
+        return (
+          <AnalyticsTab
+            restaurantId={restaurant.id}
+            isPremium={tier === "premium"}
+          />
+        );
+      default:
+        return (
+          <OwnerOverviewTab
+            restaurant={restaurant}
+            onEdit={() => {
+              setFormData({
+                name: restaurant.name,
+                cuisine_type: restaurant.cuisine_type,
+                address: restaurant.address,
+                phone: restaurant.phone,
+                hours: restaurant.hours,
+                max_capacity: restaurant.max_capacity,
+                current_occupancy: restaurant.current_occupancy,
+                features: restaurant.features || [],
+              });
+              setIsEditing(true);
+            }}
+          />
+        );
     }
   };
 
@@ -382,14 +382,6 @@ function RestaurantOwnerDashboard({ user }) {
                 <span className={`tier-badge ${tier}`}>
                   {tier === "premium" ? "⭐ Premium" : "Free"}
                 </span>
-                {tier === "basic" && (
-                  <button
-                    className="upgrade-header-btn"
-                    onClick={handleUpgrade}
-                  >
-                    Upgrade
-                  </button>
-                )}
                 <button onClick={handleLogout} className="owner-logout-btn">
                   Logout
                 </button>
@@ -438,9 +430,7 @@ function RestaurantOwnerDashboard({ user }) {
                     </div>
                   ) : (
                     <div className="premium-tier">
-                      <span className="tier-badge premium">
-                        ⭐ Premium
-                      </span>
+                      <span className="tier-badge premium">⭐ Premium</span>
                       <p className="tier-description">
                         • Automatic IoT updates
                         <br />

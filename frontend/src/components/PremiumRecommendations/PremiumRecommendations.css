@@ -4,7 +4,6 @@
   padding: 20px;
   background: linear-gradient(135deg, #fff9db 0%, #fff3cd 100%);
   border-radius: 12px;
-  border: 1px solid #ffe066;
   position: relative;
   overflow: hidden;
 }
@@ -29,7 +28,6 @@
 .recommendations-scroll-container {
   width: 100%;
   overflow-x: auto;
-  padding-bottom: 10px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -129,11 +127,10 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .premium-recommendations {
-    margin: 2px -2  px 0 -15px;
-    border-radius: 0;
+    margin: 0px -2  px 0 -15px;
+    border-radius: 8px;
     border-left: none;
     border-right: none;
-    padding: 15px;
   }
   
   .recommendation-card-wrapper {

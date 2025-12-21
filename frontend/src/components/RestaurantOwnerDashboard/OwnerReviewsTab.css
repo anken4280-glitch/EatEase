@@ -1,7 +1,4 @@
 /* Owner Reviews Tab */
-.owner-reviews-tab {
-  padding: 20px;
-}
 
 .owner-reviews-tab.loading {
   text-align: center;
@@ -11,7 +8,6 @@
 .owner-reviews-header {
   background: white;
   border-radius: 16px;
-  padding: 25px;
   margin-bottom: 25px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }

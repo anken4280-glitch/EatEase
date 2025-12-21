@@ -314,7 +314,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
                 ? "Submitting..."
                 : userReview
                 ? "Update Review"
-                : "Submit Review"}
+                : "Submit"}
             </button>
 
             {userReview && (
@@ -331,7 +331,7 @@ const ReviewsTab = ({ restaurantId, restaurantName }) => {
 
       {/* Reviews List */}
       <div className="reviews-list-section">
-        <h2>Reviews ({totalReviews})</h2>
+        <h2>Reviews</h2>
         <div className="reviews-list">
           {filteredReviews.length === 0 ? (
             <div className="no-reviews">

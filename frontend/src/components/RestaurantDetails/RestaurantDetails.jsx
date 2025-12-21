@@ -353,22 +353,6 @@ function RestaurantDetails({ restaurantId, onBack }) {
 
       {/* Premium Recommendations */}
       <PremiumRecommendations currentRestaurantId={restaurantId} limit={1} />
-
-      {/* Action Buttons */}
-      <div className="action-bar">
-        <button className="action-btn directions-btn">
-          <span className="btn-icon">📍</span>
-          Directions
-        </button>
-        <button className="action-btn bookmark-btn">
-          <span className="btn-icon">⭐</span>
-          Bookmark
-        </button>
-        <button className="action-btn notify-btn">
-          <span className="btn-icon">🔔</span>
-          Notify Me
-        </button>
-      </div>
     </div>
   );
 }

@@ -100,16 +100,14 @@ const MenuTab = ({ restaurantId }) => {
 
   return (
     <div className="menu-tab">
-      <div className="menu-header-section">
-        <h2>{restaurantName ? `${restaurantName} Menu` : 'Menu & Pricing'}</h2>
-      </div>
+        <h2>{restaurantName ? `Menu` : 'Menu & Pricing'}</h2>
       
       <div className="menu-content">
         {renderMenuContent()}
       </div>
       
       <div className="menu-footer">
-        <p>💡 <strong>Note:</strong> Menu items and prices are subject to change.</p>
+        <p><strong>Note:</strong> Menu items and prices are subject to change.</p>
       </div>
     </div>
   );

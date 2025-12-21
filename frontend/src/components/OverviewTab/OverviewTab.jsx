@@ -35,7 +35,7 @@ const OverviewTab = ({ restaurant, stats }) => {
       )}
       {/* Restaurant Description */}
       <div className="info-section">
-        <h3 className="section-title">📝 About</h3>
+        <h3 className="section-title">About</h3>
         <p className="section-content description">
           {restaurant.description || 
            `Welcome to ${restaurant.name}! Enjoy delicious ${restaurant.cuisine_type} cuisine.`}

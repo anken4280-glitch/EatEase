@@ -57,8 +57,7 @@ const OwnerMenuTab = ({ restaurantId }) => {
   return (
     <div className="owner-menu-tab">
       <div className="menu-editor-header">
-        <h3>Edit Your Restaurant Menu</h3>
-        <p>Describe your menu items, prices, specials, etc.</p>
+        <h3>Your Menu</h3>
       </div>
       
       {message && (
