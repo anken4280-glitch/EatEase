@@ -12,35 +12,38 @@ class Cors
         // Allow ALL localhost ports for development
         $origin = $request->headers->get('Origin');
         
-        $allowedOrigins = [
-            'http://localhost:5173',
-            'http://localhost:5174', 
-            'http://localhost:5175',
-            'http://localhost:5176',
-            'http://localhost:5177',
-            'http://localhost:3000',
-            'http://127.0.0.1:5173',
-            'http://127.0.0.1:5176'
-        ];
+        // Dynamic origin matching for ANY localhost port
+        $allowedOrigin = null;
         
-        // If origin is in allowed list, use it. Otherwise default to current port.
-        $allowedOrigin = in_array($origin, $allowedOrigins) ? $origin : 'http://localhost:5173';
-
+        // Check if it's localhost or 127.0.0.1 with any port
+        if (preg_match('/^http:\/\/(localhost|127\.0\.0\.1|localhost\.local):[0-9]+$/', $origin)) {
+            $allowedOrigin = $origin;
+        }
+        
+        // If no match, use a safe default
+        if (!$allowedOrigin) {
+            $allowedOrigin = 'http://localhost:5176';
+        }
+        
+        // Set headers
         $headers = [
             'Access-Control-Allow-Origin' => $allowedOrigin,
-            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-TOKEN',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-TOKEN, X-XSRF-TOKEN, Origin, Access-Control-Request-Method, Access-Control-Request-Headers',
             'Access-Control-Allow-Credentials' => 'true',
-            'Access-Control-Max-Age' => '86400',
+            'Access-Control-Max-Age' => '86400', // 24 hours
+            'Access-Control-Expose-Headers' => 'Authorization'
         ];
-
-        // Handle preflight requests
+        
+        // Handle OPTIONS (preflight) requests
         if ($request->isMethod('OPTIONS')) {
-            return response()->json('OK', 200, $headers);
+            return response()->json(['method' => 'OPTIONS'], 200, $headers);
         }
-
+        
+        // For actual requests
         $response = $next($request);
         
+        // Add headers to the response
         foreach ($headers as $key => $value) {
             $response->headers->set($key, $value);
         }

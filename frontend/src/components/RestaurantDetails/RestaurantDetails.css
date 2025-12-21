@@ -721,9 +721,9 @@
 /* No Reviews State */
 .no-reviews {
   text-align: center;
-  padding: 40px 20px;
   color: #666;
   font-style: italic;
+  font-size: 12px;
 }
 
 .review-comment {
@@ -752,17 +752,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.no-reviews {
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.no-reviews-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.5;
 }
 
 .no-reviews h4 {
@@ -1359,11 +1348,6 @@
   font-size: 14px;
 }
 
-.no-reviews {
-  text-align: center;
-  padding: 40px 20px;
-  color: #666;
-}
 
 .no-reviews-icon {
   font-size: 48px;

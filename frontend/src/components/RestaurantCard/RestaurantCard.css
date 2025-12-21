@@ -76,7 +76,7 @@
 }
 
 .card-header {
-  padding-top: 20px; /* Make space for badges */
+  padding-top: 5px; /* Make space for badges */
   position: relative;
 }
 

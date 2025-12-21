@@ -239,6 +239,7 @@ function RestaurantList({
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
         {/* ========== ADD PREMIUM FILTER HERE ========== */}
+         {!selectedRestaurant && (
         <div className="premium-filter-container">
           <button
             className={`premium-filter-btn ${showOnlyPremium ? "active" : ""}`}
@@ -253,6 +254,7 @@ function RestaurantList({
             {showOnlyPremium}
           </button>
         </div>
+         )}
         {/* ========== END PREMIUM FILTER ========== */}
 
         {/* Filters Toggle */}
