@@ -50,7 +50,7 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
         <div className="section-header">
           <h3>Current Status</h3>
           <button className="section-edit-btn" onClick={onEdit}>
-            ✏️ Update
+           Update Status
           </button>
         </div>
         
@@ -58,9 +58,9 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
           <div className="status-item">
             <span className="status-label">Crowd Level:</span>
             <span className={`status-value status-${restaurant.crowd_status}`}>
-              {restaurant.crowd_status === 'green' ? '😊 Low' : 
-               restaurant.crowd_status === 'yellow' ? '😐 Moderate' : 
-               restaurant.crowd_status === 'orange' ? '😟 Busy' : '😖 Very High'}
+              {restaurant.crowd_status === 'green' ? 'Low' : 
+               restaurant.crowd_status === 'yellow' ? 'Moderate' : 
+               restaurant.crowd_status === 'orange' ? 'Busy' : 'Very High'}
             </span>
           </div>
           <div className="status-item">

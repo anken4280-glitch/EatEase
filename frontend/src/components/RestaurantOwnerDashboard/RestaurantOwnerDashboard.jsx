@@ -391,7 +391,7 @@ function RestaurantOwnerDashboard({ user }) {
             {/* Restaurant Name and Verification Status */}
             <div className="restaurant-header-info">
               <div className="restaurant-title-section">
-                <h2 className="restaurant-name">{restaurant.name}</h2>
+                <h2 className="restaurant-owner-name">{restaurant.name}</h2>
                 <button
                   className="edit-profile-btn"
                   onClick={() => {
@@ -425,7 +425,7 @@ function RestaurantOwnerDashboard({ user }) {
                         <br />• Basic features only
                       </p>
                       <button className="upgrade-btn" onClick={handleUpgrade}>
-                        ⭐ Upgrade to Premium
+                        Upgrade to Premium
                       </button>
                     </div>
                   ) : (
@@ -445,7 +445,7 @@ function RestaurantOwnerDashboard({ user }) {
               </div>
 
               {/* Verification Status */}
-              <div className="owner-verification-status">
+              {/* <div className="owner-verification-status">
                 {restaurant.is_verified ? (
                   <div className="verification-badge verified">
                     <span className="badge-icon">✅</span>
@@ -460,7 +460,7 @@ function RestaurantOwnerDashboard({ user }) {
                   <div className="verification-badge not-verified">
                     <span className="badge-icon">⚠️</span>
                     <span className="badge-text">Not Verified</span>
-                    {/* Conditional feature button */}
+                    {/* Conditional feature button 
                     {canBeFeatured ? (
                       <button
                         className="request-verification-btn"
@@ -479,7 +479,7 @@ function RestaurantOwnerDashboard({ user }) {
                     )}
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Quick Stats */}

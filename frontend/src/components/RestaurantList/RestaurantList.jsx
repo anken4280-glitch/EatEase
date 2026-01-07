@@ -230,7 +230,7 @@ function RestaurantList({
       <div className="restaurant-list-header">
         {/* Back button - Only shown in detail view */}
         {selectedRestaurant && (
-          <button className="back-button" onClick={handleBackToList}>
+          <button className="back-button-detail-view" onClick={handleBackToList}>
             ←
           </button>
         )}

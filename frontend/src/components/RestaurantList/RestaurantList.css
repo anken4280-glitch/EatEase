@@ -5,7 +5,7 @@
 }
 
 
-.back-button {
+.back-button-detail-view {
   position: absolute; /* Add this */
   left: 10px; /* Add this */
   top: 50%; /* Add this */
@@ -13,7 +13,8 @@
   z-index: 1; /* Add this */
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 8px;
+  border: .5px solid;
   border: none;
   font-size: 20px;
   cursor: pointer;

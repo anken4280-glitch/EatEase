@@ -333,9 +333,6 @@ function RestaurantDetails({ restaurantId, onBack }) {
           onClick={() => setActiveTab("reviews")}
         >
           Reviews
-          {reviewsData.total_reviews > 0 && (
-            <span className="tab-badge">{reviewsData.total_reviews}</span>
-          )}
         </button>
         <button
           className={`tab-btn ${activeTab === "photos" ? "active" : ""}`}

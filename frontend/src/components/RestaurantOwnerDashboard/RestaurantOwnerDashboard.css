@@ -59,6 +59,14 @@
   margin-bottom: 12px;
 }
 
+.restaurant-owner-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 4px;
+  display: flex;
+}
+
 .restaurant-name {
   font-size: 22px;
   font-weight: 600;
@@ -862,6 +870,7 @@
   border-radius: 8px;
   margin: 0;
   border: 1px solid #dee2e6;
+  margin-bottom: 12px;
 }
 
 .tier-section h3 {
