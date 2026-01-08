@@ -275,6 +275,7 @@ function RestaurantList({
         )}
 
         {/* Hamburger Menu with Dropdown */}
+        {!selectedRestaurant && (
         <div className="menu-container" ref={menuRef}>
           <button
             className="menu-button"
@@ -307,6 +308,7 @@ function RestaurantList({
             </div>
           )}
         </div>
+        )}
       </div>
 
       {/* LOADING STATE */}

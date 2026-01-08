@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./RestaurantCard.css";
+import TierBadge from "../TierBadge/TierBadge";
 
 function RestaurantCard({ restaurant, onRestaurantClick }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -259,23 +260,28 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
   return (
     <>
       <div className="restaurant-card" onClick={handleClick}>
-        <div className="card-badges">
+        {/* <div className="card-badges">
           {restaurant.isPremium && (
             <div className="premium-restaurant-badge">⭐</div>
           )}
           {/* {restaurant.isVerified && (
             <div className="verified-badge">✅ Verified</div>
-          )} */}
-        </div>
+          )}
+        </div> */}
         <div className="card-header">
           <div className="card-title-section">
             <div className="restaurant-title-row">
-              <h3 className="restaurant-name">{restaurant.name}</h3>
+              <div className="restaurant-name-and-tier">
+                <h3 className="restaurant-name">{restaurant.name}</h3>
+                <TierBadge restaurantData={restaurant} />
+              </div>
+
               <div className="rating-display">
                 {/* Check if restaurant has ratings */}
                 {restaurant.average_rating > 0 ? (
-                  <>
-                    <div className="star-rating-small">
+                  <div className="star-rating-small">
+                    {/* Stars container */}
+                    <div className="stars-container">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
                           key={star}
@@ -297,12 +303,15 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
                             : "☆"}
                         </span>
                       ))}
-                      {parseFloat(restaurant.average_rating).toFixed(1)}
                     </div>
 
-                  </>
+                    {/* Rating number */}
+                    {/* <span className="list-rating-number">
+                      {parseFloat(restaurant.average_rating).toFixed(1)}
+                    </span> */}
+                  </div>
                 ) : (
-                  <span className="no-reviews">No reviews</span>
+                  <div className="no-rating">No reviews yet</div>
                 )}
               </div>
             </div>
@@ -374,11 +383,11 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
         )}
       </div>
 
-      {restaurant.is_verified && (
+      {/* {restaurant.is_verified && (
         <div className="verified-badge" title="Verified Restaurant">
           ✅ Verified
         </div>
-      )}
+      )} */}
 
       {/* Notification Modal */}
       {showNotificationModal && (

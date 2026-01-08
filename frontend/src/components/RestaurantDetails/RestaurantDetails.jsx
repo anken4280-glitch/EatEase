@@ -251,7 +251,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
                 );
               })}
             </div>
-            <div className="rating-numbers">
+            <div className="restaurant-details-rating-numbers">
               <span className="average-rating">
                 {Number(
                   reviewsData.average_rating ||

@@ -38,14 +38,14 @@ const PremiumRecommendations = ({ currentRestaurantId, limit = 5 }) => {
       }
 
       const data = await response.json();
-      console.log('📊 Premium API Response:', data);
+      console.log('Premium API Response:', data);
       
       if (data.success) {
         if (data.recommendations.length > 0) {
           setRecommendations(data.recommendations);
           setShowSection(true); // Show section
         } else {
-          console.log('⚠️ No premium restaurants available to recommend');
+          console.log('No premium restaurants available to recommend');
           setShowSection(false); // Hide section completely
           setRecommendations([]);
         }
@@ -86,7 +86,7 @@ const PremiumRecommendations = ({ currentRestaurantId, limit = 5 }) => {
   if (error) {
     return (
       <div className="premium-recommendations error">
-        <h3>⭐ Premium Recommendations</h3>
+        <h3>Premium Recommendations</h3>
         <div className="error-message">
           <p>{error}</p>
           <button onClick={fetchPremiumRecommendations} className="retry-btn">
@@ -100,7 +100,7 @@ const PremiumRecommendations = ({ currentRestaurantId, limit = 5 }) => {
   return (
     <div className="premium-recommendations">
       <div className="recommendations-header">
-        <h3>Restaurants You Might Like</h3>
+        <h3>You Might Like</h3>
       </div>
       
       <div className="recommendations-scroll-container">

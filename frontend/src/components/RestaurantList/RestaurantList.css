@@ -6,22 +6,23 @@
 
 
 .back-button-detail-view {
-  position: absolute; /* Add this */
-  left: 10px; /* Add this */
-  top: 50%; /* Add this */
-  transform: translateY(-50%); /* Add this */
-  z-index: 1; /* Add this */
+  position: absolute; /* Keep this */
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  border: .5px solid;
   border: none;
   font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #f0f0f0; /* Add background so it's visible */
 }
+
 
 .menu-button {
   padding: 0.75rem 1rem;
@@ -188,6 +189,7 @@
   padding: 5px;
   position: relative;
   border-radius: 8px;
+  min-height: 45px;
 }
 
 /* Empty state for premium filter */
