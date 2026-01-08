@@ -116,15 +116,12 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
 
           <div className="premium-features-list">
             <div className="feature-item">
-              <span className="feature-icon">📊</span>
               <span className="feature-text">Advanced occupancy analytics</span>
             </div>
             <div className="feature-item">
-              <span className="feature-icon">👥</span>
               <span className="feature-text">Customer demographics</span>
             </div>
             <div className="feature-item">
-              <span className="feature-icon">⏰</span>
               <span className="feature-text">Peak hour analysis</span>
             </div>
           </div>
