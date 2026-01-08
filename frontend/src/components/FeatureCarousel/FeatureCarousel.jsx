@@ -31,7 +31,7 @@ function FeatureCarousel({ restaurants, onRestaurantClick }) {
     return (
       <div className="feature-carousel">
         <div className="empty-carousel">
-          <div className="empty-icon">✨</div>
+          <div className="empty-icon"></div>
           <h4>No Featured Restaurants Yet</h4>
           <p>
             Be the first to feature your restaurant! Get premium visibility 
@@ -45,7 +45,7 @@ function FeatureCarousel({ restaurants, onRestaurantClick }) {
   return (
     <div className="feature-carousel">
       <div className="carousel-header">
-        <h3>🌟 Featured Restaurants</h3>
+        <h3>Featured Restaurants</h3>
         <small>{featuredRestaurants.length} featured</small>
       </div>
       

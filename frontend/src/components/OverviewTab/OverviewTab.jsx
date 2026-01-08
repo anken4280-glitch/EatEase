@@ -6,24 +6,24 @@ const OverviewTab = ({ restaurant, stats }) => {
     <div className="overview-tab">
       {/* Basic Information */}
       <div className="info-section">
-        <h3 className="section-title">📍 Location</h3>
+        <h3 className="section-title">Location</h3>
         <p className="section-content">{restaurant.address}</p>
       </div>
 
       <div className="info-section">
-        <h3 className="section-title">📞 Contact</h3>
+        <h3 className="section-title">Contact</h3>
         <p className="section-content">{restaurant.phone || 'Not provided'}</p>
       </div>
 
       <div className="info-section">
-        <h3 className="section-title">🕒 Operating Hours</h3>
+        <h3 className="section-title">Operating Hours</h3>
         <p className="section-content">{restaurant.hours || 'Not specified'}</p>
       </div>
 
       {/* Features/Amenities */}
       {restaurant.features && restaurant.features.length > 0 && (
         <div className="info-section">
-          <h3 className="section-title">✨ Features</h3>
+          <h3 className="section-title">Features</h3>
           <div className="features-grid">
             {restaurant.features.map((feature, index) => (
               <span key={index} className="feature-tag">

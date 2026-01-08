@@ -34,10 +34,6 @@
   line-height: 1;
 }
 
-.tier-text {
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
 
 /* Premium Tier - Mobile */
 .card-tier-badge.premium {
