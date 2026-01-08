@@ -263,9 +263,9 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
           {restaurant.isPremium && (
             <div className="premium-restaurant-badge">⭐</div>
           )}
-          {restaurant.isVerified && (
+          {/* {restaurant.isVerified && (
             <div className="verified-badge">✅ Verified</div>
-          )}
+          )} */}
         </div>
         <div className="card-header">
           <div className="card-title-section">

@@ -244,7 +244,7 @@ function RestaurantList({
         )}
 
         {/* ========== ADD PREMIUM FILTER HERE ========== */}
-        {!selectedRestaurant && (
+        {/* {!selectedRestaurant && (
           <div className="premium-filter-container">
             <button
               className={`premium-filter-btn ${
@@ -261,7 +261,7 @@ function RestaurantList({
               {showOnlyPremium}
             </button>
           </div>
-        )}
+        )} */}
         {/* ========== END PREMIUM FILTER ========== */}
 
         {/* Filters Toggle */}
