@@ -5,7 +5,7 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
     <div className="owner-overview-tab">
       <div className="tab-section">
         <div className="section-header">
-          <h3>📍 Location & Contact</h3>
+          <h3>Location & Contact</h3>
         </div>
         
         <div className="info-grid">
@@ -30,7 +30,7 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
 
       <div className="tab-section">
         <div className="section-header">
-          <h3>✨ Features & Amenities</h3>
+          <h3>Features & Amenities</h3>
         </div>
         
         {restaurant.features && restaurant.features.length > 0 ? (

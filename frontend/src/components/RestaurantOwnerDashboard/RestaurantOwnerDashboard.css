@@ -953,6 +953,7 @@
   .tier-section {
     flex: 1;
     margin: 0;
+    margin-bottom: 14px;
   }
   
   .owner-verification-status {

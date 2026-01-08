@@ -412,38 +412,6 @@ function RestaurantOwnerDashboard({ user }) {
                 </button>
               </div>
 
-              {/* Tier Section */}
-              <div className="tier-section">
-                <div className="tier-info">
-                  {tier === "basic" ? (
-                    <div className="basic-tier">
-                      <span className="tier-badge basic">Free Tier</span>
-                      <p className="tier-description">
-                        • Manual updates only
-                        <br />
-                        • Cannot apply for featured status
-                        <br />• Basic features only
-                      </p>
-                      <button className="upgrade-btn" onClick={handleUpgrade}>
-                        Upgrade to Premium
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="premium-tier">
-                      <span className="tier-badge premium">⭐ Premium</span>
-                      <p className="tier-description">
-                        • Automatic IoT updates
-                        <br />
-                        • Can apply for featured status
-                        <br />
-                        • Full analytics access
-                        <br />• Advertisement capabilities
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
               {/* Verification Status */}
               {/* <div className="owner-verification-status">
                 {restaurant.is_verified ? (
@@ -481,6 +449,38 @@ function RestaurantOwnerDashboard({ user }) {
                 )}
               </div> */}
             </div>
+
+            {/* Tier Section */}
+              <div className="tier-section">
+                <div className="tier-info">
+                  {tier === "basic" ? (
+                    <div className="basic-tier">
+                      <span className="tier-badge basic">Free Tier</span>
+                      <p className="tier-description">
+                        • Manual updates only
+                        <br />
+                        • Cannot apply for featured status
+                        <br />• Basic features only
+                      </p>
+                      <button className="upgrade-btn" onClick={handleUpgrade}>
+                        Upgrade to Premium
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="premium-tier">
+                      <span className="tier-badge premium">⭐ Premium</span>
+                      <p className="tier-description">
+                        • Automatic IoT updates
+                        <br />
+                        • Can apply for featured status
+                        <br />
+                        • Full analytics access
+                        <br />• Advertisement capabilities
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
 
             {/* Quick Stats */}
             <div className="owner-quick-stats">
@@ -521,7 +521,7 @@ function RestaurantOwnerDashboard({ user }) {
               }`}
               onClick={() => setActiveTab("overview")}
             >
-              📋 Overview
+              Overview
             </button>
             <button
               className={`owner-tab-btn ${
@@ -529,7 +529,7 @@ function RestaurantOwnerDashboard({ user }) {
               }`}
               onClick={() => setActiveTab("menu")}
             >
-              🍽️ Menu
+              Menu
             </button>
             <button
               className={`owner-tab-btn ${
@@ -537,7 +537,7 @@ function RestaurantOwnerDashboard({ user }) {
               }`}
               onClick={() => setActiveTab("reviews")}
             >
-              ⭐ Reviews
+              Reviews
             </button>
             <button
               className={`owner-tab-btn ${
@@ -545,7 +545,7 @@ function RestaurantOwnerDashboard({ user }) {
               }`}
               onClick={() => setActiveTab("photos")}
             >
-              📸 Photos
+              Photos
             </button>
             <button
               className={`owner-tab-btn ${
@@ -558,7 +558,7 @@ function RestaurantOwnerDashboard({ user }) {
                   : "View analytics"
               }
             >
-              {tier === "premium" ? "📊 Analytics" : "🔒 Analytics"}
+              {tier === "premium" ? "Analytics" : "Analytics"}
             </button>
           </div>
 
@@ -578,7 +578,7 @@ function RestaurantOwnerDashboard({ user }) {
                     className="feature-cta-button"
                     onClick={() => setShowFeatureModal(true)}
                   >
-                    🚀 Be Featured Now
+                    Be Featured Now
                   </button>
                 ) : (
                   <button
@@ -586,7 +586,7 @@ function RestaurantOwnerDashboard({ user }) {
                     disabled
                     title="Upgrade to Premium to be featured"
                   >
-                    ⭐ Upgrade to Be Featured
+                    Upgrade to Be Featured
                   </button>
                 )}
               </div>
