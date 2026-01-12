@@ -668,39 +668,40 @@ function RestaurantOwnerDashboard({ user }) {
                 />
               </div>
 
-              <div className="form-group">
-                <label>Max Capacity *</label>
-                <input
-                  type="number"
-                  value={formData.max_capacity}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      max_capacity: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  placeholder="Maximum number of customers"
-                  min="0"
-                  required
-                />
-              </div>
+<div className="form-group">
+  <label>Max Capacity *</label>
+  <input
+    type="number"
+    value={formData.max_capacity || ""} // Show empty string for 0
+    onChange={(e) => {
+      const val = e.target.value;
+      setFormData({
+        ...formData,
+        max_capacity: val === "" ? 0 : Math.max(0, parseInt(val) || 0),
+      });
+    }}
+    placeholder="Maximum number of customers"
+    min="0"
+    required
+  />
+</div>
 
-              <div className="form-group">
-                <label>Current Occupancy</label>
-                <input
-                  type="number"
-                  value={formData.current_occupancy}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      current_occupancy: Number(e.target.value) || 0,
-                    })
-                  }
-                  placeholder="Current number of customers"
-                  min="0"
-                  required
-                />
-              </div>
+<div className="form-group">
+  <label>Current Occupancy</label>
+  <input
+    type="number"
+    value={formData.current_occupancy || ""} // Show empty string for 0
+    onChange={(e) => {
+      const val = e.target.value;
+      setFormData({
+        ...formData,
+        current_occupancy: val === "" ? 0 : Math.max(0, Number(val) || 0),
+      });
+    }}
+    placeholder="Current number of customers"
+    min="0"
+  />
+</div>
 
               <div className="form-group">
                 <label>Features (optional)</label>
