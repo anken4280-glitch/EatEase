@@ -82,8 +82,8 @@
 
 /* Smaller Edit Restaurant Button */
 .edit-profile-btn {
-  background: #667eea;
-  color: white;
+  background: #F8F3B7;
+  color: black;
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
@@ -297,6 +297,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  
 }
 
 .section-header h3 {
@@ -307,9 +308,9 @@
 }
 
 .section-edit-btn {
-  background: transparent;
+  background: #F8F3B7;
   border: 1px solid #dee2e6;
-  color: #666;
+  color: black;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 13px;
