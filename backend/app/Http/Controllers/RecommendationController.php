@@ -16,23 +16,23 @@ class RecommendationController extends Controller
         try {
             $excludeId = $request->get('exclude_id');
             $limit = $request->get('limit', 5);
-            
+
             // Get random premium restaurants
             $query = Restaurant::where('subscription_tier', 'premium')
                 // ->where('is_verified', true)
                 ->whereNotNull('name')
                 ->where('name', '!=', '');
-            
+
             // Exclude current restaurant if provided
             if ($excludeId) {
                 $query->where('id', '!=', $excludeId);
             }
-            
+
             // Get random restaurants
             $restaurants = $query->inRandomOrder()
                 ->limit($limit)
                 ->get();
-            
+
             // Transform for frontend
             $transformedRestaurants = $restaurants->map(function ($restaurant) {
                 // Calculate occupancy percentage
@@ -40,7 +40,7 @@ class RecommendationController extends Controller
                 if ($restaurant->max_capacity > 0) {
                     $occupancyPercentage = round(($restaurant->current_occupancy / $restaurant->max_capacity) * 100);
                 }
-                
+
                 // Calculate crowd status
                 if ($occupancyPercentage < 40) {
                     $status = 'green';
@@ -55,7 +55,7 @@ class RecommendationController extends Controller
                     $status = 'red';
                     $crowdLevel = 'Very High';
                 }
-                
+
                 return [
                     'id' => $restaurant->id,
                     'name' => $restaurant->name,
@@ -68,15 +68,15 @@ class RecommendationController extends Controller
                     'isVerified' => $restaurant->is_verified,
                     'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0,
                     'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0,
+                    'subscription_tier' => $restaurant->subscription_tier, // This is CRITICAL!
                 ];
             });
-            
+
             return response()->json([
                 'success' => true,
                 'recommendations' => $transformedRestaurants,
                 'count' => $transformedRestaurants->count()
             ]);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
