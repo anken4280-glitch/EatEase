@@ -207,3 +207,27 @@
 .empty-state .show-all-btn:hover {
   background: #339af0;
 }
+
+.available-restaurants-header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  flex-wrap: wrap;
+  align-items: center; /* Changed from align-content to align-items */
+}
+
+.available-restaurants-header .available-title {
+  font-size: 18px;
+  padding: 5px 0px 0px 10px;
+}
+
+.available-restaurants-header .refresh-button {
+  display: flex;
+  border: none;
+  background-color: inherit;
+  gap: 3px;
+  align-items: center; /* Added to center icon and text vertically */
+  color: rgba(0, 0, 0, 0.664);
+  margin-right: 3px;
+  font-size: 12px;
+}

@@ -23,6 +23,7 @@ function RestaurantList({
   const menuRef = useRef(null); // Ref for detecting clicks outside hamburger menu
   const [notificationCount, setNotificationCount] = useState(0); // ADD THIS
   const [showOnlyPremium, setShowOnlyPremium] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false); // Add this for refresh animation
 
   // ========== USE EFFECTS ==========
   // Effect for closing hamburger menu when clicking outside
@@ -223,6 +224,12 @@ function RestaurantList({
     window.location.reload(); // Reload app to redirect to login
   };
 
+    const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchRestaurants(); // Refresh the list
+    setIsRefreshing(false);
+    };
+
   // ========== RENDER LOGIC ==========
   return (
     <div className="restaurant-list">
@@ -343,6 +350,30 @@ function RestaurantList({
               restaurants={featuredRestaurants}
               onRestaurantClick={handleRestaurantClick}
             />
+
+                        {/* ========== NEW: AVAILABLE RESTAURANTS HEADER ========== */}
+            <div className="available-restaurants-header">
+              <div className="header-left">
+                <h2 className="available-title">Available Restaurants:</h2>
+                {/* <span className="restaurant-count">
+                  ({filteredRestaurants.length} restaurants)
+                </span> */}
+              </div>
+
+                            <button 
+                className="refresh-button"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                aria-label="Refresh restaurant list"
+              >
+                {isRefreshing ? (
+                  <span className="refresh-spinner">⟳</span>
+                ) : (
+                  <span className="refresh-icon">⟳</span>
+                )}
+                <span className="refresh-text">Refresh</span>
+              </button>
+            </div>
 
             {/* MAIN RESTAURANT LIST */}
             <div className="restaurants-container">

@@ -247,41 +247,6 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
       </div>
 
       {/* Recommendations */}
-      <div className="recommendations-section">
-        <h3>Recommendations</h3>
-        <div className="recommendations-list">
-          <div className="recommendation-card positive">
-            <div className="rec-icon">✅</div>
-            <div className="rec-content">
-              <h4>Great Job!</h4>
-              <p>
-                Your peak hours (7-8 PM) are highly utilized. Consider extending
-                happy hour.
-              </p>
-            </div>
-          </div>
-          <div className="recommendation-card warning">
-            <div className="rec-icon">⚠️</div>
-            <div className="rec-content">
-              <h4>Optimize Mid-Day</h4>
-              <p>
-                2-4 PM shows low occupancy. Consider introducing afternoon
-                specials.
-              </p>
-            </div>
-          </div>
-          <div className="recommendation-card info">
-            <div className="rec-icon">💡</div>
-            <div className="rec-content">
-              <h4>Revenue Boost</h4>
-              <p>
-                Implement a loyalty program to increase repeat customers from
-                65% to 75%.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
