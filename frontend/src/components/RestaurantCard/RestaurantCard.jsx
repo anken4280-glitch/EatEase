@@ -328,8 +328,31 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
         </div>
 
         <div className="card-details">
-          <p className="cuisine">Cuisine: {restaurant.cuisine}</p>
-          <p className="occupancy">Occupancy: {restaurant.occupancy}%</p>
+          <p className="cuisine">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 -960 960 960"
+              fill="orange"
+              aria-hidden="true"
+            >
+              <path d="m175-120-56-56 410-410q-18-42-5-95t57-95q53-53 118-62t106 32q41 41 32 106t-62 118q-42 44-95 57t-95-5l-50 50 304 304-56 56-304-302-304 302Zm118-342L173-582q-54-54-54-129t54-129l248 250-128 128Z" />
+            </svg>
+            Cuisine: {restaurant.cuisine}
+          </p>
+          <p className="occupancy">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="20"
+              viewBox="0 -960 960 960"
+              width="16"
+              fill="red"
+              aria-hidden="true"
+            >
+              <path d="M480-660q-29 0-49.5-20.5T410-730q0-29 20.5-49.5T480-800q29 0 49.5 20.5T550-730q0 29-20.5 49.5T480-660Zm-80 500v-200h-40v-180q0-33 23.5-56.5T440-620h80q33 0 56.5 23.5T600-540v180h-40v200H400Z" />
+            </svg>
+            Occupancy: {restaurant.occupancy}%
+          </p>
 
           <div className="location-container">
             <svg

@@ -79,7 +79,7 @@
   color: #222;
   margin: 0 0 12px 0;
   line-height: 1.2;
-  padding: 0 8px; /* Add padding to prevent edge touching */
+  padding-right: 8px;
   word-break: break-word; /* Allow long names to wrap */
 }
 
@@ -273,7 +273,7 @@
 .overview-tab {
   background: white;
   border-radius: 16px;
-  padding: 16px; /* Reduced padding */
+  padding: 40px 16px 16px 16px; /* Reduced padding */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   width: 100%;
   box-sizing: border-box;
@@ -298,8 +298,7 @@
   font-family: Inter;
 }
 
-#section-title-location {
-  margin-top: 15px;
+#section-title-location, .location-icon {
   margin-bottom: 0px;
 }
 
@@ -309,7 +308,6 @@
   font-size: 14px; /* Smaller */
   color: #222;
   line-height: 1.5;
-  margin: 0;
   word-break: break-word; /* Prevent long text from overflowing */
   font-family: Inter;
 }

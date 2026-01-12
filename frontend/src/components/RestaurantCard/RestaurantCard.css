@@ -154,13 +154,11 @@
 
 
 .location-container {
-  color: #888;
-  font-size: 0.85rem;
   display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  color: #666;
   font-family: Inter;
-  padding-top: 4px;
+  font-size: 13px;
+  padding: 3px;
 }
 
 /* Existing styles... */

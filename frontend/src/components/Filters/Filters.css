@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 
+
 .filters {
   position: relative;
 }
@@ -29,6 +30,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 150;
   min-width: 200px;
+  font-family: Inter;
 }
 
 .filter-options > div {
@@ -50,10 +52,12 @@
 }
 
 .set-preference-button {
-  background-color: #ff990099;
+  background-color: #ff9800;
   border-radius: 5px;
+  color: white;
   border: .5px solid rgba(226, 92, 14, 0.412);
   padding: 8px;
+  font-family: Inter;
 }
 
 .search-button {
@@ -61,5 +65,5 @@
   padding: 8px;
   border-radius: 5px;
   border: .5px solid gray;
-  
+  font-family: Inter;
 }
