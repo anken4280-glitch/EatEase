@@ -7,6 +7,12 @@
   font-family: Inter;
 }
 
+.refresh-button-detail-view {
+  margin-left: auto; /* Pushes to far right */
+  border: none;
+  background-color: inherit;
+}
+
 
 .back-button-detail-view {
   position: absolute; /* Keep this */
