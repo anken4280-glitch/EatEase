@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./RestaurantDetails.css";
+import profileImage from '../../Assets/Images/profile1.jpg';
 
 // Tab Components
 import OverviewTab from "../OverviewTab/OverviewTab";
@@ -206,11 +207,11 @@ function RestaurantDetails({ restaurantId, onBack }) {
       {/* Restaurant Header */}
       <div className="restaurant-header">
         <div className="restaurant-image-container">
-          <div className="restaurant-image-placeholder">
-            {/* {restaurant.is_verified && (
+          <img src={profileImage} alt="Restaurant Profile" />
+          {/* <div className="restaurant-image-placeholder">
+            /* {restaurant.is_verified && (
               <span className="verified-badge">✅ Verified</span>
-            )} */}
-          </div>
+          </div> */}
         </div>
 
         <div className="restaurant-basic-info">

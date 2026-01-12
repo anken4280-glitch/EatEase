@@ -53,6 +53,7 @@
 }
 
 .dropdown-menu {
+  font-family: Inter;
   position: absolute;
   top: 100%;
   right: 0;
@@ -129,13 +130,14 @@
 
 /* Ensure dropdown menu items have relative positioning */
 .dropdown-menu button {
+  font-family: Inter;
   position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 12px 15px;
   text-align: left;
+  gap: 7px;
 }
 
 /* Premium Filter Styles */
@@ -214,7 +216,7 @@
 .available-restaurants-header {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   flex-wrap: wrap;
   align-items: center; /* Changed from align-content to align-items */
 }

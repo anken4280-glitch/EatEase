@@ -20,11 +20,12 @@
 
 .empty-carousel {
   text-align: center;
-  padding: 10px 5px;
+  padding: 40px 5px;
   background: #f8f9fa;
   border-radius: 12px;
   border: 2px dashed #dee2e6;
   font-family: Inter;
+  margin: 20px 0px;
 }
 
 .empty-icon {
@@ -44,6 +45,7 @@
   margin-left: auto;
   margin-right: auto;
   line-height: 1.5;
+  font-size: 14px;
 }
 
 .cta-button {

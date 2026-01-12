@@ -37,6 +37,12 @@
   overflow: hidden;
 }
 
+.restaurant-image-container img {
+  display: flex;
+  width: 100%;
+  min-height: 50%;
+}
+
 .image-fallback {
   width: 100px;
   height: 100px;
