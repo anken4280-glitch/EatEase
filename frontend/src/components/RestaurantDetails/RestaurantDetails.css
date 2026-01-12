@@ -26,7 +26,7 @@
 }
 
 .restaurant-image-container {
-  width: 60%;
+  width: 55%;
   height: 205px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16px;
@@ -1060,8 +1060,8 @@
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-  color: white;
+  background-color: #F8F3B7;
+  color: black;
 }
 
 .save-btn:hover:not(:disabled) {

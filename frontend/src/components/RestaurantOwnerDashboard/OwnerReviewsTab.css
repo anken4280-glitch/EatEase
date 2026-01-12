@@ -448,11 +448,12 @@
 
 .reset-filter-btn {
   padding: 10px 20px;
-  background: #51CF66;
-  color: white;
+  background: #F8F3B7;
+  color: black;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  margin: 30px 0 0 0;
 }
 
 /* Tips Section */

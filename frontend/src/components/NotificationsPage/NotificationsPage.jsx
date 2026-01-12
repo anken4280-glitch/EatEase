@@ -133,7 +133,7 @@ function NotificationsPage({ user, onBack }) {
       {!loading && !error && (
         <>
           {notifications.length === 0 ? (
-            <div className="empty-state">
+            <div className="notifications-empty-state">
               <div className="empty-icon">🔔</div>
               <h3>No notifications set</h3>
               <p>

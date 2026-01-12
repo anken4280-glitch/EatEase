@@ -128,7 +128,7 @@ const TierBadge = ({
           </>
         ) : (
           <>
-            <span className="tier-text">Free</span>
+            <span className="tier-text">Basic</span>
           </>
         )}
       </button>

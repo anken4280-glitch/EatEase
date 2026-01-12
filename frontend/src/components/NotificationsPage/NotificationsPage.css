@@ -144,7 +144,7 @@
   transform: scale(1.1);
 }
 
-.empty-state {
+.notifications-empty-state {
   text-align: center;
   padding: 3rem 1rem;
   background: white;
@@ -158,13 +158,13 @@
   opacity: 0.5;
 }
 
-.empty-state h3 {
+.notifications-empty-state h3 {
   color: #333;
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
 
-.empty-state p {
+.notifications-empty-state p {
   color: #666;
   max-width: 300px;
   margin: 0 auto;

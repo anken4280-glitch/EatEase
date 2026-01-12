@@ -30,7 +30,8 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
 
       <div className="tab-section">
         <div className="section-header">
-          <h3>Features & Amenities</h3>
+          <h3>
+            Features & Amenities</h3>
         </div>
         
         {restaurant.features && restaurant.features.length > 0 ? (

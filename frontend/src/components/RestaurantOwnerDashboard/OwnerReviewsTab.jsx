@@ -223,7 +223,6 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
 
           {filteredReviews.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">📝</div>
               <h4>No Reviews Found</h4>
               <p>No reviews match your current filter.</p>
               <button 
@@ -287,7 +286,7 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
                   {review.response ? (
                     <div className="owner-response">
                       <div className="response-header">
-                        <strong>👨‍🍳 Your Response:</strong>
+                        <strong>Your Response:</strong>
                         <span className="response-date">
                           {new Date(review.response.created_at).toLocaleDateString()}
                         </span>

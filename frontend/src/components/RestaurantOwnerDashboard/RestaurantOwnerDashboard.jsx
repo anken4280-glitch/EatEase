@@ -345,7 +345,6 @@ function RestaurantOwnerDashboard({ user }) {
         // No restaurant setup yet
         <div className="setup-prompt">
           <div className="empty-state">
-            <div className="empty-icon">🏪</div>
             <h3>No Restaurant Setup Yet</h3>
             <p>Set up your restaurant profile to start receiving diners</p>
 
@@ -375,13 +374,15 @@ function RestaurantOwnerDashboard({ user }) {
           {/* Header with Title and Logout */}
           <div className="owner-header">
             <div className="owner-title-row">
-              <h1 className="owner-title">My Restaurant</h1>
-
-              {/* Header tier badge and logout */}
-              <div className="header-tier-badge">
+              <h1 className="owner-title">
+                My Restaurant{" "}
                 <span className={`tier-badge ${tier}`}>
                   {tier === "premium" ? "Premium" : "Free"}
                 </span>
+              </h1>
+
+              {/* Header tier badge and logout */}
+              <div className="header-tier-badge">
                 <button onClick={handleLogout} className="owner-logout-btn">
                   Logout
                 </button>
@@ -391,7 +392,7 @@ function RestaurantOwnerDashboard({ user }) {
             {/* Restaurant Name and Verification Status */}
             <div className="restaurant-header-info">
               <div className="restaurant-title-section">
-                <h2 className="restaurant-owner-name">{restaurant.name}</h2>
+                <h2 className="restaurant-owner-name">{restaurant.name} </h2>
                 <button
                   className="edit-profile-btn"
                   onClick={() => {
@@ -451,36 +452,36 @@ function RestaurantOwnerDashboard({ user }) {
             </div>
 
             {/* Tier Section */}
-              <div className="tier-section">
-                <div className="tier-info">
-                  {tier === "basic" ? (
-                    <div className="basic-tier">
-                      <span className="tier-badge basic">Free Tier</span>
-                      <p className="tier-description">
-                        • Manual updates only
-                        <br />
-                        • Cannot apply for featured status
-                        <br />• Basic features only
-                      </p>
-                      <button className="upgrade-btn" onClick={handleUpgrade}>
-                        Upgrade to Premium
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="premium-tier">
-                      <span className="tier-badge premium">Premium</span>
-                      <p className="tier-description">
-                        • Automatic IoT updates
-                        <br />
-                        • Can apply for featured status
-                        <br />
-                        • Full analytics access
-                        <br />• Advertisement capabilities
-                      </p>
-                    </div>
-                  )}
-                </div>
+            <div className="tier-section">
+              <div className="tier-info">
+                {tier === "basic" ? (
+                  <div className="basic-tier">
+                    <span className="tier-badge basic">Free Tier</span>
+                    <p className="tier-description">
+                      • Manual updates only
+                      <br />
+                      • Cannot apply for featured status
+                      <br />• Basic features only
+                    </p>
+                    <button className="upgrade-btn" onClick={handleUpgrade}>
+                      Upgrade to Premium
+                    </button>
+                  </div>
+                ) : (
+                  <div className="premium-tier">
+                    <span className="tier-badge premium">Premium</span>
+                    <p className="tier-description">
+                      • Automatic IoT updates
+                      <br />
+                      • Can apply for featured status
+                      <br />
+                      • Full analytics access
+                      <br />• Advertisement capabilities
+                    </p>
+                  </div>
+                )}
               </div>
+            </div>
 
             {/* Quick Stats */}
             <div className="owner-quick-stats">
