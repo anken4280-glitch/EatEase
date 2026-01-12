@@ -7,7 +7,7 @@
 .page-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 3rem;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e1e1e1;
@@ -18,15 +18,23 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: #333;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  gap: 5px;
 }
 
-.back-button {
-  border-radius: 8px;
+.bookmarks-back-button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
-    color: #333;
+  color: #333;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-right: 25px;
+  height: 40px;
+  border: none;
+  background-color: inherit;
+  padding-right: 20px;
 }
 
 .back-button:hover {
