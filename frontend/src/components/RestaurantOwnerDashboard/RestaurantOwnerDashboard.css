@@ -271,7 +271,7 @@
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.166);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* Owner Overview Tab */
@@ -748,6 +748,15 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.overview-tab h2, .menu-tab h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #bcb88c;
 }
 
 .tab-header h3 {

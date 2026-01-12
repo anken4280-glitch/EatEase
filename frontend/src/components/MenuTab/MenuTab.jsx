@@ -100,7 +100,7 @@ const MenuTab = ({ restaurantId }) => {
 
   return (
     <div className="menu-tab">
-        <h2>{restaurantName ? `Menu` : 'Menu & Pricing'}</h2>
+        <h2>{restaurantName ? `Menu: ` : 'Menu & Pricing'}</h2>
       
       <div className="menu-content">
         {renderMenuContent()}

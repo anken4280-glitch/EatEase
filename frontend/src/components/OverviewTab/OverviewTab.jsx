@@ -5,6 +5,8 @@ const OverviewTab = ({ restaurant, stats }) => {
   return (
     <div className="overview-tab">
       {/* Basic Information */}
+
+      <h2 className="tab-header">Overview: </h2>
       <div className="info-section">
         <div className="section-title">
           <svg

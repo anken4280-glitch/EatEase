@@ -280,7 +280,7 @@
 .overview-tab {
   background: white;
   border-radius: 16px;
-  padding: 40px 16px 16px 16px; /* Reduced padding */
+  padding: 16px 16px 16px 16px; /* Reduced padding */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   width: 100%;
   box-sizing: border-box;
@@ -926,7 +926,7 @@
 .menu-content {
   background: white;
   border-radius: 16px;
-  padding: 8px;
+  padding: 0px 8px 0px 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -988,8 +988,15 @@
 }
 
 .menu-line {
-  margin-bottom: 0px;
+  display: flex;
+  margin-left: 20px;
   color: #555;
+  justify-content: flex-start;
+}
+
+.menu-content {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .menu-footer {
