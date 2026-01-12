@@ -64,7 +64,7 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
       if (response.ok) {
         const data = await response.json();
         console.log("Analytics API Data:", data);
-        
+
         // Check if data has the expected structure
         if (data.success && data.analytics) {
           setAnalyticsData(data.analytics);
@@ -132,18 +132,18 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
 
   if (loading) {
     return (
-      <div className="analytics-loading">
+      <div className="loading-spinner-container">
         <div className="loading-spinner"></div>
-        <p>Loading analytics data...</p>
       </div>
     );
   }
 
   // Use safe data instead of mockData
-  const currentOccupancyData = timeRange === "week" 
-    ? dailyOccupancy 
-    : timeRange === "month" 
-      ? weeklyOccupancy 
+  const currentOccupancyData =
+    timeRange === "week"
+      ? dailyOccupancy
+      : timeRange === "month"
+      ? weeklyOccupancy
       : monthlyOccupancy;
 
   const averageRating = reviewsData.average || 0;
@@ -183,10 +183,12 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
         <div className="kpi-card">
           <div className="kpi-content">
             <h3>
-              {currentOccupancyData.length > 0 
-                ? `${(currentOccupancyData.reduce((a, b) => a + b, 0) / currentOccupancyData.length).toFixed(1)}%`
-                : '0%'
-              }
+              {currentOccupancyData.length > 0
+                ? `${(
+                    currentOccupancyData.reduce((a, b) => a + b, 0) /
+                    currentOccupancyData.length
+                  ).toFixed(1)}%`
+                : "0%"}
             </h3>
             <p>Average Occupancy</p>
             <span className="kpi-trend positive">+5% from last week</span>
@@ -197,7 +199,9 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
           <div className="kpi-content">
             <h3>{averageRating.toFixed(1)}</h3>
             <p>Average Rating</p>
-            <span className="kpi-trend positive">{reviewTrend} new reviews</span>
+            <span className="kpi-trend positive">
+              {reviewTrend} new reviews
+            </span>
           </div>
         </div>
       </div>
@@ -216,11 +220,25 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
                 ></div>
                 <span className="bar-label">
                   {timeRange === "week"
-                    ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index] || `Day ${index + 1}`
+                    ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][
+                        index
+                      ] || `Day ${index + 1}`
                     : timeRange === "month"
                     ? `Week ${index + 1}`
-                    : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][index] || `Month ${index + 1}`
-                  }
+                    : [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                      ][index] || `Month ${index + 1}`}
                 </span>
               </div>
             ))}

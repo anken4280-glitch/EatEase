@@ -771,6 +771,12 @@
   gap: 6px;
 }
 
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-top: 30px;
+}
 /* Loading and Empty States */
 .loading-state, .empty-state {
   text-align: center;
