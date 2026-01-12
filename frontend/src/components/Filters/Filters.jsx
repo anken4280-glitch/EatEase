@@ -40,6 +40,8 @@ function Filters({ filters, setFilters, showFilters, setShowFilters }) {
               <option value="">Premium</option>
             </select>
           </div>
+          <button class ="set-preference-button">Set Preference</button>
+          <button className="search-button">Search</button>
         </div>
       )}
     </div>
