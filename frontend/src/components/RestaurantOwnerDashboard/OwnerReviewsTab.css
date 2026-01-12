@@ -1,4 +1,4 @@
-/* Owner Reviews Tab */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
 
 .owner-reviews-tab.loading {
   text-align: center;
@@ -48,9 +48,10 @@
 }
 
 .stat-label {
-  font-size: 14px;
+  font-size: 10px;
   color: #666;
   margin-top: 5px;
+  font-family: Inter;
 }
 
 /* Reviews Dashboard */

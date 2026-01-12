@@ -380,7 +380,7 @@ function RestaurantOwnerDashboard({ user }) {
               {/* Header tier badge and logout */}
               <div className="header-tier-badge">
                 <span className={`tier-badge ${tier}`}>
-                  {tier === "premium" ? "⭐ Premium" : "Free"}
+                  {tier === "premium" ? "Premium" : "Free"}
                 </span>
                 <button onClick={handleLogout} className="owner-logout-btn">
                   Logout
@@ -468,7 +468,7 @@ function RestaurantOwnerDashboard({ user }) {
                     </div>
                   ) : (
                     <div className="premium-tier">
-                      <span className="tier-badge premium">⭐ Premium</span>
+                      <span className="tier-badge premium">Premium</span>
                       <p className="tier-description">
                         • Automatic IoT updates
                         <br />

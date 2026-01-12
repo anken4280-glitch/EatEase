@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
 .restaurant-card {
   position: relative;
   background: white;
@@ -74,6 +76,7 @@
 .no-rating {
   font-size: 10px;
   color: #999;
+  font-family: Inter;
 }
 
 .card-header {
@@ -84,9 +87,10 @@
 .card-header h3 {
   margin: 0;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #333;
   flex: 1;
+  font-family: Inter;
 }
 
 .status-badge {
@@ -97,6 +101,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 5px;
+  font-family: Inter;
 }
 
 .status-badge.green {
@@ -129,20 +134,33 @@
 }
 
 .cuisine {
-  font-weight: 500;
-  color: #555;
+  color: #888;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: Inter;
+  padding: 3px;
+  padding-top: 10px;
 }
 
 .occupancy {
+  display: flex;
   color: #666;
+  font-family: Inter;
+  font-size: 13px;
+  padding: 3px;
 }
 
-.location {
+
+.location-container {
   color: #888;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  font-family: Inter;
+  padding-top: 4px;
 }
 
 /* Existing styles... */

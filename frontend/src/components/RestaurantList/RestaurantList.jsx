@@ -224,23 +224,36 @@ function RestaurantList({
     window.location.reload(); // Reload app to redirect to login
   };
 
-    const handleRefresh = async () => {
+  const handleRefresh = async () => {
     setIsRefreshing(true);
     await fetchRestaurants(); // Refresh the list
     setIsRefreshing(false);
-    };
+  };
 
   // ========== RENDER LOGIC ==========
   return (
     <div className="restaurant-list">
       {/* HEADER - Always visible in both list and detail views */}
       <div className="restaurant-list-header">
-        {/* Back button - Only shown in detail view */}
-        {selectedRestaurant && (
-          <button className="back-button-detail-view" onClick={handleBackToList}>
-            ←
-          </button>
-        )}
+{/* Back button - Only shown in detail view */}
+{selectedRestaurant && (
+  <button
+    className="back-button-detail-view"
+    onClick={handleBackToList}
+    aria-label="Back to restaurant list"
+  >
+    <svg
+      className="back-icon"
+      width="24"
+      height="24"
+      viewBox="0 -960 960 960"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/>
+    </svg>
+  </button>
+)}
 
         {/* Search Bar */}
         {!selectedRestaurant && (
@@ -283,38 +296,38 @@ function RestaurantList({
 
         {/* Hamburger Menu with Dropdown */}
         {!selectedRestaurant && (
-        <div className="menu-container" ref={menuRef}>
-          <button
-            className="menu-button"
-            onClick={() => setShowMenu(!showMenu)}
-            aria-label="Toggle menu"
-          >
-            ☰
-          </button>
+          <div className="menu-container" ref={menuRef}>
+            <button
+              className="menu-button"
+              onClick={() => setShowMenu(!showMenu)}
+              aria-label="Toggle menu"
+            >
+              ☰
+            </button>
 
-          {/* Dropdown Menu */}
-          {showMenu && (
-            <div className="dropdown-menu">
-              <button onClick={handleBookmarks}>⭐ Bookmarks</button>
-              <button
-                onClick={handleNotifications}
-                className="notifications-btn"
-              >
-                🔔 Notifications
-                {notificationCount > 0 && (
-                  <span className="notification-badge">
-                    {notificationCount}
-                  </span>
-                )}
-              </button>
-              <button onClick={handleSettings}>⚙️ Settings</button>
-              <button onClick={handleRateApp}>🌟 Rate Our App</button>
-              <button onClick={handleLogout} className="logout-btn">
-                🚪 Log Out
-              </button>
-            </div>
-          )}
-        </div>
+            {/* Dropdown Menu */}
+            {showMenu && (
+              <div className="dropdown-menu">
+                <button onClick={handleBookmarks}>⭐ Bookmarks</button>
+                <button
+                  onClick={handleNotifications}
+                  className="notifications-btn"
+                >
+                  🔔 Notifications
+                  {notificationCount > 0 && (
+                    <span className="notification-badge">
+                      {notificationCount}
+                    </span>
+                  )}
+                </button>
+                <button onClick={handleSettings}>⚙️ Settings</button>
+                <button onClick={handleRateApp}>🌟 Rate Our App</button>
+                <button onClick={handleLogout} className="logout-btn">
+                  🚪 Log Out
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
@@ -351,7 +364,7 @@ function RestaurantList({
               onRestaurantClick={handleRestaurantClick}
             />
 
-                        {/* ========== NEW: AVAILABLE RESTAURANTS HEADER ========== */}
+            {/* ========== NEW: AVAILABLE RESTAURANTS HEADER ========== */}
             <div className="available-restaurants-header">
               <div className="header-left">
                 <h2 className="available-title">Available Restaurants:</h2>
@@ -360,18 +373,33 @@ function RestaurantList({
                 </span> */}
               </div>
 
-                            <button 
+              <button
                 className="refresh-button"
                 onClick={handleRefresh}
                 disabled={isRefreshing}
                 aria-label="Refresh restaurant list"
               >
                 {isRefreshing ? (
-                  <span className="refresh-spinner">⟳</span>
+                  <svg
+                    className="refresh-spinner"
+                    width="20"
+                    height="20"
+                    viewBox="0 -960 960 960"
+                    fill="currentColor"
+                  >
+                    <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                  </svg>
                 ) : (
-                  <span className="refresh-icon">⟳</span>
+                  <svg
+                    className="refresh-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 -960 960 960"
+                    fill="currentColor"
+                  >
+                    <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                  </svg>
                 )}
-                <span className="refresh-text">Refresh</span>
               </button>
             </div>
 

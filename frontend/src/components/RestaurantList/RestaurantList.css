@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
 .restaurant-list {
   padding: .8rem;
   min-height: 100vh;
   background: #3e3f3f00;
+  font-family: Inter;
 }
 
 
@@ -20,7 +23,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f0f0; /* Add background so it's visible */
+  background: inherit; /* Add background so it's visible */
 }
 
 
@@ -219,6 +222,8 @@
 .available-restaurants-header .available-title {
   font-size: 18px;
   padding: 5px 0px 0px 10px;
+  font-family: Inter;
+  font-weight: 800;
 }
 
 .available-restaurants-header .refresh-button {
@@ -230,4 +235,6 @@
   color: rgba(0, 0, 0, 0.664);
   margin-right: 3px;
   font-size: 12px;
+  align-self: flex-end;
+  margin-right: 10px;
 }

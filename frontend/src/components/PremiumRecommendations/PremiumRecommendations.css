@@ -1,11 +1,12 @@
 /* Premium Recommendations Styles */
 .premium-recommendations {
   margin-top: 8px;
-  padding: 20px;
+  padding-top: 20px;
   background: linear-gradient(135deg, #fff9db 0%, #fff3cd 100%);
   border-radius: 12px;
   position: relative;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 .recommendations-header {

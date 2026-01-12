@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./MenuTab.css";
 
 const MenuTab = ({ restaurantId }) => {
   const [menuDescription, setMenuDescription] = useState('');

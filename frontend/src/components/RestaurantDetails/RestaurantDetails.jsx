@@ -207,12 +207,9 @@ function RestaurantDetails({ restaurantId, onBack }) {
       <div className="restaurant-header">
         <div className="restaurant-image-container">
           <div className="restaurant-image-placeholder">
-            {restaurant.is_verified && (
+            {/* {restaurant.is_verified && (
               <span className="verified-badge">✅ Verified</span>
-            )}
-            <div className="image-fallback">
-              <span className="restaurant-icon">🍽️</span>
-            </div>
+            )} */}
           </div>
         </div>
 

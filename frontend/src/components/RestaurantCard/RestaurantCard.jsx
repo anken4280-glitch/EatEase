@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./RestaurantCard.css";
 import TierBadge from "../TierBadge/TierBadge";
 
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=location_on"
+/>;
+
 function RestaurantCard({ restaurant, onRestaurantClick }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
@@ -323,9 +328,23 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
         </div>
 
         <div className="card-details">
-          <p className="cuisine">{restaurant.cuisine}</p>
+          <p className="cuisine">Cuisine: {restaurant.cuisine}</p>
           <p className="occupancy">Occupancy: {restaurant.occupancy}%</p>
-          <p className="location">📍 {shortAddress}</p>
+
+          <div className="location-container">
+            <svg
+              className="location-icon"
+              width="16"
+              height="16"
+              viewBox="0 -960 960 960"
+              fill="currentColor"
+              aria-hidden="true"
+              color="red"
+            >
+              <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
+            </svg>
+            <span className="location-text">{shortAddress}</span>
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -353,11 +372,35 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
               userHasNotification ? "Change notification" : "Set notification"
             }
           >
-            {loading
-              ? "..."
-              : userHasNotification
-              ? `🔔 ${getStatusText(userHasNotification)}`
-              : "🔔 Notify Me"}
+            {loading ? (
+              "..."
+            ) : userHasNotification ? (
+              <>
+                <svg
+                  className="notification-icon"
+                  width="16"
+                  height="14"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                </svg>
+                {getStatusText(userHasNotification)}
+              </>
+            ) : (
+              <>
+                <svg
+                  className="notification-icon"
+                  width="16"
+                  height="14"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                </svg>
+                Notify Me
+              </>
+            )}
           </button>
         </div>
 

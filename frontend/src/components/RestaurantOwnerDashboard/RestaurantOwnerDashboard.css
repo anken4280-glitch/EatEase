@@ -69,7 +69,7 @@
 
 .restaurant-name {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 800;
   color: #222;
   margin-bottom: 4px;
 }
@@ -339,7 +339,7 @@
 }
 
 .feature-tag {
-  background: #f8f9fa;
+  background: #F8F3B7;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
@@ -585,9 +585,9 @@
 }
 
 .form-actions button:last-child {
-  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  background: #F8F3B7;
+  color: black;
+  box-shadow: 0 4px 12px rgba(235, 233, 219, 0);
 }
 
 .form-actions button:last-child:hover {

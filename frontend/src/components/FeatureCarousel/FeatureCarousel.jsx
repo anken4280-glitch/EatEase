@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './FeatureCarousel.css';
 
+
 function FeatureCarousel({ restaurants, onRestaurantClick }) {
   const [featuredRestaurants, setFeaturedRestaurants] = useState([]);
 
