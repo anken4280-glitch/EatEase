@@ -268,11 +268,10 @@
 
 /* Owner Tab Content */
 .owner-tab-content {
-  background: white;
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.166);
 }
 
 /* Owner Overview Tab */
@@ -304,7 +303,9 @@
   font-size: 18px;
   font-weight: 600;
   color: #222;
-  margin: 0;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.23);
 }
 
 .section-edit-btn {

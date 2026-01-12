@@ -76,6 +76,7 @@
 .restaurant-basic-info {
   text-align: center;
   font-family: Inter;
+  margin-left: 5px;
 }
 
 .restaurant-name {
