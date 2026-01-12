@@ -50,7 +50,6 @@ const PhotosTab = ({ restaurantId }) => {
     return (
       <div className="photos-tab loading">
         <div className="loading-spinner"></div>
-        <p>Loading photos...</p>
       </div>
     );
   }

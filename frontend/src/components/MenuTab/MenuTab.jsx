@@ -40,9 +40,8 @@ const MenuTab = ({ restaurantId }) => {
 
   if (loading) {
     return (
-      <div className="menu-tab loading">
-        <div className="spinner"></div>
-        <p>Loading menu...</p>
+      <div className="owner-reviews-tab loading">
+        <div className="loading-spinner"></div>
       </div>
     );
   }

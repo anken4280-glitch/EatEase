@@ -164,7 +164,6 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
     return (
       <div className="owner-reviews-tab loading">
         <div className="spinner"></div>
-        <p>Loading reviews...</p>
       </div>
     );
   }

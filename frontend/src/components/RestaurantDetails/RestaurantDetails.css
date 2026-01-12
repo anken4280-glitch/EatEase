@@ -1758,3 +1758,24 @@ body {
   animation: fadeIn 0.3s ease;
   margin-bottom: 25px;
 }
+
+
+.reviews-tab.loading, .photos-tab.loading {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid black;
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
