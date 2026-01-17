@@ -11,7 +11,7 @@
 .login h2 {
   color: #333;
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -37,19 +37,22 @@
   font-size: 0.9rem;
 }
 
-.form-group {
+.login-form-group {
   margin-bottom: 1.5rem;
 }
 
-.form-group label {
+.login-form-group label {
   display: block;
   margin-bottom: 0.5rem;
   color: #333;
   font-weight: 500;
   font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-self: flex-start;
 }
 
-.form-group input {
+.login-form-group input {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #e1e1e1;
@@ -57,12 +60,12 @@
   font-size: 1rem;
   box-sizing: border-box;
   transition: all 0.2s ease;
+  padding-left: 20px;
 }
 
-.form-group input:focus {
+.login-form-group input:focus {
   outline: none;
-  border-color: #F8F3B7;
-  box-shadow: 0 0 0 3px rgba(248, 243, 183, 0.2);
+  border-color: #000000;
 }
 
 button[type="submit"] {

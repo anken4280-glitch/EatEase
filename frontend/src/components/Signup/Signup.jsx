@@ -76,44 +76,44 @@ function Signup({ onSignup, onSwitchToLogin }) {
         <h2>Sign Up</h2>
         
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="login-form-group">
             <label>Full Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Name"
+              placeholder="Enter your Name"
               required
             />
           </div>
 
-          <div className="form-group">
+          <div className="login-form-group">
             <label>Email Address</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder="Enter your email"
               required
             />
           </div>
 
-          <div className="form-group">
+          <div className="login-form-group">
             <label>Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Password"
+              placeholder="Enter Password"
               required
               minLength="8"
             />
           </div>
 
-          <div className="form-group">
+          <div className="login-form-group">
             <label>Confirm Password</label>
             <input
               type="password"

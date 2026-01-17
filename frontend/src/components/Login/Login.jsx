@@ -89,7 +89,7 @@ function Login({ onLogin, onSwitchToSignup }) {
         <h2>Sign In</h2>
         
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="login-form-group">
             <label>Email Address</label>
             <input
               type="email"
@@ -101,7 +101,7 @@ function Login({ onLogin, onSwitchToSignup }) {
             />
           </div>
 
-          <div className="form-group">
+          <div className="login-form-group">
             <label>Password</label>
             <input
               type="password"
