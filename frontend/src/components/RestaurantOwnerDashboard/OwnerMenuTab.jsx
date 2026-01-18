@@ -42,14 +42,14 @@ const OwnerMenuTab = ({ restaurantId }) => {
       
       const data = await response.json();
       if (data.success) {
-        setMessage('✅ Menu saved successfully!');
+        setMessage('Saved successfully!');
         setTimeout(() => setMessage(''), 3000);
       } else {
-        setMessage('❌ Failed to save menu');
+        setMessage('Failed to save menu');
       }
     } catch (error) {
       console.error('Error saving menu:', error);
-      setMessage('❌ Error saving menu');
+      setMessage('Error saving menu');
     } finally {
       setIsSaving(false);
     }
