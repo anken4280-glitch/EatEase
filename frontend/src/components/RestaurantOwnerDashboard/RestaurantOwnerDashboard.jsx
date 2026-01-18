@@ -389,87 +389,82 @@ function RestaurantOwnerDashboard({ user }) {
           <div className="owner-title-row">
             <h1 className="owner-title">
               <div className="restaurant-title-section">
-                <h2 className="restaurant-owner-name">
-                  {restaurant.name}{" "}
-                  <span className={`header-tier-badge ${tier}`}>
-                    {tier === "premium" ? "Premium" : "Free"}
-                  </span>
-                </h2>
+                <h2 className="restaurant-owner-name">{restaurant.name} </h2>
               </div>
             </h1>
             {/* Hamburger Menu with Dropdown - Only Edit & Logout */}
-<div className="menu-container" ref={menuRef}>
-  <button
-    className="menu-button"
-    onClick={() => setShowMenu(!showMenu)}
-    aria-label="Toggle menu"
-  >
-    {/* Hamburger Icon SVG */}
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      height="24px" 
-      viewBox="0 -960 960 960" 
-      width="24px" 
-      fill="currentColor"
-      className={`hamburger-icon ${showMenu ? 'active' : ''}`}
-    >
-      <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
-    </svg>
-  </button>
+            <div className="menu-container" ref={menuRef}>
+              <button
+                className="menu-button"
+                onClick={() => setShowMenu(!showMenu)}
+                aria-label="Toggle menu"
+              >
+                {/* Hamburger Icon SVG */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="currentColor"
+                  className={`hamburger-icon ${showMenu ? "active" : ""}`}
+                >
+                  <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+                </svg>
+              </button>
 
-  {/* Dropdown Menu - Only Edit Profile and Logout */}
-  {showMenu && (
-    <div className="dropdown-menu">
-      <button 
-        className="dropdown-item edit-item"
-        onClick={() => {
-          setFormData({
-            name: restaurant.name,
-            cuisine_type: restaurant.cuisine_type,
-            address: restaurant.address,
-            phone: restaurant.phone,
-            hours: restaurant.hours,
-            max_capacity: restaurant.max_capacity,
-            current_occupancy: restaurant.current_occupancy,
-            features: restaurant.features || [],
-          });
-          setIsEditing(true);
-          setShowMenu(false);
-        }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="20px"
-          viewBox="0 -960 960 960"
-          width="20px"
-          fill="currentColor"
-        >
-          <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-        </svg>
-        <span>Edit Profile</span>
-      </button>
-      
-      <button 
-        onClick={() => {
-          setShowMenu(false);
-          handleLogout();
-        }}
-        className="dropdown-item logout-btn"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="20px"
-          viewBox="0 -960 960 960"
-          width="20px"
-          fill="currentColor"
-        >
-          <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-        </svg>
-        <span>Log Out</span>
-      </button>
-    </div>
-  )}
-</div>
+              {/* Dropdown Menu - Only Edit Profile and Logout */}
+              {showMenu && (
+                <div className="dropdown-menu">
+                  <button
+                    className="dropdown-item edit-item"
+                    onClick={() => {
+                      setFormData({
+                        name: restaurant.name,
+                        cuisine_type: restaurant.cuisine_type,
+                        address: restaurant.address,
+                        phone: restaurant.phone,
+                        hours: restaurant.hours,
+                        max_capacity: restaurant.max_capacity,
+                        current_occupancy: restaurant.current_occupancy,
+                        features: restaurant.features || [],
+                      });
+                      setIsEditing(true);
+                      setShowMenu(false);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20px"
+                      viewBox="0 -960 960 960"
+                      width="20px"
+                      fill="currentColor"
+                    >
+                      <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                    </svg>
+                    <span>Edit Profile</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      handleLogout();
+                    }}
+                    className="dropdown-item logout-btn"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20px"
+                      viewBox="0 -960 960 960"
+                      width="20px"
+                      fill="currentColor"
+                    >
+                      <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                    </svg>
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           {/* Verification Status */}
           {/* <div className="owner-verification-status">

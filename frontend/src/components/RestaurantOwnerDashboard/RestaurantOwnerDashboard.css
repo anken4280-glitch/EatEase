@@ -126,7 +126,7 @@
 } 
 
 .restaurant-owner-name {
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-weight: 800;
   color: #000000;
   margin: 0;
@@ -521,7 +521,7 @@
   left: 25%;
   right: 25%;
   height: 3px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
   border-radius: 3px;
 }
 
@@ -632,15 +632,15 @@
 }
 
 .feature-checkbox input:checked + .checkbox-label {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
   color: white;
-  border-color: #667eea;
+  border: none;
   box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
   transform: translateY(-1px);
 }
 
 .checkbox-label:hover {
-  border-color: #667eea;
+  border-color: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);;
   transform: translateY(-1px);
 }
 
@@ -678,7 +678,7 @@
 }
 
 .form-actions button:last-child {
-  background: #f8f3b7;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
   color: black;
   box-shadow: 0 4px 12px rgba(235, 233, 219, 0);
 }
