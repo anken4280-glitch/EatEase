@@ -591,7 +591,6 @@ function RestaurantOwnerDashboard({ user }) {
             {/* Tab Content */}
             <div className="owner-tab-content">{renderTabContent()}</div>
             {/* Tier Section */}
-            <div className="tier-section">
               <div className="tier-info">
                 {tier === "basic" ? (
                   <div className="basic-tier">
@@ -620,7 +619,6 @@ function RestaurantOwnerDashboard({ user }) {
                   </div>
                 )}
               </div>
-            </div>
             {/* Feature CTA - Conditional based on tier */}
             {!restaurant.is_featured && (
               <div className="owner-feature-cta">

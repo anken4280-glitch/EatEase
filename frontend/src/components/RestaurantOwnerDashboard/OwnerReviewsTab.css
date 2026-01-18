@@ -422,7 +422,7 @@
 }
 
 /* Empty States */
-.empty-state {
+.reviews-tab-empty-state {
   background: white;
   border-radius: 12px;
   padding: 40px 20px;
@@ -436,12 +436,12 @@
   opacity: 0.5;
 }
 
-.empty-state h4 {
+.reviews-tab-empty-state h4 {
   margin-bottom: 8px;
   color: #333;
 }
 
-.empty-state p {
+.reviews-tab-empty-state p {
   color: #666;
   margin-bottom: 20px;
 }

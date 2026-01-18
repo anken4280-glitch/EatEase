@@ -1050,8 +1050,8 @@
 /* Loading and Empty States */
 .loading, .empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #F8F3B7;
+  padding: 2rem;
+  color: #ffffff;
 }
 
 /* Verification Card - Column Layout */
