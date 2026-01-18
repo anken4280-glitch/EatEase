@@ -346,8 +346,7 @@ function RestaurantOwnerDashboard({ user }) {
     return (
       <div className="restaurant-owner-dashboard">
         <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading your restaurant...</p>
+          <div className="restaurant-loading-spinner"></div>
         </div>
       </div>
     );

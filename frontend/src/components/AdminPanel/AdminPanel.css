@@ -897,7 +897,7 @@
 }
 
 /* Refresh Button */
-.refresh-btn {
+.admin-refresh-btn {
   background: #6c757d;
   color: white;
   border: none;
@@ -908,7 +908,7 @@
   transition: background 0.2s;
 }
 
-.refresh-btn:hover {
+.admin-refresh-btn:hover {
   background: #5a6268;
 }
 

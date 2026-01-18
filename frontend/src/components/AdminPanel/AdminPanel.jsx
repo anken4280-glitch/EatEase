@@ -431,7 +431,7 @@ const handleRejectFeature = async (requestId) => {
                 <span className="featured-count">
                   Featured: <strong>{stats.featuredRestaurants}/10</strong>
                 </span>
-                <button onClick={fetchFeatureRequests} className="refresh-btn">
+                <button onClick={fetchFeatureRequests} className="admin-refresh-btn">
                   Refresh
                 </button>
               </div>
@@ -549,7 +549,7 @@ const handleRejectFeature = async (requestId) => {
             <h2>Verification Requests</h2>
             <div className="section-header">
               <p>Restaurants requesting verification</p>
-              <button onClick={fetchVerificationRequests} className="refresh-btn">
+              <button onClick={fetchVerificationRequests} className="admin-refresh-btn">
                 Refresh
               </button>
             </div>
@@ -595,7 +595,7 @@ const handleRejectFeature = async (requestId) => {
           <div className="admin-section">
             <h2>Restaurants</h2>
             <div className="section-header">
-              <button onClick={fetchRestaurants} className="refresh-btn">
+              <button onClick={fetchRestaurants} className="admin-refresh-btn">
                 Refresh
               </button>
             </div>
@@ -635,7 +635,7 @@ const handleRejectFeature = async (requestId) => {
         {activeTab === "Users" && (
           <div className="admin-section">
             <div className="section-header">
-              <button onClick={fetchUsers} className="refresh-btn">
+              <button onClick={fetchUsers} className="admin-refresh-btn">
                 Refresh
               </button>
             </div>
