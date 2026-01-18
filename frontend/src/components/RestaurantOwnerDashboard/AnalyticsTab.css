@@ -356,9 +356,10 @@
   align-items: center;
   gap: 10px;
   padding: 12px;
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
   border-radius: 8px;
   text-align: left;
+  font-weight: 600;
 }
 
 .feature-icon {
@@ -370,6 +371,7 @@
   font-size: 14px;
   color: #495057;
   line-height: 1.4;
+  margin-left: 10px;
 }
 
 /* Loading State */

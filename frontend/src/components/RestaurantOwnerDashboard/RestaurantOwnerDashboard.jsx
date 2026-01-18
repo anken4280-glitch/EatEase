@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import VerificationRequest from "../VerificationRequest/VerificationRequest";
 import "./RestaurantOwnerDashboard.css";
 
@@ -20,6 +20,8 @@ function RestaurantOwnerDashboard({ user }) {
   const [menuText, setMenuText] = useState("");
   const [showCreateRestaurant, setShowCreateRestaurant] = useState(false);
   const [tier, setTier] = useState("basic");
+  const [showMenu, setShowMenu] = useState(false); // Toggle hamburger menu
+  const menuRef = useRef(null); // Ref for detecting clicks outside hamburger menu
   const [canBeFeatured, setCanBeFeatured] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -38,6 +40,18 @@ function RestaurantOwnerDashboard({ user }) {
       fetchRestaurant();
     }
   }, [user]);
+
+  // Effect for closing hamburger menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fetchTier = async () => {
     const token = localStorage.getItem("auth_token");
@@ -372,57 +386,93 @@ function RestaurantOwnerDashboard({ user }) {
         // Restaurant exists - show enhanced dashboard
         <div className="restaurant-owner-view">
           {/* Header with Title and Logout */}
-          <div className="owner-header">
-            <div className="owner-title-row">
-              <h1 className="owner-title">
-                My Restaurant{" "}
-                <span className={`tier-badge ${tier}`}>
-                  {tier === "premium" ? "Premium" : "Free"}
-                </span>
-              </h1>
-
-              {/* Header tier badge and logout */}
-              <div className="header-tier-badge">
-                <button onClick={handleLogout} className="owner-logout-btn">
-                  Logout
-                </button>
-              </div>
-            </div>
-
-            {/* Restaurant Name and Verification Status */}
-            <div className="restaurant-header-info">
+          <div className="owner-title-row">
+            <h1 className="owner-title">
               <div className="restaurant-title-section">
-                <h2 className="restaurant-owner-name">{restaurant.name} </h2>
-                <button
-                  className="edit-profile-btn"
-                  onClick={() => {
-                    setFormData({
-                      name: restaurant.name,
-                      cuisine_type: restaurant.cuisine_type,
-                      address: restaurant.address,
-                      phone: restaurant.phone,
-                      hours: restaurant.hours,
-                      max_capacity: restaurant.max_capacity,
-                      current_occupancy: restaurant.current_occupancy,
-                      features: restaurant.features || [],
-                    });
-                    setIsEditing(true);
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="18px"
-                    viewBox="0 -960 960 960"
-                    width="18px"
-                    fill="black"
-                  >
-                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-                  </svg>
-                </button>
+                <h2 className="restaurant-owner-name">
+                  {restaurant.name}{" "}
+                  <span className={`header-tier-badge ${tier}`}>
+                    {tier === "premium" ? "Premium" : "Free"}
+                  </span>
+                </h2>
               </div>
+            </h1>
+            {/* Hamburger Menu with Dropdown - Only Edit & Logout */}
+<div className="menu-container" ref={menuRef}>
+  <button
+    className="menu-button"
+    onClick={() => setShowMenu(!showMenu)}
+    aria-label="Toggle menu"
+  >
+    {/* Hamburger Icon SVG */}
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      height="24px" 
+      viewBox="0 -960 960 960" 
+      width="24px" 
+      fill="currentColor"
+      className={`hamburger-icon ${showMenu ? 'active' : ''}`}
+    >
+      <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
+    </svg>
+  </button>
 
-              {/* Verification Status */}
-              {/* <div className="owner-verification-status">
+  {/* Dropdown Menu - Only Edit Profile and Logout */}
+  {showMenu && (
+    <div className="dropdown-menu">
+      <button 
+        className="dropdown-item edit-item"
+        onClick={() => {
+          setFormData({
+            name: restaurant.name,
+            cuisine_type: restaurant.cuisine_type,
+            address: restaurant.address,
+            phone: restaurant.phone,
+            hours: restaurant.hours,
+            max_capacity: restaurant.max_capacity,
+            current_occupancy: restaurant.current_occupancy,
+            features: restaurant.features || [],
+          });
+          setIsEditing(true);
+          setShowMenu(false);
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="20px"
+          viewBox="0 -960 960 960"
+          width="20px"
+          fill="currentColor"
+        >
+          <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+        </svg>
+        <span>Edit Profile</span>
+      </button>
+      
+      <button 
+        onClick={() => {
+          setShowMenu(false);
+          handleLogout();
+        }}
+        className="dropdown-item logout-btn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="20px"
+          viewBox="0 -960 960 960"
+          width="20px"
+          fill="currentColor"
+        >
+          <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+        </svg>
+        <span>Log Out</span>
+      </button>
+    </div>
+  )}
+</div>
+          </div>
+          {/* Verification Status */}
+          {/* <div className="owner-verification-status">
                 {restaurant.is_verified ? (
                   <div className="verification-badge verified">
                     <span className="badge-icon">✅</span>
@@ -457,148 +507,156 @@ function RestaurantOwnerDashboard({ user }) {
                   </div>
                 )}
               </div> */}
-            </div>
+          <div className="content-wrapper">
+            <div className="owner-header">
+              {/* Restaurant Name and Verification Status */}
 
-            {/* Quick Stats */}
-            <div className="owner-quick-stats">
-              <div className="owner-stat-card">
-                <span className="owner-stat-value">
-                  {restaurant.current_occupancy}/{restaurant.max_capacity}
-                </span>
-                <span className="owner-stat-label">Current Capacity</span>
-              </div>
-              <div className="owner-stat-card">
-                <span className="owner-stat-value">
-                  {restaurant.occupancy_percentage}%
-                </span>
-                <span className="owner-stat-label">Occupancy</span>
-              </div>
-              <div className="owner-stat-card">
-                <span
-                  className={`owner-stat-value status-${restaurant.crowd_status}`}
-                >
-                  {restaurant.crowd_status === "green"
-                    ? "Low"
-                    : restaurant.crowd_status === "yellow"
-                      ? "Moderate"
-                      : restaurant.crowd_status === "orange"
-                        ? "Busy"
-                        : "Very High"}
-                </span>
-                <span className="owner-stat-label">Crowd Status</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Tab Navigation */}
-          <div className="owner-tab-navigation">
-            <button
-              className={`owner-tab-btn ${
-                activeTab === "overview" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Overview
-            </button>
-            <button
-              className={`owner-tab-btn ${
-                activeTab === "menu" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("menu")}
-            >
-              Menu
-            </button>
-            <button
-              className={`owner-tab-btn ${
-                activeTab === "reviews" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("reviews")}
-            >
-              Reviews
-            </button>
-            <button
-              className={`owner-tab-btn ${
-                activeTab === "photos" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("photos")}
-            >
-              Photos
-            </button>
-            <button
-              className={`owner-tab-btn ${
-                activeTab === "analytics" ? "active" : ""
-              } ${tier === "premium" ? "premium-unlocked" : "premium-locked"}`}
-              onClick={() => setActiveTab("analytics")}
-              title={
-                tier === "basic"
-                  ? "Upgrade to Premium to access analytics"
-                  : "View analytics"
-              }
-            >
-              {tier === "premium" ? "Analytics" : "Analytics"}
-            </button>
-          </div>
-
-          {/* Tab Content */}
-          <div className="owner-tab-content">{renderTabContent()}</div>
-          {/* Tier Section */}
-          <div className="tier-section">
-            <div className="tier-info">
-              {tier === "basic" ? (
-                <div className="basic-tier">
-                  <span className="tier-badge basic">Free Tier</span>
-                  <p className="tier-description">
-                    • Manual updates only
-                    <br />
-                    • Cannot apply for featured status
-                    <br />• Basic features only
-                  </p>
-                  <button className="upgrade-btn" onClick={handleUpgrade}>
-                    Upgrade to Premium
-                  </button>
+              {/* Quick Stats */}
+              <div className="owner-quick-stats">
+                <div className="owner-stat-card">
+                  <span className="owner-stat-value">
+                    {restaurant.current_occupancy}/{restaurant.max_capacity}
+                  </span>
+                  <span className="owner-stat-label">Current Capacity</span>
                 </div>
-              ) : (
-                <div className="premium-tier">
-                  <span className="tier-badge premium">Premium</span>
-                  <p className="tier-description">
-                    • Automatic IoT updates
-                    <br />
-                    • Can apply for featured status
-                    <br />
-                    • Full analytics access
-                    <br />• Advertisement capabilities
-                  </p>
+                <div className="owner-stat-card">
+                  <span className="owner-stat-value">
+                    {restaurant.occupancy_percentage}%
+                  </span>
+                  <span className="owner-stat-label">Occupancy</span>
                 </div>
-              )}
-            </div>
-          </div>
-          {/* Feature CTA - Conditional based on tier */}
-          {!restaurant.is_featured && (
-            <div className="owner-feature-cta">
-              <div className="feature-cta-content">
-                <h3>Want more customers?</h3>
-                <p>Get featured on our homepage and get 3x more visibility!</p>
-
-                {/* Conditional feature button */}
-                {canBeFeatured ? (
-                  <button
-                    className="feature-cta-button"
-                    onClick={() => setShowFeatureModal(true)}
+                <div className="owner-stat-card">
+                  <span
+                    className={`owner-stat-value status-${restaurant.crowd_status}`}
                   >
-                    Be Featured Now
-                  </button>
+                    {restaurant.crowd_status === "green"
+                      ? "Low"
+                      : restaurant.crowd_status === "yellow"
+                        ? "Moderate"
+                        : restaurant.crowd_status === "orange"
+                          ? "Busy"
+                          : "Very High"}
+                  </span>
+                  <span className="owner-stat-label">
+                    Crowd <br />
+                    Status
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="owner-tab-navigation">
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "overview" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("overview")}
+              >
+                Overview
+              </button>
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "menu" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("menu")}
+              >
+                Menu
+              </button>
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "reviews" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("reviews")}
+              >
+                Reviews
+              </button>
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "photos" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("photos")}
+              >
+                Photos
+              </button>
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "analytics" ? "active" : ""
+                } ${tier === "premium" ? "premium-unlocked" : "premium-locked"}`}
+                onClick={() => setActiveTab("analytics")}
+                title={
+                  tier === "basic"
+                    ? "Upgrade to Premium to access analytics"
+                    : "View analytics"
+                }
+              >
+                {tier === "premium" ? "Analytics" : "Analytics"}
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="owner-tab-content">{renderTabContent()}</div>
+            {/* Tier Section */}
+            <div className="tier-section">
+              <div className="tier-info">
+                {tier === "basic" ? (
+                  <div className="basic-tier">
+                    <span className="tier-badge basic">Free Tier</span>
+                    <p className="tier-description">
+                      • Manual updates only
+                      <br />
+                      • Cannot apply for featured status
+                      <br />• Basic features only
+                    </p>
+                    <button className="upgrade-btn" onClick={handleUpgrade}>
+                      Upgrade to Premium
+                    </button>
+                  </div>
                 ) : (
-                  <button
-                    className="feature-cta-button disabled"
-                    disabled
-                    title="Upgrade to Premium to be featured"
-                  >
-                    Upgrade to Be Featured
-                  </button>
+                  <div className="premium-tier">
+                    <span className="tier-badge premium">Premium</span>
+                    <p className="tier-description">
+                      • Automatic IoT updates
+                      <br />
+                      • Can apply for featured status
+                      <br />
+                      • Full analytics access
+                      <br />• Advertisement capabilities
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
-          )}
+            {/* Feature CTA - Conditional based on tier */}
+            {!restaurant.is_featured && (
+              <div className="owner-feature-cta">
+                <div className="feature-cta-content">
+                  <h3>Want more customers?</h3>
+                  <p>
+                    Get featured on our homepage and get 3x more visibility!
+                  </p>
+
+                  {/* Conditional feature button */}
+                  {canBeFeatured ? (
+                    <button
+                      className="feature-cta-button"
+                      onClick={() => setShowFeatureModal(true)}
+                    >
+                      Be Featured Now
+                    </button>
+                  ) : (
+                    <button
+                      className="feature-cta-button disabled"
+                      disabled
+                      title="Upgrade to Premium to be featured"
+                    >
+                      Upgrade to Be Featured
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
