@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
-import RestaurantList from "./components/RestaurantList/RestaurantList";
 import RestaurantOwnerDashboard from "./components/RestaurantOwnerDashboard/RestaurantOwnerDashboard";
-import BookmarksPage from "./components/BookmarksPage/BookmarksPage";
-import NotificationsPage from "./components/NotificationsPage/NotificationsPage";
 import AdminPanel from './components/AdminPanel/AdminPanel';
 import "./globals.css";
 

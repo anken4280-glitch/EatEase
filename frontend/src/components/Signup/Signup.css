@@ -57,7 +57,7 @@
 .signup input:focus,
 .signup select:focus {
   outline: none;
-  border-color: #F8F3B7;
+  border-color: #f8f3b7;
   box-shadow: 0 0 0 3px rgba(248, 243, 183, 0.2);
 }
 
@@ -69,7 +69,7 @@
 .signup button[type="submit"] {
   width: 100%;
   padding: 0.75rem;
-  background: #F8F3B7;
+  background: #f8f3b7;
   color: #333;
   border: none;
   border-radius: 8px;
@@ -112,14 +112,19 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.signup > div:last-child button {
+.business-signup-button {
   background: none;
   border: none;
+  padding: 0.75rem;
   color: #333;
-  text-decoration: underline;
+  background-color: #f8f3b7;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
   cursor: pointer;
-  font-weight: 500;
-  margin-left: 0.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s ease;
 }
 
 .signup > div:last-child button:hover {
@@ -131,7 +136,7 @@
   .signup {
     padding: 3rem 2rem;
   }
-  
+
   .signup-container {
     padding: 2.5rem;
   }

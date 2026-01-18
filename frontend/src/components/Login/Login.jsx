@@ -30,13 +30,21 @@ function Login({ onLogin, onSwitchToSignup }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json", // ← ADD THIS LINE
-          "X-Requested-With": "XMLHttpRequest" // ← ALSO ADD THIS (optional but helpful)
+          Accept: "application/json", // ← ADD THIS LINE
+          "X-Requested-App": "restaurant-app", // ← ALSO ADD THIS (optional but helpful)
         },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
+
+      if (data.error === "wrong_app") {
+        alert(data.message);
+        if (data.redirect_url) {
+          window.location.href = data.redirect_url;
+        }
+        return;
+      }
 
       if (response.ok) {
         // Store user data and token in localStorage

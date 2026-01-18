@@ -7,12 +7,10 @@ function Signup({ onSignup, onSwitchToLogin }) {
     email: "",
     password: "",
     password_confirmation: "",
-    user_type: "diner", // Default to diner
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Handle form input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -20,37 +18,54 @@ function Signup({ onSignup, onSwitchToLogin }) {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      // Send signup request to Laravel backend
+      // 🎯 Business App signup: Force restaurant_owner
+      const signupData = {
+        ...formData,
+        user_type: "restaurant_owner", // ← ALWAYS restaurant owner
+        is_admin: false                // ← Admins created manually
+      };
+
       const response = await fetch("http://localhost:8000/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
+          "Accept": "application/json",
+          "X-Requested-App": "restaurant-app", // ← CRITICAL!
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(signupData),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Store user data and token in localStorage
+      // ✅ Check for validation errors
+      if (response.status === 422 && data.errors) {
+        const firstError = Object.values(data.errors)[0]?.[0];
+        setError(firstError || "Validation failed");
+        return;
+      }
+
+      if (response.ok && data.user && data.token) {
+        // ✅ Verify this is a business account
+        if (data.user.user_type !== 'restaurant_owner') {
+          alert('Error: Account was not created as restaurant owner.');
+          return;
+        }
+
         localStorage.setItem("auth_token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-
-        // Notify parent component about successful signup
         onSignup(data.user);
       } else {
         setError(data.message || "Signup failed");
       }
     } catch (err) {
       setError("Network error. Please try again.");
+      console.error("Signup error:", err);
     } finally {
       setLoading(false);
     }
@@ -59,21 +74,25 @@ function Signup({ onSignup, onSwitchToLogin }) {
   return (
     <div className="signup">
       <div className="signup-container">
-        <h2>Create Account</h2>
+        <h2>Sign Up</h2>
+        <p className="business-description">
+          Register restaurant on EatEase
+        </p>
+        
         <form onSubmit={handleSubmit}>
-          <div>
-            <label>Name</label>
+          <div className="form-group">
+            <label>Full Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Enter your full name"
+              placeholder="Enter your name"
               required
             />
           </div>
 
-          <div>
+          <div className="form-group">
             <label>Email Address</label>
             <input
               type="email"
@@ -85,7 +104,7 @@ function Signup({ onSignup, onSwitchToLogin }) {
             />
           </div>
 
-          <div>
+          <div className="form-group">
             <label>Password</label>
             <input
               type="password"
@@ -94,10 +113,11 @@ function Signup({ onSignup, onSwitchToLogin }) {
               onChange={handleChange}
               placeholder="Create a password"
               required
+              minLength="6"
             />
           </div>
 
-          <div>
+          <div className="form-group">
             <label>Confirm Password</label>
             <input
               type="password"
@@ -109,29 +129,18 @@ function Signup({ onSignup, onSwitchToLogin }) {
             />
           </div>
 
-          <div>
-            <label>I am a:</label>
-            <select
-              name="user_type"
-              value={formData.user_type}
-              onChange={handleChange}
-            >
-              <option value="diner">Diner</option>
-              <option value="restaurant_owner">Restaurant Owner</option>
-            </select>
-          </div>
+          {/* Always Restaurant-app account*/}
+          {error && <div className="error-message">{error}</div>}
 
-          {/* Display error messages */}
-          {error && <div style={{ color: "red" }}>{error}</div>}
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className="business-signup-button">
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
-        <div>
+        <div className="auth-switch">
           <p>
-            Already have an account?
-            <button type="button" onClick={onSwitchToLogin}>
+            Already have an account?{" "}
+            <button type="button" onClick={onSwitchToLogin} className="switch-button">
               Login
             </button>
           </p>
