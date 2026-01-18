@@ -82,9 +82,9 @@
 
 /* Smaller Edit Restaurant Button */
 .edit-profile-btn {
-  background: #F8F3B7;
+  background-color: inherit;
   color: black;
-  border: none;
+  border: 1px solid black;
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 13px;
@@ -246,13 +246,13 @@
 }
 
 .owner-tab-btn {
-  background: #F8F3B7;
+  background: black;
   border: 1px solid #dee2e6;
   padding: 12px 8px;
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
-  color: #666;
+  color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -263,7 +263,8 @@
 
 .owner-tab-btn.active {
   color: black;
-  border-color: #000000;
+  border-color: black;
+  background-color: white;
 }
 
 /* Owner Tab Content */
@@ -283,7 +284,7 @@
 
 .tab-section {
   padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #0000004d;
 }
 
 .tab-section:last-child {
@@ -293,26 +294,23 @@
 
 .section-header {
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
   align-items: center;
-  margin-bottom: 16px;
-  
+  margin-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .section-header h3 {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 800;
   color: #222;
   padding-bottom: 5px;
-  margin-bottom: 5px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.23);
 }
 
 .section-edit-btn {
-  background: #F8F3B7;
-  border: 1px solid #dee2e6;
+  background-color: inherit;
+  border: none;
   color: black;
-  padding: 6px 12px;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
@@ -321,10 +319,16 @@
   gap: 4px;
 }
 
+.section-edit-btn svg {
+  display: flex;
+  align-self: flex-start;
+}
+
 .info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+  margin-left: 15px;
 }
 
 .info-item {
@@ -349,10 +353,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-left: 15px;
 }
 
 .feature-tag {
-  background: #F8F3B7;
+  background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
@@ -370,6 +375,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-left: 15px;
 }
 
 .status-item {
@@ -384,7 +390,7 @@
 }
 
 .status-value {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #222;
 }
@@ -947,6 +953,10 @@
   color: #6c757d;
   font-size: 14px;
   line-height: 1.5;
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+  margin-left: 20px;
 }
 
 .upgrade-btn {

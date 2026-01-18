@@ -50,7 +50,7 @@ function RestaurantOwnerDashboard({ user }) {
             Accept: "application/json",
           },
           credentials: "include",
-        }
+        },
       );
 
       const data = await response.json();
@@ -89,7 +89,7 @@ function RestaurantOwnerDashboard({ user }) {
   const handleUpgrade = async () => {
     if (
       !confirm(
-        "Upgrade to Premium tier? This will unlock all features including the ability to apply for featured status."
+        "Upgrade to Premium tier? This will unlock all features including the ability to apply for featured status.",
       )
     ) {
       return;
@@ -106,7 +106,7 @@ function RestaurantOwnerDashboard({ user }) {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -161,7 +161,7 @@ function RestaurantOwnerDashboard({ user }) {
           body: JSON.stringify({
             featured_description: featuredDescription,
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -245,7 +245,7 @@ function RestaurantOwnerDashboard({ user }) {
             Accept: "application/json",
           },
           body: JSON.stringify(dataToSend),
-        }
+        },
       );
 
       const data = await response.json();
@@ -409,7 +409,15 @@ function RestaurantOwnerDashboard({ user }) {
                     setIsEditing(true);
                   }}
                 >
-                  Edit
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="18px"
+                    viewBox="0 -960 960 960"
+                    width="18px"
+                    fill="black"
+                  >
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                  </svg>
                 </button>
               </div>
 
@@ -451,38 +459,6 @@ function RestaurantOwnerDashboard({ user }) {
               </div> */}
             </div>
 
-            {/* Tier Section */}
-            <div className="tier-section">
-              <div className="tier-info">
-                {tier === "basic" ? (
-                  <div className="basic-tier">
-                    <span className="tier-badge basic">Free Tier</span>
-                    <p className="tier-description">
-                      • Manual updates only
-                      <br />
-                      • Cannot apply for featured status
-                      <br />• Basic features only
-                    </p>
-                    <button className="upgrade-btn" onClick={handleUpgrade}>
-                      Upgrade to Premium
-                    </button>
-                  </div>
-                ) : (
-                  <div className="premium-tier">
-                    <span className="tier-badge premium">Premium</span>
-                    <p className="tier-description">
-                      • Automatic IoT updates
-                      <br />
-                      • Can apply for featured status
-                      <br />
-                      • Full analytics access
-                      <br />• Advertisement capabilities
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Quick Stats */}
             <div className="owner-quick-stats">
               <div className="owner-stat-card">
@@ -504,10 +480,10 @@ function RestaurantOwnerDashboard({ user }) {
                   {restaurant.crowd_status === "green"
                     ? "Low"
                     : restaurant.crowd_status === "yellow"
-                    ? "Moderate"
-                    : restaurant.crowd_status === "orange"
-                    ? "Busy"
-                    : "Very High"}
+                      ? "Moderate"
+                      : restaurant.crowd_status === "orange"
+                        ? "Busy"
+                        : "Very High"}
                 </span>
                 <span className="owner-stat-label">Crowd Status</span>
               </div>
@@ -565,7 +541,37 @@ function RestaurantOwnerDashboard({ user }) {
 
           {/* Tab Content */}
           <div className="owner-tab-content">{renderTabContent()}</div>
-
+          {/* Tier Section */}
+          <div className="tier-section">
+            <div className="tier-info">
+              {tier === "basic" ? (
+                <div className="basic-tier">
+                  <span className="tier-badge basic">Free Tier</span>
+                  <p className="tier-description">
+                    • Manual updates only
+                    <br />
+                    • Cannot apply for featured status
+                    <br />• Basic features only
+                  </p>
+                  <button className="upgrade-btn" onClick={handleUpgrade}>
+                    Upgrade to Premium
+                  </button>
+                </div>
+              ) : (
+                <div className="premium-tier">
+                  <span className="tier-badge premium">Premium</span>
+                  <p className="tier-description">
+                    • Automatic IoT updates
+                    <br />
+                    • Can apply for featured status
+                    <br />
+                    • Full analytics access
+                    <br />• Advertisement capabilities
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
           {/* Feature CTA - Conditional based on tier */}
           {!restaurant.is_featured && (
             <div className="owner-feature-cta">
@@ -668,40 +674,42 @@ function RestaurantOwnerDashboard({ user }) {
                 />
               </div>
 
-<div className="form-group">
-  <label>Max Capacity *</label>
-  <input
-    type="number"
-    value={formData.max_capacity || ""} // Show empty string for 0
-    onChange={(e) => {
-      const val = e.target.value;
-      setFormData({
-        ...formData,
-        max_capacity: val === "" ? 0 : Math.max(0, parseInt(val) || 0),
-      });
-    }}
-    placeholder="Maximum number of customers"
-    min="0"
-    required
-  />
-</div>
+              <div className="form-group">
+                <label>Max Capacity *</label>
+                <input
+                  type="number"
+                  value={formData.max_capacity || ""} // Show empty string for 0
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({
+                      ...formData,
+                      max_capacity:
+                        val === "" ? 0 : Math.max(0, parseInt(val) || 0),
+                    });
+                  }}
+                  placeholder="Maximum number of customers"
+                  min="0"
+                  required
+                />
+              </div>
 
-<div className="form-group">
-  <label>Current Occupancy</label>
-  <input
-    type="number"
-    value={formData.current_occupancy || ""} // Show empty string for 0
-    onChange={(e) => {
-      const val = e.target.value;
-      setFormData({
-        ...formData,
-        current_occupancy: val === "" ? 0 : Math.max(0, Number(val) || 0),
-      });
-    }}
-    placeholder="Current number of customers"
-    min="0"
-  />
-</div>
+              <div className="form-group">
+                <label>Current Occupancy</label>
+                <input
+                  type="number"
+                  value={formData.current_occupancy || ""} // Show empty string for 0
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setFormData({
+                      ...formData,
+                      current_occupancy:
+                        val === "" ? 0 : Math.max(0, Number(val) || 0),
+                    });
+                  }}
+                  placeholder="Current number of customers"
+                  min="0"
+                />
+              </div>
 
               <div className="form-group">
                 <label>Features (optional)</label>

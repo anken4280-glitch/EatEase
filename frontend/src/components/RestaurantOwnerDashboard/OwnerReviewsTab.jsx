@@ -18,7 +18,7 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
   useEffect(() => {
     console.log(
       "OwnerReviewsTab: Loading reviews for restaurant",
-      restaurantId
+      restaurantId,
     );
     fetchReviews();
   }, [restaurantId]);
@@ -27,7 +27,7 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/restaurants/${restaurantId}/reviews`
+        `http://localhost:8000/api/restaurants/${restaurantId}/reviews`,
       );
       const data = await response.json();
       console.log("Owner reviews API response:", data);
@@ -80,7 +80,7 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
   const deleteReview = async (reviewId) => {
     if (
       !confirm(
-        "Are you sure you want to delete this review? This cannot be undone."
+        "Are you sure you want to delete this review? This cannot be undone.",
       )
     )
       return;
@@ -95,7 +95,7 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -220,12 +220,12 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
               {filter === "all"
                 ? "All Reviews"
                 : filter === "recent"
-                ? "Recent Reviews"
-                : filter === "5"
-                ? "5-Star Reviews"
-                : filter === "1"
-                ? "1-Star Reviews"
-                : `${filter}-Star Reviews`}
+                  ? "Recent Reviews"
+                  : filter === "5"
+                    ? "5-Star Reviews"
+                    : filter === "1"
+                      ? "1-Star Reviews"
+                      : `${filter}-Star Reviews`}
               ({filteredReviews.length})
             </h3>
             <button
@@ -245,7 +245,15 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
                 className="reset-filter-btn"
                 onClick={() => setFilter("all")}
               >
-                Show All Reviews
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="black "
+                >
+                  <path d="M480-360 280-560h400L480-360Z" />
+                </svg>
               </button>
             </div>
           ) : (
@@ -308,7 +316,7 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
                         <strong>Your Response:</strong>
                         <span className="response-date">
                           {new Date(
-                            review.response.created_at
+                            review.response.created_at,
                           ).toLocaleDateString()}
                         </span>
                       </div>

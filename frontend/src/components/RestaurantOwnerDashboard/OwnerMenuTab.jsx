@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./OwnerMenuTab.css";
 
 const OwnerMenuTab = ({ restaurantId }) => {
   const [menuDescription, setMenuDescription] = useState('');
@@ -57,7 +58,7 @@ const OwnerMenuTab = ({ restaurantId }) => {
   return (
     <div className="owner-menu-tab">
       <div className="menu-editor-header">
-        <h3>Your Menu</h3>
+        <h3>Menu</h3>
       </div>
       
       {message && (
@@ -81,13 +82,13 @@ const OwnerMenuTab = ({ restaurantId }) => {
             disabled={isSaving}
             className="save-btn"
           >
-            {isSaving ? 'Saving...' : 'Save Menu'}
+            {isSaving ? 'Saving...' : 'SAVE'}
           </button>
           <button 
             onClick={() => setMenuDescription('')}
             className="clear-btn"
           >
-            Clear
+            CANCEL
           </button>
         </div>
       </div>

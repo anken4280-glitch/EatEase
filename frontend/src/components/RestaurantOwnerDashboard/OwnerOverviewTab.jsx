@@ -1,4 +1,5 @@
 import React from "react";
+import "./OwnerOverviewTab.css";
 
 const OwnerOverviewTab = ({ restaurant, onEdit }) => {
   return (
@@ -11,17 +12,17 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
         <div className="info-grid">
           <div className="info-section">
             <div className="section-title">
-              <svg
-                className="location-icon"
-                width="20"
-                height="20"
-                viewBox="0 -960 960 960"
-                fill="red"
-                aria-hidden="true"
-              >
-                <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
-              </svg>
               <h3 className="section-title" id="section-title-location">
+                <svg
+                  className="location-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 -960 960 960"
+                  fill="red"
+                  aria-hidden="true"
+                >
+                  <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
+                </svg>
                 Location:
               </h3>
             </div>
@@ -105,7 +106,15 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
         <div className="section-header">
           <h3>Current Status</h3>
           <button className="section-edit-btn" onClick={onEdit}>
-            Update Status
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="17px"
+              viewBox="0 -960 960 960"
+              width="17px"
+              fill="black"
+            >
+              <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+            </svg>
           </button>
         </div>
 
@@ -116,10 +125,10 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
               {restaurant.crowd_status === "green"
                 ? "Low"
                 : restaurant.crowd_status === "yellow"
-                ? "Moderate"
-                : restaurant.crowd_status === "orange"
-                ? "Busy"
-                : "Very High"}
+                  ? "Moderate"
+                  : restaurant.crowd_status === "orange"
+                    ? "Busy"
+                    : "Very High"}
             </span>
           </div>
           <div className="status-item">
