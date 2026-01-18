@@ -60,3 +60,5 @@ frontend/.env.*
 .DS_Store
 .idea/
 .vscode/
+frontend-diner/
+frontend-restaurant/
