@@ -196,3 +196,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // In the public routes section (no auth needed for recommendations)
 Route::get('/restaurants/premium/recommendations', [RecommendationController::class, 'getPremiumRecommendations']);
+
+Route::middleware(['auth:sanctum', 'business.only'])->group(function () {
+    // ... existing routes
+    
+    Route::post('/restaurant/upload/{type}', [RestaurantController::class, 'uploadImage']);
+    Route::post('/restaurant/banner-position', [RestaurantController::class, 'updateBannerPosition']);
+});
