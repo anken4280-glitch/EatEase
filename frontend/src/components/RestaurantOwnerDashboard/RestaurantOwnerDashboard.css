@@ -2,7 +2,7 @@
 
 /* ===== RESTAURANT OWNER VIEW ===== */
 .restaurant-owner-view {
-  padding-top: 16px;
+  padding-top: 0px;
   background-color: white;
 }
 
@@ -85,7 +85,7 @@
 /* Banner Section */
 .restaurant-banner-section {
   margin: 0px 0 0px;
-  border-radius: 12px;
+  border: none;
   overflow: hidden;
   position: relative;
 }
@@ -99,6 +99,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .edit-image-btn.banner-btn {
@@ -109,8 +111,8 @@
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 2px 4px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -242,10 +244,10 @@
 
 .owner-title-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  margin: 0px 20px 0px 20px;
-  padding: 0px 0 0 0;
+  margin: 0;
+  padding: 0px 20px 0px 20px;
   position: relative;
 }
 
@@ -340,6 +342,7 @@
 }
 
 .restaurant-owner-name {
+  text-align: left;
   font-size: 3rem;
   font-weight: 800;
   color: #000000;
@@ -350,6 +353,13 @@
   justify-content: center;
   align-content: center;
   gap: 10px;
+  padding-left: 10px;
+}
+
+.menu-container {
+  display: flex;
+  justify-self: flex-start;
+  align-self: start;
 }
 
 .restaurant-name {
