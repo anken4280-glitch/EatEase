@@ -24,8 +24,7 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgb(0, 0, 0);
 }
 
 .profile-image-placeholder {
@@ -45,10 +44,9 @@
 
 .edit-image-btn {
   position: absolute;
-  bottom: -5px;
-  right: -5px;
-  background: white;
-  color: white;
+  bottom: -3px;
+  right: -4px;
+  background: transparent;
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -57,7 +55,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(107, 91, 149, 0.3);
   transition: all 0.2s;
 }
 
@@ -247,7 +244,7 @@
   justify-content: flex-start;
   align-items: center;
   margin: 0;
-  padding: 0px 20px 0px 20px;
+  padding: 0px 15px 0px 15px;
   position: relative;
 }
 
@@ -290,9 +287,9 @@
   display: flex;
   align-items: center;
   gap: 0px;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
   justify-content: space-between;
-  padding: 20px 20px 20px 0px;
+  padding: 10px 0px 10px 0px;
 }
 
 .menu-button {
@@ -371,9 +368,8 @@
 
 /* Smaller Edit Restaurant Button */
 .edit-profile-btn {
-  background-color: inherit;
+  background: none;
   color: black;
-  border: 1px solid black;
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 13px;
