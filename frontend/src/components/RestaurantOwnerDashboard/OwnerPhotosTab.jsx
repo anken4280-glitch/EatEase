@@ -327,7 +327,7 @@ const OwnerPhotosTab = ({ restaurant }) => {
             >
               <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
             </svg>
-            Upload Photos
+            Upload
           </label>
           <input
             id="photo-upload"
@@ -373,7 +373,7 @@ const OwnerPhotosTab = ({ restaurant }) => {
                       xmlns="http://www.w3.org/2000/svg"
                       width="12"
                       height="12"
-                      fill="white"
+                      fill="black"
                       viewBox="0 0 256 256"
                     >
                       <path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"></path>
@@ -405,11 +405,11 @@ const OwnerPhotosTab = ({ restaurant }) => {
                     </svg>
                   </button>
                 </div>
-                <div className="photo-meta">
+                {/* <div className="photo-meta">
                   <small>
                     Uploaded {new Date(photo.created_at).toLocaleDateString()}
                   </small>
-                </div>
+                </div> */}
               </div>
             </div>
           ))}
@@ -433,7 +433,7 @@ const OwnerPhotosTab = ({ restaurant }) => {
               </button>
             </div>
 
-            <div className="modal-content">
+            <div className="photos-modal-content">
               <div className="selected-files">
                 {selectedFiles.map((file, index) => (
                   <div key={index} className="file-preview">

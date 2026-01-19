@@ -5,20 +5,22 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(null); // Only for new file preview
-  const [currentImageDisplay, setCurrentImageDisplay] = useState(currentImage || null);
+  const [currentImageDisplay, setCurrentImageDisplay] = useState(
+    currentImage || null,
+  );
   const fileInputRef = useRef(null);
 
   // Set current image URL when currentImage prop changes
   useEffect(() => {
     if (currentImage) {
       let url = currentImage;
-      
+
       // Check if it's already a full URL
-      if (url && !url.startsWith('http')) {
+      if (url && !url.startsWith("http")) {
         // If it's just a path, prepend with storage URL
         url = `http://localhost:8000/storage/${url}`;
       }
-      
+
       setCurrentImageDisplay(url);
     } else {
       setCurrentImageDisplay(null);
@@ -30,20 +32,20 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
     if (!file) return;
 
     // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     if (!validTypes.includes(file.type)) {
-      setError('Please select a valid image (JPEG, PNG, GIF, WebP)');
+      setError("Please select a valid image (JPEG, PNG, GIF, WebP)");
       return;
     }
 
     // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
-      setError('File size should be less than 5MB');
+      setError("File size should be less than 5MB");
       return;
     }
 
     setError("");
-    
+
     // Create preview for NEW file only
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target.result);
@@ -71,7 +73,7 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
             Accept: "application/json",
           },
           body: formData,
-        }
+        },
       );
 
       const data = await response.json();
@@ -81,20 +83,22 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
         if (data.url) {
           setCurrentImageDisplay(data.url);
         }
-        
+
         if (onUploadSuccess) {
           onUploadSuccess(data.url, data.path);
         }
-        
+
         // Clear the preview
         setPreview(null);
-        
+
         // Clear the file input using the ref
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
-        
-        alert(`${type === "profile" ? "Profile" : "Banner"} image uploaded successfully!`);
+
+        alert(
+          `${type === "profile" ? "Profile" : "Banner"} image uploaded successfully!`,
+        );
       } else {
         setError(data.message || "Upload failed");
       }
@@ -109,19 +113,22 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
   return (
     <div className={`image-upload ${type}`}>
       <h3>{type === "profile" ? "Profile Image" : "Banner Image"}</h3>
-      
+
       {/* Display current image if it exists */}
       {currentImageDisplay && (
         <div className="current-image-section">
           <h4>Current Image:</h4>
-          <img 
-            src={currentImageDisplay} 
+          <img
+            src={currentImageDisplay}
             alt={`Current ${type}`}
             className="current-image"
             onError={(e) => {
               console.error("Image failed to load:", currentImageDisplay);
               // Try to fix the URL if it's broken
-              if (currentImageDisplay && !currentImageDisplay.includes('/storage/')) {
+              if (
+                currentImageDisplay &&
+                !currentImageDisplay.includes("/storage/")
+              ) {
                 e.target.src = `http://localhost:8000/storage/${currentImageDisplay}`;
               }
             }}
@@ -133,7 +140,11 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
       <div className="upload-area">
         {preview ? (
           <div className="preview-container">
-            <img src={preview} alt={`${type} preview`} className="preview-image" />
+            <img
+              src={preview}
+              alt={`${type} preview`}
+              className="preview-image"
+            />
             <div className="preview-overlay">
               <label className="upload-button">
                 {uploading ? "Uploading..." : `Upload ${type} image`}
@@ -149,12 +160,22 @@ function ImageUpload({ type, currentImage, onUploadSuccess, restaurantId }) {
           </div>
         ) : (
           <label className="upload-placeholder">
-            <div className="upload-icon">📷</div>
+            <div className="upload-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="30px"
+                viewBox="0 -960 960 960"
+                width="30px"
+                fill="#000000"
+              >
+                <path d="M440-120v-320H120v-80h320v-320h80v320h320v80H520v320h-80Z" />
+              </svg>
+            </div>
             <div className="upload-text">
               {uploading ? "Uploading..." : `Upload ${type} image`}
             </div>
             <div className="upload-hint">Click to select image</div>
-            <div className="upload-requirements">JPG, PNG, GIF, WebP • Max 5MB</div>
+            <div className="upload-requirements">Max 5MB</div>
             <input
               type="file"
               ref={fileInputRef}

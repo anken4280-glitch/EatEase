@@ -1,7 +1,7 @@
 .image-upload {
   margin: 20px 0;
   padding: 20px;
-  border: 2px dashed #ddd;
+  border: 1px solid #ddd;
   border-radius: 12px;
   background: #f8f9fa;
   transition: all 0.3s;
@@ -22,9 +22,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 20px 20px;
   cursor: pointer;
   color: #666;
+  border: 1px dashed rgba(0, 0, 0, 0.349);
+  border-radius: 20px;
+  margin-top: 20px;
 }
 
 .upload-icon {
@@ -102,6 +105,16 @@
   height: 200px;
 }
 
+.modal-content {
+  padding: 10px;
+}
+
+.modal-header {
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+}
+
 .image-upload.profile .preview-image {
   width: 150px;
   height: 150px;
@@ -141,4 +154,9 @@
   border-radius: 6px;
   color: #c00;
   font-size: 14px;
+}
+
+.current-image {
+  border-radius: 20px;
+  padding-top: 12px;
 }

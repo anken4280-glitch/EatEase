@@ -1,9 +1,9 @@
 /* OwnerPhotosTab.css */
 .owner-photos-tab {
   padding: 24px;
-  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0.1, 0.1, 0.1, 0.4);
+  background-color: #efedde;
 }
 
 .owner-photos-tab.loading {
@@ -21,24 +21,25 @@
 
 .tab-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #040404;
 }
 
 .header-left h3 {
   margin: 0;
-  color: #333;
+  color: #000000;
   font-size: 24px;
+  text-align: start;
+  font-weight: bold;
 }
 
 .upload-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 8px;
+  gap: 2px;
+  padding: 6px 7px;
   background: #000000;
   color: white;
   border: none;
@@ -138,8 +139,8 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-  color: #fdfafa;
+  background-color: #efedde;
+  color: black;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -150,13 +151,13 @@
 }
 
 .photo-info {
-  padding: 16px;
+  padding: 10px;
 }
 
 .photo-actions {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 5px;
 }
 
 .set-primary-btn, .delete-btn {
@@ -176,22 +177,21 @@
 }
 
 .set-primary-btn:hover:not(:disabled) {
-  background: #dee2e6;
+  background: #000000;
 }
 
 .set-primary-btn.is-primary {
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-  color: #000000;
+  background-color: black;
+  color: #ffffff;
   cursor: default;
 }
 
 .set-primary-btn:disabled {
-  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .delete-btn {
-  background: red;
+  background: rgba(0, 0, 0, 0.471);
   color: white;
   display: flex;
   justify-content: center;
@@ -266,7 +266,7 @@
   color: #333;
 }
 
-.modal-content {
+.photos-modal-content {
   padding: 24px;
 }
 
@@ -369,13 +369,8 @@
   }
   
   .tab-header {
-    flex-direction: column;
     align-items: flex-start;
     gap: 16px;
-  }
-  
-  .header-right {
-    width: 100%;
   }
   
   .upload-btn {
