@@ -43,7 +43,7 @@
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -138,8 +138,8 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(255, 215, 0, 0.9);
-  color: #333;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #fdfafa;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -164,15 +164,15 @@
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .set-primary-btn {
-  background: #e9ecef;
-  color: #333;
+  background: #000000;
+  color: #ffffff;
 }
 
 .set-primary-btn:hover:not(:disabled) {
@@ -180,8 +180,8 @@
 }
 
 .set-primary-btn.is-primary {
-  background: #ffd700;
-  color: #333;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000000;
   cursor: default;
 }
 
@@ -191,8 +191,11 @@
 }
 
 .delete-btn {
-  background: #ff6b6b;
+  background: red;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 .delete-btn:hover {

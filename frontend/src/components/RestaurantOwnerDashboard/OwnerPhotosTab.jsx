@@ -369,7 +369,17 @@ const OwnerPhotosTab = ({ restaurant }) => {
                   loading="lazy"
                 />
                 {photo.is_primary && (
-                  <div className="primary-badge">Primary</div>
+                  <div className="primary-badge">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      fill="white"
+                      viewBox="0 0 256 256"
+                    >
+                      <path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"></path>
+                    </svg>
+                  </div>
                 )}
               </div>
               <div className="photo-info">
@@ -379,13 +389,21 @@ const OwnerPhotosTab = ({ restaurant }) => {
                     onClick={() => handleSetPrimary(photo.id)}
                     disabled={photo.is_primary}
                   >
-                    {photo.is_primary ? "✓ Primary" : "Set Primary"}
+                    {photo.is_primary ? "Primary" : "Set Primary"}
                   </button>
                   <button
                     className="delete-btn"
                     onClick={() => handleDeletePhoto(photo.id)}
                   >
-                    Delete
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      fill="white"
+                      viewBox="0 0 256 256"
+                    >
+                      <path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path>
+                    </svg>
                   </button>
                 </div>
                 <div className="photo-meta">
