@@ -8,6 +8,7 @@ import OwnerMenuTab from "./OwnerMenuTab";
 import OwnerReviewsTab from "./OwnerReviewsTab";
 import OwnerPhotosTab from "./OwnerPhotosTab";
 import AnalyticsTab from "./AnalyticsTab";
+import ImageUpload from "../ImageUpload/ImageUpload";
 
 function RestaurantOwnerDashboard({ user }) {
   const [showVerificationForm, setShowVerificationForm] = useState(false);
@@ -33,6 +34,7 @@ function RestaurantOwnerDashboard({ user }) {
     current_occupancy: 0,
     features: [],
   });
+  const [editingImageType, setEditingImageType] = useState(null); // 'profile' or 'banner'
 
   useEffect(() => {
     if (user && user.user_type === "restaurant_owner") {
@@ -232,6 +234,16 @@ function RestaurantOwnerDashboard({ user }) {
     }
   };
 
+  const handleImageUpload = (imageUrl, imagePath) => {
+    setRestaurant((prev) => ({
+      ...prev,
+      profile_image: imageUrl,
+      // Update based on type
+    }));
+    // Optional: Refresh restaurant data
+    fetchRestaurant();
+  };
+
   const handleSaveRestaurant = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("auth_token");
@@ -366,7 +378,7 @@ function RestaurantOwnerDashboard({ user }) {
               <h4>
                 Subscription:{" "}
                 <span className={`tier-badge ${tier}`}>
-                  {tier === "premium" ? "⭐ Premium" : "Free Tier"}
+                  {tier === "premium" ? "Premium" : "Free Tier"}
                 </span>
               </h4>
               <p>
@@ -385,51 +397,41 @@ function RestaurantOwnerDashboard({ user }) {
         // Restaurant exists - show enhanced dashboard
         <div className="restaurant-owner-view">
           {/* Header with Title and Logout */}
-          <div className="owner-title-row">
-            <h1 className="owner-title">
-              <div className="restaurant-title-section">
-                <h2 className="restaurant-owner-name">{restaurant.name} </h2>
-              </div>
-            </h1>
-            {/* Hamburger Menu with Dropdown - Only Edit & Logout */}
-            <div className="menu-container" ref={menuRef}>
-              <button
-                className="menu-button"
-                onClick={() => setShowMenu(!showMenu)}
-                aria-label="Toggle menu"
-              >
-                {/* Hamburger Icon SVG */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="24px"
-                  viewBox="0 -960 960 960"
-                  width="24px"
-                  fill="currentColor"
-                  className={`hamburger-icon ${showMenu ? "active" : ""}`}
+          {/* BANNER IMAGE SECTION - Right after title row */}
+          <div className="restaurant-banner-section">
+            {restaurant.banner_image ? (
+              <div className="restaurant-banner-container">
+                <img
+                  src={restaurant.banner_image}
+                  alt={`${restaurant.name} banner`}
+                  className="restaurant-banner-img"
+                />
+                <button
+                  className="edit-image-btn banner-btn"
+                  onClick={() => setEditingImageType("banner")}
+                  title="Edit banner image"
                 >
-                  <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-                </svg>
-              </button>
-
-              {/* Dropdown Menu - Only Edit Profile and Logout */}
-              {showMenu && (
-                <div className="dropdown-menu">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="30px"
+                    viewBox="0 -960 960 960"
+                    width="30px"
+                    fill="black"
+                  >
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                  </svg>
+                  Edit Banner
+                </button>
+              </div>
+            ) : (
+              <div className="restaurant-banner-placeholder">
+                <div className="banner-placeholder-content">
+                  <div className="banner-placeholder-text">
+                    No banner image yet
+                  </div>
                   <button
-                    className="dropdown-item edit-item"
-                    onClick={() => {
-                      setFormData({
-                        name: restaurant.name,
-                        cuisine_type: restaurant.cuisine_type,
-                        address: restaurant.address,
-                        phone: restaurant.phone,
-                        hours: restaurant.hours,
-                        max_capacity: restaurant.max_capacity,
-                        current_occupancy: restaurant.current_occupancy,
-                        features: restaurant.features || [],
-                      });
-                      setIsEditing(true);
-                      setShowMenu(false);
-                    }}
+                    className="add-banner-btn"
+                    onClick={() => setEditingImageType("banner")}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -437,34 +439,59 @@ function RestaurantOwnerDashboard({ user }) {
                       viewBox="0 -960 960 960"
                       width="20px"
                       fill="currentColor"
+                    >
+                      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+                    </svg>
+                    Add Banner Image
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="owner-title-row">
+            <div className="restaurant-title-section">
+              {/* PROFILE IMAGE + NAME */}
+              <div className="restaurant-header-profile">
+                {/* Profile Image with Edit Button */}
+                <div className="profile-image-container">
+                  {restaurant.profile_image ? (
+                    <img
+                      src={restaurant.profile_image}
+                      alt={restaurant.name}
+                      className="restaurant-profile-img"
+                    />
+                  ) : (
+                    <div className="profile-image-placeholder">
+                      {restaurant.name.charAt(0)}
+                    </div>
+                  )}
+                  <button
+                    className="edit-image-btn small-btn"
+                    onClick={() => setEditingImageType("profile")}
+                    title="Edit profile image"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="13px"
+                      viewBox="0 -960 960 960"
+                      width="13px"
+                      fill="black"
                     >
                       <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
                     </svg>
-                    <span>Edit Profile</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setShowMenu(false);
-                      handleLogout();
-                    }}
-                    className="dropdown-item logout-btn"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="20px"
-                      viewBox="0 -960 960 960"
-                      width="20px"
-                      fill="currentColor"
-                    >
-                      <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
-                    </svg>
-                    <span>Log Out</span>
                   </button>
                 </div>
-              )}
+
+                {/* Restaurant Name */}
+                <div className="restaurant-header-info">
+                  <h2 className="restaurant-owner-name">{restaurant.name}</h2>
+                </div>
+              </div>
             </div>
+
+            {/* Hamburger Menu... keep as is */}
           </div>
+
           {/* Verification Status */}
           {/* <div className="owner-verification-status">
                 {restaurant.is_verified ? (
@@ -591,34 +618,34 @@ function RestaurantOwnerDashboard({ user }) {
             {/* Tab Content */}
             <div className="owner-tab-content">{renderTabContent()}</div>
             {/* Tier Section */}
-              <div className="tier-info">
-                {tier === "basic" ? (
-                  <div className="basic-tier">
-                    <span className="tier-badge basic">Free Tier</span>
-                    <p className="tier-description">
-                      • Manual updates only
-                      <br />
-                      • Cannot apply for featured status
-                      <br />• Basic features only
-                    </p>
-                    <button className="upgrade-btn" onClick={handleUpgrade}>
-                      Upgrade to Premium
-                    </button>
-                  </div>
-                ) : (
-                  <div className="premium-tier">
-                    <span className="tier-badge premium">Premium</span>
-                    <p className="tier-description">
-                      • Automatic IoT updates
-                      <br />
-                      • Can apply for featured status
-                      <br />
-                      • Full analytics access
-                      <br />• Advertisement capabilities
-                    </p>
-                  </div>
-                )}
-              </div>
+            <div className="tier-info">
+              {tier === "basic" ? (
+                <div className="basic-tier">
+                  <span className="tier-badge basic">Free Tier</span>
+                  <p className="tier-description">
+                    • Manual updates only
+                    <br />
+                    • Cannot apply for featured status
+                    <br />• Basic features only
+                  </p>
+                  <button className="upgrade-btn" onClick={handleUpgrade}>
+                    Upgrade to Premium
+                  </button>
+                </div>
+              ) : (
+                <div className="premium-tier">
+                  <span className="tier-badge premium">Premium</span>
+                  <p className="tier-description">
+                    • Automatic IoT updates
+                    <br />
+                    • Can apply for featured status
+                    <br />
+                    • Full analytics access
+                    <br />• Advertisement capabilities
+                  </p>
+                </div>
+              )}
+            </div>
             {/* Feature CTA - Conditional based on tier */}
             {!restaurant.is_featured && (
               <div className="owner-feature-cta">
@@ -865,6 +892,60 @@ function RestaurantOwnerDashboard({ user }) {
                 className="primary-btn"
               >
                 Submit Feature Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Upload Modal */}
+      {editingImageType && (
+        <div
+          className="modal-overlay image-upload-modal"
+          onClick={() => setEditingImageType(null)}
+        >
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>
+                {editingImageType === "profile"
+                  ? "Edit Profile Image"
+                  : "Edit Banner Image"}
+              </h3>
+              <button
+                className="close-modal-btn"
+                onClick={() => setEditingImageType(null)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <ImageUpload
+              type={editingImageType}
+              currentImage={
+                editingImageType === "profile"
+                  ? restaurant.profile_image
+                  : restaurant.banner_image
+              }
+              onUploadSuccess={(url, path) => {
+                if (editingImageType === "profile") {
+                  setRestaurant((prev) => ({ ...prev, profile_image: url }));
+                } else {
+                  setRestaurant((prev) => ({ ...prev, banner_image: url }));
+                }
+                setEditingImageType(null);
+                alert(
+                  `${editingImageType === "profile" ? "Profile" : "Banner"} image updated!`,
+                );
+              }}
+              restaurantId={restaurant.id}
+            />
+
+            <div className="modal-actions">
+              <button
+                className="cancel-btn"
+                onClick={() => setEditingImageType(null)}
+              >
+                Cancel
               </button>
             </div>
           </div>
