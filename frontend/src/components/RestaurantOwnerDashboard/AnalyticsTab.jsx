@@ -134,6 +134,9 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
             <div className="feature-item">
               <span className="feature-text">Peak hour analysis</span>
             </div>
+            <div className="feature-item">
+              <span className="feature-text">Unlock ads and feature</span>
+            </div>
           </div>
         </div>
       </div>

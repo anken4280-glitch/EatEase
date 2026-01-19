@@ -425,7 +425,7 @@
 .reviews-tab-empty-state {
   background: white;
   border-radius: 12px;
-  padding: 40px 20px;
+  padding: 30px 20px 10px 20px;
   text-align: center;
   border: 1px solid #e0e0e0;
 }
@@ -444,6 +444,7 @@
 .reviews-tab-empty-state p {
   color: #666;
   margin-bottom: 20px;
+  font-size: 13px;
 }
 
 .reset-filter-btn {

@@ -698,7 +698,8 @@ function RestaurantOwnerDashboard({ user }) {
                     • Manual updates only
                     <br />
                     • Cannot apply for featured status
-                    <br />• Basic features only
+                    <br />• No customer analytics
+                    <br />• Not eligible to be advertised
                   </p>
                   <button className="upgrade-btn" onClick={handleUpgrade}>
                     Upgrade to Premium

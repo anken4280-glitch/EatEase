@@ -247,8 +247,8 @@ const OwnerReviewsTab = ({ restaurantId, restaurantName }) => {
 
           {filteredReviews.length === 0 ? (
             <div className="reviews-tab-empty-state">
-              <h4>No Reviews Found</h4>
-              <p>No reviews match your current filter.</p>
+              <h4>No Reviews Yet</h4>
+              <p>Be Featured to get more customers</p>
               <button
                 className="reset-filter-btn"
                 onClick={() => setFilter("all")}
