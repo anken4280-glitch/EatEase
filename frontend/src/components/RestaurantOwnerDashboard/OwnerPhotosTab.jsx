@@ -292,7 +292,6 @@ const OwnerPhotosTab = ({ restaurant }) => {
     return (
       <div className="owner-photos-tab loading">
         <div className="loading-spinner"></div>
-        <p>Loading photos...</p>
       </div>
     );
   }
