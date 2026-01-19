@@ -573,7 +573,7 @@
   box-shadow: 0 2px 8px rgba(0.08, 0.08, 0.08, 0.08);
   background-clip: padding-box;
   box-sizing: border-box;
-  background-color: white;
+  background-color: #ffffff;
 }
 
 /* Owner Overview Tab */
