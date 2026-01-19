@@ -310,7 +310,7 @@
   background: white;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(.1, .1, .1, 0.1);
+  box-shadow: 0 4px 12px rgba(0.1, 0.1, 0.1, 0.1);
   z-index: 1000;
   min-width: 180px;
 }
@@ -1300,13 +1300,14 @@
   border-radius: 6px;
   background: inherit;
   padding: 5px;
-  border-radius: 8px;
+  border-radius: 16px;
   margin: 0;
   border: none;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   background-clip: padding-box;
   box-sizing: border-box;
   background-color: white;
+  box-shadow: 0 2px 8px rgba(0.08, 0.08, 0.08, 0.08);
 }
 
 .basic-tier {
@@ -1330,7 +1331,7 @@
 }
 
 .upgrade-btn {
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  background-color: black;
   color: white;
   border: none;
   padding: 10px 15px;
