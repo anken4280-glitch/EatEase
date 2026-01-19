@@ -1,89 +1,362 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import "./OwnerPhotosTab.css";
 
-const OwnerPhotosTab = ({ restaurantId }) => {
+const OwnerPhotosTab = ({ restaurant }) => {
+  // Extract restaurantId from restaurant object
+  const restaurantId = restaurant?.id;
+
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [captions, setCaptions] = useState({});
+  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    fetchPhotos();
+    console.log("OwnerPhotosTab mounted with restaurant:", restaurant);
+    console.log("Extracted restaurantId:", restaurantId);
+
+    if (restaurantId) {
+      console.log("Fetching photos for restaurantId:", restaurantId);
+      fetchPhotos();
+    } else {
+      console.error("No restaurantId provided to OwnerPhotosTab");
+      setError("No restaurant selected");
+      setLoading(false);
+    }
   }, [restaurantId]);
 
   const fetchPhotos = async () => {
     try {
+      setError(null);
+      const token = localStorage.getItem("auth_token");
+      console.log("Fetching photos with token:", token ? "exists" : "missing");
+
       const response = await fetch(
-        `http://localhost:8000/api/restaurants/${restaurantId}/photos`,
+        `http://localhost/EatEase/backend/public/api/restaurant/${restaurantId}/photos`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
       );
-      const data = await response.json();
-      setPhotos(Array.isArray(data) ? data : []);
-      setLoading(false);
+
+      console.log("Photos API response status:", response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Photos API response data:", data);
+        setPhotos(Array.isArray(data) ? data : []);
+      } else {
+        const errorText = await response.text();
+        console.error("Photos API error:", response.status, errorText);
+        setError(`Failed to load photos: ${response.status}`);
+        setPhotos([]);
+      }
     } catch (error) {
       console.error("Error fetching photos:", error);
+      setError("Network error loading photos");
       setPhotos([]);
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleFileUpload = async (e) => {
-    const files = e.target.files;
-    if (!files.length) return;
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    // Validate files
+    const validFiles = files.filter((file) => {
+      const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      const isValidType = validTypes.includes(file.type);
+      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
+
+      if (!isValidType) {
+        alert(
+          `${file.name} is not a valid image type (JPEG, PNG, GIF, WebP allowed)`,
+        );
+        return false;
+      }
+
+      if (!isValidSize) {
+        alert(`${file.name} is too large (max 5MB)`);
+        return false;
+      }
+
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      setSelectedFiles(validFiles);
+      setShowUploadModal(true);
+
+      // Initialize captions
+      const initialCaptions = {};
+      validFiles.forEach((file, index) => {
+        initialCaptions[index] = "";
+      });
+      setCaptions(initialCaptions);
+    }
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleUpload = async () => {
+    if (selectedFiles.length === 0) return;
 
     setUploading(true);
-    // Implement photo upload logic here
-    console.log("Uploading photos:", files);
-    setUploading(false);
+
+    const formData = new FormData();
+
+    // CORRECT FORMAT FOR LARAVEL:
+    selectedFiles.forEach((file, index) => {
+      formData.append("photos[]", file); // Use 'photos[]' not 'photos[0]'
+
+      if (captions[index]) {
+        // For captions, we can either use same format or pass as JSON
+        formData.append("captions[]", captions[index]);
+      }
+    });
+
+    // DEBUG: Log FormData
+    console.log("FormData entries:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    try {
+      const token = localStorage.getItem("auth_token");
+
+      // DEBUG: Log the request
+      console.log(
+        "Sending request to:",
+        `http://localhost/EatEase/backend/public/api/restaurant/${restaurantId}/photos`,
+      );
+      console.log("Token exists:", !!token);
+
+      const response = await fetch(
+        `http://localhost/EatEase/backend/public/api/restaurant/${restaurantId}/photos`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            // DO NOT set Content-Type - browser will set it with boundary
+            Accept: "application/json",
+          },
+          body: formData,
+        },
+      );
+
+      console.log("Response status:", response.status);
+
+      const data = await response.json();
+      console.log("Response data:", data);
+
+      if (data.success) {
+        alert(data.message);
+        setShowUploadModal(false);
+        setSelectedFiles([]);
+        setCaptions({});
+        fetchPhotos();
+      } else {
+        alert(data.message || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Error uploading photos");
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const setAsPrimary = async (photoId) => {
-    // Implement set as primary logic
-    console.log("Setting as primary:", photoId);
+  const handleSetPrimary = async (photoId) => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        `http://localhost/EatEase/backend/public/api/restaurant/${restaurantId}/photos/${photoId}/primary`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update local state
+        setPhotos((prev) =>
+          prev.map((photo) => ({
+            ...photo,
+            is_primary: photo.id === photoId,
+          })),
+        );
+        alert("Primary photo updated!");
+      } else {
+        alert(data.message || "Failed to set primary");
+      }
+    } catch (error) {
+      console.error("Set primary error:", error);
+      alert("Error setting primary photo");
+    }
   };
+
+  const handleDeletePhoto = async (photoId) => {
+    if (!window.confirm("Are you sure you want to delete this photo?")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        `http://localhost/EatEase/backend/public/api/restaurant/${restaurantId}/photos/${photoId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove from local state
+        setPhotos((prev) => prev.filter((photo) => photo.id !== photoId));
+        alert("Photo deleted!");
+      } else {
+        alert(data.message || "Failed to delete");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Error deleting photo");
+    }
+  };
+
+  const updateCaption = async (photoId, newCaption) => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        `http://localhost/EatEase/backend/public/api/restaurant/${restaurantId}/photos/${photoId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ caption: newCaption }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update local state
+        setPhotos((prev) =>
+          prev.map((photo) =>
+            photo.id === photoId ? { ...photo, caption: newCaption } : photo,
+          ),
+        );
+      } else {
+        alert(data.message || "Failed to update caption");
+      }
+    } catch (error) {
+      console.error("Update caption error:", error);
+    }
+  };
+
+  if (!restaurantId) {
+    return (
+      <div className="owner-photos-tab error">
+        <div className="error-message">
+          <h3>No Restaurant Data</h3>
+          <p>Unable to load restaurant information. Please try again.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="owner-photos-tab loading">
+        <div className="loading-spinner"></div>
+        <p>Loading photos...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="owner-photos-tab error">
+        <div className="error-message">
+          <h3>Error</h3>
+          <p>{error}</p>
+          <button onClick={fetchPhotos} className="retry-btn">
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="owner-photos-tab">
       <div className="tab-header">
-        <h3>Photos</h3>
-        <div className="upload-section">
-          <label htmlFor="photo-upload" className="upload-btn">
+        <div className="header-left">
+          <h3>Restaurant Photos</h3>
+        </div>
+        <div className="header-right">
+          <label htmlFor="photo-upload" className="upload-btn primary-btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="20px"
               viewBox="0 -960 960 960"
               width="20px"
-              fill="black"
+              fill="white"
             >
-              <path d="M440-120v-320H120v-80h320v-320h80v320h320v80H520v320h-80Z" />
+              <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
             </svg>
+            Upload Photos
           </label>
           <input
             id="photo-upload"
+            ref={fileInputRef}
             type="file"
             multiple
             accept="image/*"
-            onChange={handleFileUpload}
+            onChange={handleFileSelect}
             style={{ display: "none" }}
           />
         </div>
       </div>
 
-      {loading ? (
-        <div className="loading-spinner-container">
-          <div className="loading-spinner"></div>
-        </div>
-      ) : photos.length === 0 ? (
+      {photos.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon"></div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            fill="gray"
-            viewBox="0 0 256 256"
-          >
-            <path d="M198.24,62.63l15.68-17.25a8,8,0,0,0-11.84-10.76L186.4,51.86A95.95,95.95,0,0,0,57.76,193.37L42.08,210.62a8,8,0,1,0,11.84,10.76L69.6,204.14A95.95,95.95,0,0,0,198.24,62.63ZM48,128A80,80,0,0,1,175.6,63.75l-107,117.73A79.63,79.63,0,0,1,48,128Zm80,80a79.55,79.55,0,0,1-47.6-15.75l107-117.73A79.95,79.95,0,0,1,128,208Z"></path>
-          </svg>
+          <div className="empty-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="60"
+              height="60"
+              fill="#ccc"
+              viewBox="0 0 256 256"
+            >
+              <path d="M228,160v40a20,20,0,0,1-20,20H48a20,20,0,0,1-20-20V56A20,20,0,0,1,48,36h80a4,4,0,0,1,0,8H48a12,12,0,0,0-12,12V164.81A36,36,0,0,1,48,148H208a36,36,0,0,1,36,36v12a4,4,0,0,1-8,0V184a28,28,0,0,0-28-28H48a28,28,0,0,0-28,28v36a12,12,0,0,0,12,12H208a12,12,0,0,0,12-12V160a4,4,0,0,1,8,0ZM92,112a12,12,0,1,0-12-12A12,12,0,0,0,92,112Zm116-76h40a4,4,0,0,1,4,4V92a4,4,0,0,1-8,0V48.49l-50.83,50.83a4,4,0,0,1-5.66-5.66L238.51,42H200a4,4,0,0,1,0-8Z"></path>
+            </svg>
+          </div>
           <h4>No Photos Yet</h4>
-          <p>Add photos to show off your restaurant</p>
+          <p>Upload photos to showcase your restaurant</p>
         </div>
       ) : (
         <div className="photos-grid">
@@ -91,28 +364,105 @@ const OwnerPhotosTab = ({ restaurantId }) => {
             <div key={photo.id} className="photo-card">
               <div className="photo-container">
                 <img
-                  src={photo.image_url || "https://via.placeholder.com/200"}
+                  src={photo.full_image_url}
                   alt={photo.caption || "Restaurant photo"}
+                  loading="lazy"
                 />
                 {photo.is_primary && (
-                  <span className="primary-badge">⭐ Primary</span>
+                  <div className="primary-badge">Primary</div>
                 )}
               </div>
-              <div className="photo-actions">
-                <button
-                  className="set-primary-btn"
-                  onClick={() => setAsPrimary(photo.id)}
-                  disabled={photo.is_primary}
-                >
-                  {photo.is_primary ? "✓ Primary" : "Set as Primary"}
-                </button>
-                <button className="delete-photo-btn">Delete</button>
+              <div className="photo-info">
+                <div className="photo-actions">
+                  <button
+                    className={`set-primary-btn ${photo.is_primary ? "is-primary" : ""}`}
+                    onClick={() => handleSetPrimary(photo.id)}
+                    disabled={photo.is_primary}
+                  >
+                    {photo.is_primary ? "✓ Primary" : "Set Primary"}
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDeletePhoto(photo.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+                <div className="photo-meta">
+                  <small>
+                    Uploaded {new Date(photo.created_at).toLocaleDateString()}
+                  </small>
+                </div>
               </div>
-              {photo.caption && (
-                <p className="photo-caption">{photo.caption}</p>
-              )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="upload-modal-overlay">
+          <div className="upload-modal">
+            <div className="modal-header">
+              <h3>Upload Photos ({selectedFiles.length} selected)</h3>
+              <button
+                className="close-btn"
+                onClick={() => {
+                  setShowUploadModal(false);
+                  setSelectedFiles([]);
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="modal-content">
+              <div className="selected-files">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="file-preview">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Preview ${index + 1}`}
+                      className="preview-image"
+                    />
+                    <div className="file-info">
+                      <p className="file-name">{file.name}</p>
+                      <p className="file-size">
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="photos-modal-actions">
+                <button
+                  className="cancel-btn"
+                  onClick={() => {
+                    setShowUploadModal(false);
+                    setSelectedFiles([]);
+                  }}
+                  disabled={uploading}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="upload-confirm-btn"
+                  onClick={handleUpload}
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <>
+                      <span className="spinner"></span>
+                      Uploading...
+                    </>
+                  ) : (
+                    "Upload"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -324,7 +324,8 @@ function RestaurantOwnerDashboard({ user }) {
       case "reviews":
         return <OwnerReviewsTab restaurantId={restaurant.id} />;
       case "photos":
-        return <OwnerPhotosTab restaurantId={restaurant.id} />;
+        console.log("Photos tab - restaurant object:", restaurant);
+        return <OwnerPhotosTab restaurant={restaurant} />;
       case "analytics": // NEW TAB
         return (
           <AnalyticsTab
@@ -369,23 +370,18 @@ function RestaurantOwnerDashboard({ user }) {
       {!restaurant ? (
         // No restaurant setup yet
         <div className="setup-prompt">
-          <div className="empty-state">
+          <div className="restaurant-empty-state">
             <h3>No Restaurant Setup Yet</h3>
             <p>Set up your restaurant profile to start receiving diners</p>
 
             {/* Tier info for new users */}
             <div className="tier-info-prompt">
               <h4>
-                Subscription:{" "}
+                {" "}
                 <span className={`tier-badge ${tier}`}>
                   {tier === "premium" ? "Premium" : "Free Tier"}
                 </span>
               </h4>
-              <p>
-                {tier === "basic"
-                  ? "Start with Free tier. Upgrade after creating your restaurant."
-                  : "You're on Premium tier! Create your restaurant to unlock all features."}
-              </p>
             </div>
 
             <button className="setup-btn" onClick={() => setIsEditing(true)}>
@@ -527,9 +523,9 @@ function RestaurantOwnerDashboard({ user }) {
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          height="20px"
+                          height="13px"
                           viewBox="0 -960 960 960"
-                          width="20px"
+                          width="13px"
                           fill="currentColor"
                         >
                           <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
@@ -546,10 +542,10 @@ function RestaurantOwnerDashboard({ user }) {
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          height="20px"
+                          height="13px"
                           viewBox="0 -960 960 960"
-                          width="20px"
-                          fill="currentColor"
+                          width="13px"
+                          fill="red"
                         >
                           <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
                         </svg>
@@ -708,14 +704,6 @@ function RestaurantOwnerDashboard({ user }) {
               ) : (
                 <div className="premium-tier">
                   <span className="tier-badge premium">Premium</span>
-                  <p className="tier-description">
-                    • Automatic IoT updates
-                    <br />
-                    • Can apply for featured status
-                    <br />
-                    • Full analytics access
-                    <br />• Advertisement capabilities
-                  </p>
                 </div>
               )}
             </div>
