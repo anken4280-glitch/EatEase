@@ -14,6 +14,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\RestaurantPhotoController;
+use App\Http\Controllers\ReservationController;
 
 Route::get('/test-db', function () {
     try {
@@ -212,4 +213,17 @@ Route::middleware(['auth:sanctum', 'business.only'])->prefix('restaurant/{restau
     Route::put('/{photo}/primary', [RestaurantPhotoController::class, 'setPrimary']); // Set as primary
     Route::put('/{photo}', [RestaurantPhotoController::class, 'update']); // Update photo
     Route::delete('/{photo}', [RestaurantPhotoController::class, 'destroy']); // Delete photo
+});
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Reservation routes
+    Route::prefix('reservations')->group(function () {
+        Route::get('/', [ReservationController::class, 'index']);
+        Route::post('/', [ReservationController::class, 'store']);
+        Route::get('/{id}', [ReservationController::class, 'show']);
+        Route::delete('/{id}', [ReservationController::class, 'destroy']);
+    });
+    
+    // Availability check
+    Route::get('/restaurants/{restaurant}/availability', [ReservationController::class, 'checkAvailability']);
 });
