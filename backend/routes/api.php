@@ -16,6 +16,9 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\RestaurantPhotoController;
 use App\Http\Controllers\ReservationController;
 
+//Reservation Availability check
+Route::get('/restaurants/{restaurant}/availability', [ReservationController::class, 'checkAvailability']);
+
 Route::get('/test-db', function () {
     try {
         // Simple database test - try to get the database name
@@ -215,8 +218,7 @@ Route::middleware(['auth:sanctum', 'business.only'])->prefix('restaurant/{restau
     Route::delete('/{photo}', [RestaurantPhotoController::class, 'destroy']); // Delete photo
 });
 
-// Availability check
-Route::get('/restaurants/{restaurant}/availability', [ReservationController::class, 'checkAvailability']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // Reservation routes
