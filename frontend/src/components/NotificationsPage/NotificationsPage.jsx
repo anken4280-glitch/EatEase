@@ -1,14 +1,67 @@
 import React, { useState, useEffect } from "react";
 import "./NotificationsPage.css";
+import ReservationModal from "../ReservationModal/ReservationModal";
 
 function NotificationsPage({ user, onBack }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
 
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  const handleBookNow = async (notification) => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        `http://localhost/EatEase/backend/public/api/restaurants/${notification.restaurant_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const restaurant = data.restaurant || data;
+
+        // Set restaurant and show modal
+        setSelectedRestaurant(restaurant);
+        setShowReservationModal(true);
+      }
+    } catch (error) {
+      console.error("Error fetching restaurant for booking:", error);
+      alert("Could not load restaurant details. Please try again.");
+    }
+  };
+
+  const handleSnoozeNotification = async (notificationId) => {
+    const token = localStorage.getItem("auth_token");
+    try {
+      const response = await fetch(
+        `http://localhost/EatEase/backend/public/api/notifications/${notificationId}/snooze`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      if (response.ok) {
+        alert("Notification snoozed for 1 hour");
+        fetchNotifications(); // Refresh list
+      }
+    } catch (error) {
+      console.error("Error snoozing notification:", error);
+    }
+  };
 
   const fetchNotifications = async () => {
     const token = localStorage.getItem("auth_token");
@@ -56,7 +109,7 @@ function NotificationsPage({ user, onBack }) {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -177,54 +230,124 @@ function NotificationsPage({ user, onBack }) {
               </p>
 
               <div className="notifications-list">
-                {notifications.map((notification) => (
-                  <div key={notification.id} className="notification-item">
-                    <div className="notification-info">
-                      <h3>
-                        {notification.restaurant_name || "Unknown Restaurant"}
-                      </h3>
-                      <div className="notification-setting">
-                        <span className="setting-label">Notify me when:</span>
-                        <span
-                          className="status-badge"
-                          style={{
-                            backgroundColor: getStatusColor(
-                              notification.notify_when_status
-                            ),
-                          }}
-                        >
-                          {getStatusText(notification.notify_when_status)}
-                        </span>
-                      </div>
-                      {notification.cuisine && (
-                        <p className="cuisine">{notification.cuisine}</p>
-                      )}
-                      {notification.address &&
-                        notification.address !== "Address not available" && (
-                          <p className="address">{notification.address}</p>
-                        )}
-                      <p className="set-date">
-                        Set on {formatDate(notification.created_at)}
-                      </p>
-                    </div>
+                {notifications.map((notification) => {
+                  // Determine if this is a crowd alert notification
+                  const isCrowdAlert =
+                    notification.type === "crowd_alert" ||
+                    notification.message?.includes("crowd") ||
+                    notification.notify_when_status;
 
-                    <div className="notification-actions">
-                      <button
-                        className="remove-btn"
-                        onClick={() =>
-                          handleRemoveNotification(notification.id)
-                        }
-                        title="Remove notification"
-                      >
-                        ✕
-                      </button>
+                  return (
+                    <div key={notification.id} className="notification-item">
+                      <div className="notification-info">
+                        <h3>
+                          {notification.restaurant_name || "Unknown Restaurant"}
+                        </h3>
+
+                        {isCrowdAlert ? (
+                          <div className="crowd-alert-notification">
+                            <div className="alert-message">
+                              <span className="alert-icon">👥</span>
+                              <span className="message-text">
+                                {notification.message ||
+                                  `Notify when crowd is ${getStatusText(notification.notify_when_status)}`}
+                              </span>
+                            </div>
+
+                            {/* ADD THIS ACTION BUTTONS SECTION */}
+                            <div className="notification-actions-row">
+                              <button
+                                className="action-btn book-now-btn"
+                                onClick={() => {
+                                  // We'll implement this function
+                                  handleBookNow(notification);
+                                }}
+                              >
+                                <span role="img" aria-label="plate">
+                                  🍽️
+                                </span>{" "}
+                                Book Now
+                              </button>
+
+                              <button
+                                className="action-btn snooze-btn"
+                                onClick={() =>
+                                  handleSnoozeNotification(notification.id)
+                                }
+                              >
+                                <span role="img" aria-label="clock">
+                                  ⏰
+                                </span>{" "}
+                                Snooze 1hr
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="notification-setting">
+                            <span className="setting-label">
+                              Notify me when:
+                            </span>
+                            <span
+                              className="status-badge"
+                              style={{
+                                backgroundColor: getStatusColor(
+                                  notification.notify_when_status,
+                                ),
+                              }}
+                            >
+                              {getStatusText(notification.notify_when_status)}
+                            </span>
+                          </div>
+                        )}
+
+                        {notification.cuisine && (
+                          <p className="cuisine">{notification.cuisine}</p>
+                        )}
+                        {notification.address &&
+                          notification.address !== "Address not available" && (
+                            <p className="address">{notification.address}</p>
+                          )}
+                        <p className="set-date">
+                          Set on {formatDate(notification.created_at)}
+                        </p>
+                      </div>
+
+                      <div className="notification-actions">
+                        <button
+                          className="remove-btn"
+                          onClick={() =>
+                            handleRemoveNotification(notification.id)
+                          }
+                          title="Remove notification"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
         </>
+      )}
+      {/* Reservation Modal */}
+      {showReservationModal && selectedRestaurant && (
+        <ReservationModal
+          restaurant={selectedRestaurant}
+          onClose={() => {
+            setShowReservationModal(false);
+            setSelectedRestaurant(null);
+          }}
+          onSuccess={(reservation) => {
+            alert(
+              `✅ Reservation confirmed! Code: ${reservation.confirmation_code}`,
+            );
+            // Optionally mark notification as acted upon
+            setShowReservationModal(false);
+            setSelectedRestaurant(null);
+          }}
+        />
       )}
     </div>
   );

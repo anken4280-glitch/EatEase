@@ -190,6 +190,84 @@
   cursor: pointer;
 }
 
+/* Crowd Alert Notification Styles */
+.crowd-alert-notification {
+  margin-bottom: 12px;
+}
+
+.alert-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.alert-icon {
+  font-size: 20px;
+}
+
+.message-text {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Action Buttons Row */
+.notification-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.action-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.book-now-btn {
+  background: #6b5b95;
+  color: white;
+  flex: 2;
+}
+
+.book-now-btn:hover {
+  background: #5a4a84;
+  transform: translateY(-2px);
+}
+
+.snooze-btn {
+  background: white;
+  color: #666;
+  border: 1px solid #ddd;
+  flex: 1;
+}
+
+.snooze-btn:hover {
+  background: #f8f9fa;
+  border-color: #ccc;
+}
+
+/* Make notification item responsive */
+.notification-item {
+  position: relative;
+}
+
+.notification-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
 @media (min-width: 768px) {
   .notifications-page {
     padding: 2rem;

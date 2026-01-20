@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./RestaurantDetails.css";
-import profileImage from '../../Assets/Images/profile1.jpg';
+import profileImage from "../../Assets/Images/profile1.jpg";
 
 // Tab Components
 import OverviewTab from "../OverviewTab/OverviewTab";
@@ -8,6 +8,7 @@ import MenuTab from "../MenuTab/MenuTab";
 import ReviewsTab from "../ReviewsTab/ReviewsTab";
 import PhotosTab from "../PhotosTab/PhotosTab";
 import PremiumRecommendations from "../PremiumRecommendations/PremiumRecommendations";
+import ReservationModal from "../ReservationModal/ReservationModal";
 
 function RestaurantDetails({ restaurantId, onBack }) {
   const [activeTab, setActiveTab] = useState("overview");
@@ -15,6 +16,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
+  const [showReservationModal, setShowReservationModal] = useState(false);
   const [reviewsData, setReviewsData] = useState({
     // ADD THIS STATE
     reviews: [],
@@ -35,7 +37,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
   const fetchReviewsData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/restaurants/${restaurantId}/reviews`
+        `http://localhost:8000/api/restaurants/${restaurantId}/reviews`,
       );
 
       if (response.ok) {
@@ -67,7 +69,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -94,7 +96,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
           data.occupancy ||
           data.occupancy_percentage ||
           Math.round(
-            ((data.current_occupancy || 0) / (data.max_capacity || 50)) * 100
+            ((data.current_occupancy || 0) / (data.max_capacity || 50)) * 100,
           ),
         crowd_status: data.status || data.crowd_status || "green",
         crowd_level: data.crowdLevel || "Low",
@@ -112,7 +114,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
       // Fetch stats
       try {
         const statsResponse = await fetch(
-          `http://localhost:8000/api/restaurants/${restaurantId}/stats`
+          `http://localhost:8000/api/restaurants/${restaurantId}/stats`,
         );
         if (statsResponse.ok) {
           const statsData = await statsResponse.json();
@@ -255,7 +257,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
                   reviewsData.average_rating ||
                     stats?.average_rating ||
                     restaurant?.average_rating ||
-                    0
+                    0,
                 ).toFixed(1)}
               </span>
             </div>
@@ -295,7 +297,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
               </span>
             )}
             {!["green", "yellow", "orange", "red"].includes(
-              restaurant.crowd_status
+              restaurant.crowd_status,
             ) && (
               <span className="status-circle gray" title="Unknown">
                 ⚪
@@ -310,6 +312,24 @@ function RestaurantDetails({ restaurantId, onBack }) {
           </span>
         </div>
         <div className="stat-divider"></div>
+      </div>
+
+      <div className="reservation-action-bar">
+        <button
+          className="reservation-btn"
+          onClick={() => setShowReservationModal(true)}
+        >
+          <span role="img" aria-label="plate">
+            🍽️
+          </span>{" "}
+          Make Reservation
+        </button>
+        <button className="bookmark-btn">
+          <span role="img" aria-label="heart">
+            ❤️
+          </span>{" "}
+          Bookmark
+        </button>
       </div>
 
       {/* Tab Navigation */}
@@ -348,6 +368,17 @@ function RestaurantDetails({ restaurantId, onBack }) {
 
       {/* Premium Recommendations */}
       <PremiumRecommendations currentRestaurantId={restaurantId} limit={1} />
+     {/* ADD THIS - Reservation Modal */}
+      {showReservationModal && restaurant && (
+        <ReservationModal
+          restaurant={restaurant}
+          onClose={() => setShowReservationModal(false)}
+          onSuccess={(reservation) => {
+            alert(`✅ Reservation confirmed! Your code: ${reservation.confirmation_code}`);
+            // Optional: Refresh or update UI
+          }}
+        />
+      )}
     </div>
   );
 }

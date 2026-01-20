@@ -1459,6 +1459,62 @@
   background: #ffc9c9;
 }
 
+/* Reservation Action Bar */
+.reservation-action-bar {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.reservation-btn {
+    background: #6b5b95;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    flex: 1;
+    justify-content: center;
+}
+
+.reservation-btn:hover {
+    background: #5a4a84;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(107, 91, 149, 0.3);
+}
+
+.bookmark-btn {
+    background: white;
+    color: #6b5b95;
+    border: 2px solid #6b5b95;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    flex: 1;
+    justify-content: center;
+}
+
+.bookmark-btn:hover {
+    background: #f9f7ff;
+    transform: translateY(-2px);
+}
+
 .review-content {
   margin-left: 52px; /* Align with name */
 }
