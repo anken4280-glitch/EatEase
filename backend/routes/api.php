@@ -13,7 +13,6 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\RecommendationController;
-use App\Http\Controllers\ReservationController;
 
 Route::get('/test-db', function () {
     try {
@@ -197,16 +196,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // In the public routes section (no auth needed for recommendations)
 Route::get('/restaurants/premium/recommendations', [RecommendationController::class, 'getPremiumRecommendations']);
-
-Route::middleware(['auth:sanctum'])->group(function () {
-    // Reservation routes
-    Route::prefix('reservations')->group(function () {
-        Route::get('/', [ReservationController::class, 'index']);
-        Route::post('/', [ReservationController::class, 'store']);
-        Route::get('/{id}', [ReservationController::class, 'show']);
-        Route::delete('/{id}', [ReservationController::class, 'destroy']);
-    });
-    
-    // Availability check
-    Route::get('/restaurants/{restaurant}/availability', [ReservationController::class, 'checkAvailability']);
-});
