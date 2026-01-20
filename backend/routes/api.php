@@ -201,7 +201,7 @@ Route::get('/restaurants/premium/recommendations', [RecommendationController::cl
 
 Route::middleware(['auth:sanctum', 'business.only'])->group(function () {
     // ... existing routes
-    
+
     Route::post('/restaurant/upload/{type}', [RestaurantController::class, 'uploadImage']);
     Route::post('/restaurant/banner-position', [RestaurantController::class, 'updateBannerPosition']);
 });
@@ -215,6 +215,9 @@ Route::middleware(['auth:sanctum', 'business.only'])->prefix('restaurant/{restau
     Route::delete('/{photo}', [RestaurantPhotoController::class, 'destroy']); // Delete photo
 });
 
+// Availability check
+Route::get('/restaurants/{restaurant}/availability', [ReservationController::class, 'checkAvailability']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     // Reservation routes
     Route::prefix('reservations')->group(function () {
@@ -223,7 +226,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{id}', [ReservationController::class, 'show']);
         Route::delete('/{id}', [ReservationController::class, 'destroy']);
     });
-    
-    // Availability check
-    Route::get('/restaurants/{restaurant}/availability', [ReservationController::class, 'checkAvailability']);
 });

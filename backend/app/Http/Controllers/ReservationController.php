@@ -7,6 +7,7 @@ use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
@@ -16,13 +17,13 @@ class ReservationController extends Controller
     public function index()
     {
         try {
-            $reservations = Reservation::with(['restaurant' => function($query) {
+            $reservations = Reservation::with(['restaurant' => function ($query) {
                 $query->select('id', 'name', 'address', 'phone', 'profile_image');
             }])
-            ->where('user_id', Auth::id())
-            ->orderBy('reservation_date', 'desc')
-            ->orderBy('reservation_time', 'desc')
-            ->paginate(10);
+                ->where('user_id', Auth::id())
+                ->orderBy('reservation_date', 'desc')
+                ->orderBy('reservation_time', 'desc')
+                ->paginate(10);
 
             return response()->json([
                 'success' => true,
@@ -59,13 +60,15 @@ class ReservationController extends Controller
 
         try {
             $restaurant = Restaurant::findOrFail($request->restaurant_id);
-            
+
             // Check if restaurant is open (basic check)
             $currentTime = now();
             $reservationDateTime = $request->reservation_date . ' ' . $request->reservation_time;
-            
-            if (strtotime($reservationDateTime) < strtotime('today 17:00') || 
-                strtotime($reservationDateTime) > strtotime('today 22:00')) {
+
+            if (
+                strtotime($reservationDateTime) < strtotime('today 17:00') ||
+                strtotime($reservationDateTime) > strtotime('today 22:00')
+            ) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Restaurant is only open from 5:00 PM to 10:00 PM'
@@ -80,7 +83,7 @@ class ReservationController extends Controller
                 ->sum('party_size');
 
             $totalOccupancy = $existingReservations + $request->party_size;
-            
+
             if ($totalOccupancy > $restaurant->max_capacity) {
                 return response()->json([
                     'success' => false,
@@ -102,7 +105,7 @@ class ReservationController extends Controller
 
             // Update restaurant current occupancy (optional)
             $restaurant->current_occupancy = min(
-                $restaurant->current_occupancy + $request->party_size, 
+                $restaurant->current_occupancy + $request->party_size,
                 $restaurant->max_capacity
             );
             $restaurant->save();
@@ -116,7 +119,6 @@ class ReservationController extends Controller
                 'reservation' => $reservation,
                 'confirmation_code' => $reservation->confirmation_code
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -154,7 +156,7 @@ class ReservationController extends Controller
     {
         try {
             $reservation = Reservation::where('user_id', Auth::id())->findOrFail($id);
-            
+
             if (!$reservation->canBeCancelled()) {
                 return response()->json([
                     'success' => false,
@@ -190,52 +192,71 @@ class ReservationController extends Controller
      */
     public function checkAvailability(Request $request, $restaurantId)
     {
-        $validator = Validator::make($request->all(), [
-            'date' => 'required|date|after_or_equal:today',
-            'party_size' => 'required|integer|min:1|max:30'
+        Log::info('🔍 checkAvailability called', [
+            'restaurantId' => $restaurantId,
+            'date' => $request->date,
+            'party_size' => $request->party_size,
+            'fullUrl' => $request->fullUrl()
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
+            $validator = Validator::make($request->all(), [
+                'date' => 'required|date|after_or_equal:today',
+                'party_size' => 'required|integer|min:1|max:30'
+            ]);
+
+            if ($validator->fails()) {
+                Log::error('Validation failed', $validator->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
             $restaurant = Restaurant::findOrFail($restaurantId);
-            
+
+            Log::info('Restaurant found', [
+                'id' => $restaurant->id,
+                'name' => $restaurant->name,
+                'max_capacity' => $restaurant->max_capacity
+            ]);
+
             // Generate time slots (5 PM to 10 PM, every 30 minutes)
             $timeSlots = [];
             $startTime = '17:00';
             $endTime = '22:00';
-            
+
             $current = strtotime($startTime);
             $end = strtotime($endTime);
-            
+
             while ($current <= $end) {
                 $time = date('H:i', $current);
-                
+
                 // Check capacity for this time slot
                 $existingReservations = Reservation::where('restaurant_id', $restaurantId)
                     ->where('reservation_date', $request->date)
                     ->where('reservation_time', $time)
                     ->whereIn('status', ['pending', 'confirmed'])
                     ->sum('party_size');
-                
+
                 $availableCapacity = $restaurant->max_capacity - $existingReservations;
                 $isAvailable = $availableCapacity >= $request->party_size;
-                
+
                 $timeSlots[] = [
                     'time' => $time,
                     'available' => $isAvailable,
                     'available_capacity' => $availableCapacity,
                     'formatted_time' => date('g:i A', $current)
                 ];
-                
+
                 $current = strtotime('+30 minutes', $current);
             }
+
+            Log::info('Availability calculated', [
+                'time_slots_count' => count($timeSlots),
+                'has_availability' => collect($timeSlots)->where('available', true)->count() > 0
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -250,9 +271,14 @@ class ReservationController extends Controller
                 'has_availability' => collect($timeSlots)->where('available', true)->count() > 0
             ]);
         } catch (\Exception $e) {
+            Log::error('checkAvailability failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to check availability'
+                'message' => 'Failed to check availability: ' . $e->getMessage()
             ], 500);
         }
     }
