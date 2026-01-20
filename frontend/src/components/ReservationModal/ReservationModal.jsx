@@ -61,7 +61,6 @@ const ReservationModal = ({ restaurant, onClose, onSuccess }) => {
                 `http://localhost:8000/api/restaurants/${restaurant.id}/availability?date=${formData.reservation_date}&party_size=${formData.party_size}`,
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
                     }
                 }
