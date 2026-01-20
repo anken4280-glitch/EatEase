@@ -29,7 +29,7 @@ class Restaurant extends Model
         'suspended_at',
         'suspended_reason',
         'admin_notes',
-        'menu-description',
+        'menu_description',
         'average_rating',
         'total_reviews',
         'subscription_tier',
@@ -37,7 +37,10 @@ class Restaurant extends Model
         'can_be_featured',
         'can_run_ads',
         'has_analytics_access',
-        'has_api_access'
+        'has_api_access',
+        'profile_image',
+        'banner_image', 
+        'banner_position' 
     ];
 
     protected $casts = [
@@ -55,6 +58,38 @@ class Restaurant extends Model
         'has_analytics_access' => 'boolean',
         'has_api_access' => 'boolean',
     ];
+
+    protected $appends = ['profile_image_url', 'banner_image_url'];
+
+    public function getProfileImageUrlAttribute()
+    {
+        if (!$this->profile_image) {
+            return null;
+        }
+
+        // If it's already a full URL, return it
+        if (filter_var($this->profile_image, FILTER_VALIDATE_URL)) {
+            return $this->profile_image;
+        }
+
+        // Otherwise, generate the full URL
+        return asset('storage/' . $this->profile_image);
+    }
+
+    public function getBannerImageUrlAttribute()
+    {
+        if (!$this->banner_image) {
+            return null;
+        }
+
+        // If it's already a full URL, return it
+        if (filter_var($this->banner_image, FILTER_VALIDATE_URL)) {
+            return $this->banner_image;
+        }
+
+        // Otherwise, generate the full URL
+        return asset('storage/' . $this->banner_image);
+    }
 
     public function isPremium(): bool
     {

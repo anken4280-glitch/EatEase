@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MenuItem;
 use App\Models\Review;
 use App\Models\RestaurantPhoto;
+use Illuminate\Support\Facades\Storage; // ← ADD THIS LINE
+use Exception; // ← ADD THIS
 
 class RestaurantController extends Controller
 {
@@ -17,35 +19,101 @@ class RestaurantController extends Controller
 
     public function show($id)
     {
-        $restaurant = Restaurant::find($id);
+        return $this->getRestaurantById($id);
+    }
 
+
+    // RestaurantController.php
+    public function uploadImage(Request $request, $type)
+    {
+        // Manual validation - avoid Laravel's validate() which might fail on PHP 7.4
+        if (!$request->hasFile('image')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No image file provided'
+            ], 422);
+        }
+
+        $file = $request->file('image');
+
+        // Check file size (5MB max)
+        if ($file->getSize() > 5242880) {
+            return response()->json([
+                'success' => false,
+                'message' => 'File too large. Maximum size is 5MB.'
+            ], 422);
+        }
+
+        // Check file type manually
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $mime = $file->getMimeType();
+
+        if (!in_array($mime, $allowedMimes)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'
+            ], 422);
+        }
+
+        // Get authenticated user
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not authenticated'
+            ], 401);
+        }
+
+        // Find restaurant
+        $restaurant = Restaurant::where('owner_id', $user->id)->first();
         if (!$restaurant) {
             return response()->json([
-                'error' => 'Restaurant not found',
-                'id' => $id
+                'success' => false,
+                'message' => 'Restaurant not found for this user'
             ], 404);
         }
 
-        return response()->json([
-            'id' => $restaurant->id,
-            'name' => $restaurant->name,
-            'cuisine_type' => $restaurant->cuisine_type,
-            'address' => $restaurant->address,
-            'phone' => $restaurant->phone,
-            'hours' => $restaurant->hours,
-            'max_capacity' => (int) $restaurant->max_capacity,
-            'current_occupancy' => (int) $restaurant->current_occupancy,
-            'occupancy_percentage' => (int) $restaurant->occupancy_percentage,
-            'crowd_status' => $restaurant->crowd_status,
-            'is_verified' => (bool) $restaurant->is_verified,
-            'is_featured' => (bool) $restaurant->is_featured,
-            'features' => $restaurant->features ? json_decode($restaurant->features, true) : [],
-            'menu_description' => $restaurant->menu_description,
-            'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0.00,
-            'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0,
-        ]);
-    }
+        try {
+            // Create directory if it doesn't exist
+            $directory = "restaurant-{$type}s";
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+            }
 
+            // Generate unique filename
+            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs($directory, $filename, 'public');
+
+            // Delete old image if exists
+            if ($type === 'profile' && $restaurant->profile_image) {
+                Storage::disk('public')->delete($restaurant->profile_image);
+            } elseif ($type === 'banner' && $restaurant->banner_image) {
+                Storage::disk('public')->delete($restaurant->banner_image);
+            }
+
+            // Update restaurant
+            if ($type === 'profile') {
+                $restaurant->profile_image = $path;
+            } elseif ($type === 'banner') {
+                $restaurant->banner_image = $path;
+                $restaurant->banner_position = $request->input('position', 'center');
+            }
+
+            $restaurant->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => ucfirst($type) . ' image uploaded successfully',
+                'path' => $path,
+                'url' => url('/storage/' . $path)
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     private function getCrowdLevelText($status)
     {
         switch ($status) {
@@ -394,6 +462,7 @@ class RestaurantController extends Controller
         }
     }
 
+    ///
     public function getRestaurantById($id)
     {
         $restaurant = Restaurant::with(['owner' => function ($query) {
@@ -424,6 +493,13 @@ class RestaurantController extends Controller
                 'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0,
                 'created_at' => $restaurant->created_at,
                 'updated_at' => $restaurant->updated_at,
+                'profile_image' => $restaurant->profile_image
+                    ? Storage::url($restaurant->profile_image)
+                    : null,
+                'banner_image' => $restaurant->banner_image
+                    ? Storage::url($restaurant->banner_image)
+                    : null,
+                'banner_position' => $restaurant->banner_position ?? 'center',
             ]
         ]);
     }
