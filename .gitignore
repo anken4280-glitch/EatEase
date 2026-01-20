@@ -59,4 +59,6 @@ frontend/.env.*
 # ========== GENERAL ==========
 .DS_Store
 .idea/
-.vscode/
+.vscode
+/frontend-diner/
+frontend-restaurant/
