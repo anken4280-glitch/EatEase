@@ -5,6 +5,7 @@ import RestaurantList from "./components/RestaurantList/RestaurantList";
 import BookmarksPage from "./components/BookmarksPage/BookmarksPage";
 import NotificationsPage from "./components/NotificationsPage/NotificationsPage";
 import "./globals.css";
+import ReservationsPage from "./components/ReservationsPage/ReservationsPage";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -15,28 +16,30 @@ function App() {
   // 🔴 CRITICAL: Redirect business users to Business App
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    
+
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      
+
       // If user is NOT a diner, redirect to Business App
       if (parsedUser.user_type !== "diner") {
         console.log("🚫 Wrong app detected! User is:", parsedUser.user_type);
-        alert("This is the Diner App. Please use the Business App for restaurant management.");
-        
+        alert(
+          "This is the Diner App. Please use the Business App for restaurant management.",
+        );
+
         // Clear local storage
         localStorage.removeItem("auth_token");
         localStorage.removeItem("user");
-        
+
         // Redirect to Business App
         window.location.href = "http://localhost:5177";
         return;
       }
-      
+
       // If user IS a diner, set the user state
       setUser(parsedUser);
     }
-    
+
     setLoading(false);
   }, []);
 
@@ -48,13 +51,13 @@ function App() {
 
       if (token && storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        
+
         // Double-check: If somehow a business user got here, redirect
         if (parsedUser.user_type !== "diner") {
           handleLogout();
           return;
         }
-        
+
         setUser(parsedUser);
       }
       setLoading(false);
@@ -67,16 +70,18 @@ function App() {
   const handleLogin = (userData) => {
     console.log("✅ Diner login successful:", {
       name: userData.name,
-      user_type: userData.user_type
+      user_type: userData.user_type,
     });
-    
+
     // Verify this is a diner
     if (userData.user_type !== "diner") {
-      alert("This is the Diner App. Please use the Business App for restaurant management.");
+      alert(
+        "This is the Diner App. Please use the Business App for restaurant management.",
+      );
       window.location.href = "http://localhost:5177";
       return;
     }
-    
+
     setUser(userData);
     setCurrentPage("restaurantList");
   };
@@ -85,16 +90,18 @@ function App() {
   const handleSignup = (userData) => {
     console.log("✅ Diner signup successful:", {
       name: userData.name,
-      user_type: userData.user_type
+      user_type: userData.user_type,
     });
-    
+
     // Verify this is a diner (should be from signup)
     if (userData.user_type !== "diner") {
-      alert("Diner App only accepts diner signups. Please use the Business App for business accounts.");
+      alert(
+        "Diner App only accepts diner signups. Please use the Business App for business accounts.",
+      );
       window.location.href = "http://localhost:5177";
       return;
     }
-    
+
     setUser(userData);
     setCurrentPage("restaurantList");
   };
@@ -116,13 +123,21 @@ function App() {
     setCurrentPage("notifications");
   };
 
+  const handleNavigateToReservations = () => {
+    setCurrentPage("reservations");
+  };
+
   const handleNavigateBack = () => {
     setCurrentPage("restaurantList");
   };
 
   // Show loading while checking authentication
   if (loading) {
-    return <div className="app"><p>Loading...</p></div>;
+    return (
+      <div className="app">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   // NOT LOGGED IN - Show Login/Signup
@@ -130,14 +145,14 @@ function App() {
     return (
       <div className="app">
         {isLogin ? (
-          <Login 
-            onLogin={handleLogin} 
-            onSwitchToSignup={() => setIsLogin(false)} 
+          <Login
+            onLogin={handleLogin}
+            onSwitchToSignup={() => setIsLogin(false)}
           />
         ) : (
-          <Signup 
-            onSignup={handleSignup} 
-            onSwitchToLogin={() => setIsLogin(true)} 
+          <Signup
+            onSignup={handleSignup}
+            onSwitchToLogin={() => setIsLogin(true)}
           />
         )}
       </div>
@@ -149,7 +164,7 @@ function App() {
     id: user.id,
     name: user.name,
     user_type: user.user_type,
-    currentPage: currentPage
+    currentPage: currentPage,
   });
 
   // DINER Navigation
@@ -157,9 +172,9 @@ function App() {
     case "bookmarks":
       return (
         <div className="app">
-          <BookmarksPage 
-            user={user} 
-            onBack={handleNavigateBack} 
+          <BookmarksPage
+            user={user}
+            onBack={handleNavigateBack}
             onLogout={handleLogout}
           />
         </div>
@@ -168,9 +183,20 @@ function App() {
     case "notifications":
       return (
         <div className="app">
-          <NotificationsPage 
-            user={user} 
-            onBack={handleNavigateBack} 
+          <NotificationsPage
+            user={user}
+            onBack={handleNavigateBack}
+            onLogout={handleLogout}
+          />
+        </div>
+      );
+
+    case "reservations":
+      return (
+        <div className="app">
+          <ReservationsPage
+            user={user}
+            onBack={handleNavigateBack}
             onLogout={handleLogout}
           />
         </div>
@@ -183,6 +209,7 @@ function App() {
             user={user}
             onNavigateToBookmarks={handleNavigateToBookmarks}
             onNavigateToNotifications={handleNavigateToNotifications}
+            onNavigateToReservations={handleNavigateToReservations} // ✅ ADD THIS LINE
             onLogout={handleLogout}
           />
         </div>

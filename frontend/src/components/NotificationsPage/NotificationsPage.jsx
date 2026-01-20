@@ -17,7 +17,7 @@ function NotificationsPage({ user, onBack }) {
     try {
       const token = localStorage.getItem("auth_token");
       const response = await fetch(
-        `http://localhost/EatEase/backend/public/api/restaurants/${notification.restaurant_id}`,
+        `http://localhost:8000/api/restaurants/${notification.restaurant_id}`, // ✅ FIXED
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ function NotificationsPage({ user, onBack }) {
     const token = localStorage.getItem("auth_token");
     try {
       const response = await fetch(
-        `http://localhost/EatEase/backend/public/api/notifications/${notificationId}/snooze`,
+        `http://localhost:8000/api/notifications/${notificationId}/snooze`, // ✅ FIXED
         {
           method: "POST",
           headers: {
@@ -259,7 +259,6 @@ function NotificationsPage({ user, onBack }) {
                               <button
                                 className="action-btn book-now-btn"
                                 onClick={() => {
-                                  // We'll implement this function
                                   handleBookNow(notification);
                                 }}
                               >

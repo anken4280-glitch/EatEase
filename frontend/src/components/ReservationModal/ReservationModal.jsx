@@ -58,7 +58,7 @@ const ReservationModal = ({ restaurant, onClose, onSuccess }) => {
         try {
             const token = localStorage.getItem('auth_token');
             const response = await fetch(
-                `http://localhost/EatEase/backend/public/api/restaurants/${restaurant.id}/availability?date=${formData.reservation_date}&party_size=${formData.party_size}`,
+                `http://localhost:8000/api/restaurants/${restaurant.id}/availability?date=${formData.reservation_date}&party_size=${formData.party_size}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -96,7 +96,7 @@ const ReservationModal = ({ restaurant, onClose, onSuccess }) => {
         try {
             const token = localStorage.getItem('auth_token');
             const response = await fetch(
-                'http://localhost/EatEase/backend/public/api/reservations',
+                'http://localhost:8000/api/reservations',
                 {
                     method: 'POST',
                     headers: {
