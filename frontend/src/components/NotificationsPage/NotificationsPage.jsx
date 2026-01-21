@@ -8,16 +8,139 @@ function NotificationsPage({ user, onBack }) {
   const [error, setError] = useState("");
   const [showReservationModal, setShowReservationModal] = useState(false);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [restaurantCurrentStatus, setRestaurantCurrentStatus] = useState({}); // Track restaurant current status
+  const [notificationPreferences, setNotificationPreferences] = useState([]); // ADD THIS LINE
 
   useEffect(() => {
     fetchNotifications();
   }, []);
 
+  const fetchNotifications = async () => {
+    const token = localStorage.getItem("auth_token");
+    if (!token) {
+      setError("Please login to view notifications");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      // Use the new endpoint for actual notifications
+      const response = await fetch(
+        "http://localhost:8000/api/user-notifications",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Actual notifications:", data.notifications);
+        console.log("Notification preferences:", data.preferences);
+
+        // Set both arrays
+        setNotifications(data.notifications || []);
+        setNotificationPreferences(data.preferences || []); // This line was missing
+      } else {
+        setError(data.message || "Failed to load notifications");
+      }
+    } catch (err) {
+      console.error("Notifications fetch error:", err);
+      setError("Failed to load notifications. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      fetchRestaurantsCurrentStatus();
+    }
+  }, [notifications]);
+
+  const fetchRestaurantsCurrentStatus = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const statusMap = {};
+
+      // Fetch current status for each restaurant in notifications
+      for (const notification of notifications) {
+        if (notification.restaurant_id) {
+          try {
+            const response = await fetch(
+              `http://localhost:8000/api/restaurants/${notification.restaurant_id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  Accept: "application/json",
+                },
+              },
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              const restaurant = data.restaurant || data;
+              statusMap[notification.restaurant_id] =
+                restaurant.crowd_level || "unknown";
+            }
+          } catch (err) {
+            console.error(
+              `Error fetching restaurant ${notification.restaurant_id}:`,
+              err,
+            );
+            statusMap[notification.restaurant_id] = "unknown";
+          }
+        }
+      }
+
+      setRestaurantCurrentStatus(statusMap);
+    } catch (error) {
+      console.error("Error fetching restaurant statuses:", error);
+    }
+  };
+
+  const shouldShowBookNow = (notification) => {
+    const currentStatus = restaurantCurrentStatus[notification.restaurant_id];
+    const preferredStatus = notification.notify_when_status;
+
+    // Map statuses to values for comparison
+    const statusPriority = {
+      green: 0, // Low crowd
+      yellow: 1, // Moderate
+      orange: 2, // Busy
+      red: 3, // Very High
+      unknown: -1,
+    };
+
+    // If we don't know current status, don't show button
+    if (!currentStatus || currentStatus === "unknown") {
+      return false;
+    }
+
+    // Show Book Now if current crowd is EQUAL TO or BETTER THAN preferred
+    // (e.g., if user wants "low", show when it's low OR even lower)
+    const currentPriority = statusPriority[currentStatus] || -1;
+    const preferredPriority = statusPriority[preferredStatus] || -1;
+
+    // For crowd level notifications: lower number = better (less crowded)
+    // Show button when current crowd is <= preferred crowd level
+    return currentPriority <= preferredPriority;
+  };
+
   const handleBookNow = async (notification) => {
     try {
       const token = localStorage.getItem("auth_token");
       const response = await fetch(
-        `http://localhost:8000/api/restaurants/${notification.restaurant_id}`, // ✅ FIXED
+        `http://localhost:8000/api/restaurants/${notification.restaurant_id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -60,41 +183,6 @@ function NotificationsPage({ user, onBack }) {
       }
     } catch (error) {
       console.error("Error snoozing notification:", error);
-    }
-  };
-
-  const fetchNotifications = async () => {
-    const token = localStorage.getItem("auth_token");
-    if (!token) {
-      setError("Please login to view notifications");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch("http://localhost:8000/api/notifications", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (data.success) {
-        setNotifications(data.notifications || []);
-      } else {
-        setError(data.message || "Failed to load notifications");
-      }
-    } catch (err) {
-      console.error("Notifications fetch error:", err);
-      setError("Failed to load notifications. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -204,122 +292,89 @@ function NotificationsPage({ user, onBack }) {
 
       {!loading && !error && (
         <>
+          {/* SHOW ACTUAL NOTIFICATIONS */}
           {notifications.length === 0 ? (
             <div className="notifications-empty-state">
-              <div className="empty-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="40px"
-                  viewBox="0 -960 960 960"
-                  width="40px"
-                  fill="black"
-                >
-                  <path d="M620-520q25 0 42.5-17.5T680-580q0-25-17.5-42.5T620-640q-25 0-42.5 17.5T560-580q0 25 17.5 42.5T620-520Zm-280 0q25 0 42.5-17.5T400-580q0-25-17.5-42.5T340-640q-25 0-42.5 17.5T280-580q0 25 17.5 42.5T340-520Zm140 100q-68 0-123.5 38.5T276-280h66q22-37 58.5-58.5T480-360q43 0 79.5 21.5T618-280h66q-25-63-80.5-101.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Z" />
-                </svg>
-              </div>
-              <h3>No notifications set</h3>
+              <div className="empty-icon">📭</div>
+              <h3>No notifications yet</h3>
               <p>
-                Set notifications to get alerts when restaurants reach certain
+                You'll get alerts here when restaurants reach your preferred
                 crowd levels
               </p>
             </div>
           ) : (
             <div className="notifications-container">
               <p className="notifications-count">
-                {notifications.length} notification/s set
+                {notifications.length} notification
+                {notifications.length !== 1 ? "s" : ""}
               </p>
 
               <div className="notifications-list">
                 {notifications.map((notification) => {
-                  // Determine if this is a crowd alert notification
+                  // Determine if this is a crowd alert
                   const isCrowdAlert =
                     notification.type === "crowd_alert" ||
-                    notification.message?.includes("crowd") ||
-                    notification.notify_when_status;
+                    notification.notification_type === "crowd_alert";
 
                   return (
                     <div key={notification.id} className="notification-item">
                       <div className="notification-info">
                         <h3>
                           {notification.restaurant_name || "Unknown Restaurant"}
+                          {notification.is_read === false && (
+                            <span className="unread-badge">NEW</span>
+                          )}
                         </h3>
 
-                        {isCrowdAlert ? (
-                          <div className="crowd-alert-notification">
-                            <div className="alert-message">
-                              <span className="alert-icon">👥</span>
-                              <span className="message-text">
-                                {notification.message ||
-                                  `Notify when crowd is ${getStatusText(notification.notify_when_status)}`}
-                              </span>
-                            </div>
+                        <div className="notification-message">
+                          <p>{notification.message}</p>
+                        </div>
 
-                            {/* ADD THIS ACTION BUTTONS SECTION */}
-                            <div className="notification-actions-row">
-                              <button
-                                className="action-btn book-now-btn"
-                                onClick={() => {
-                                  handleBookNow(notification);
-                                }}
-                              >
-                                <span role="img" aria-label="plate">
-                                  🍽️
-                                </span>{" "}
-                                Book Now
-                              </button>
+                        <div className="notification-details">
+                          <span className="notification-type">
+                            {isCrowdAlert
+                              ? "👥 Crowd Alert"
+                              : "📢 Notification"}
+                          </span>
+                          <span
+                            className={`status-badge status-${notification.status}`}
+                          >
+                            {getStatusText(notification.status)}
+                          </span>
+                          <span className="notification-time">
+                            {formatDate(
+                              notification.sent_at || notification.created_at,
+                            )}
+                          </span>
+                        </div>
 
-                              <button
-                                className="action-btn snooze-btn"
-                                onClick={() =>
-                                  handleSnoozeNotification(notification.id)
-                                }
-                              >
-                                <span role="img" aria-label="clock">
-                                  ⏰
-                                </span>{" "}
-                                Snooze 1hr
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="notification-setting">
-                            <span className="setting-label">
-                              Notify me when:
-                            </span>
-                            <span
-                              className="status-badge"
-                              style={{
-                                backgroundColor: getStatusColor(
-                                  notification.notify_when_status,
-                                ),
-                              }}
-                            >
-                              {getStatusText(notification.notify_when_status)}
-                            </span>
-                          </div>
+                        {/* "Book Now" button - show for crowd alerts */}
+                        {isCrowdAlert && (
+                          <button
+                            className="action-btn book-now-btn"
+                            onClick={() => {
+                              // You'll need to implement handleBookNow
+                              handleBookNow(notification);
+                            }}
+                          >
+                            <span role="img" aria-label="plate">
+                              🍽️
+                            </span>{" "}
+                            Book Now
+                          </button>
                         )}
-
-                        {notification.cuisine && (
-                          <p className="cuisine">{notification.cuisine}</p>
-                        )}
-                        {notification.address &&
-                          notification.address !== "Address not available" && (
-                            <p className="address">{notification.address}</p>
-                          )}
-                        <p className="set-date">
-                          Set on {formatDate(notification.created_at)}
-                        </p>
                       </div>
 
                       <div className="notification-actions">
                         <button
                           className="remove-btn"
-                          onClick={() =>
-                            handleRemoveNotification(notification.id)
-                          }
-                          title="Remove notification"
+                          onClick={() => {
+                            // You might want to mark as read instead of remove
+                            markAsRead(notification.id);
+                          }}
+                          title="Mark as read"
                         >
-                          ✕
+                          ✓
                         </button>
                       </div>
                     </div>
@@ -351,5 +406,46 @@ function NotificationsPage({ user, onBack }) {
     </div>
   );
 }
+
+// Helper functions
+const getStatusText = (status) => {
+  switch (status) {
+    case "green":
+      return "Low Crowd";
+    case "yellow":
+      return "Moderate Crowd";
+    case "orange":
+      return "Busy";
+    case "red":
+      return "Very High Crowd";
+    default:
+      return status;
+  }
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "green":
+      return "#51CF66";
+    case "yellow":
+      return "#FCC419";
+    case "orange":
+      return "#FF922B";
+    case "red":
+      return "#FF6B6B";
+    default:
+      return "#666";
+  }
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 export default NotificationsPage;

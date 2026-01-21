@@ -22,13 +22,17 @@ class Reservation extends Model
         'special_requests',
         'confirmation_code',
         'notification_count',
-        'last_notified_at'
+        'last_notified_at',
+        'hold_type',      // ← ADD THIS
+        'expires_at',     // ← ADD THIS
+        'hold_status'
     ];
 
     protected $casts = [
         'reservation_date' => 'date',
         'last_notified_at' => 'datetime',
-        'party_size' => 'integer'
+        'party_size' => 'integer',
+        'expires_at' => 'datetime' // ← ADD THIS
     ];
 
     /**
@@ -54,7 +58,7 @@ class Reservation extends Model
     {
         $reservationDateTime = $this->reservation_date . ' ' . $this->reservation_time;
         $hoursUntilReservation = now()->diffInHours($reservationDateTime, false);
-        
+
         return $hoursUntilReservation >= 2 && in_array($this->status, ['pending', 'confirmed']);
     }
 
@@ -72,9 +76,9 @@ class Reservation extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('reservation_date', '>=', now()->toDateString())
-                     ->whereIn('status', ['pending', 'confirmed'])
-                     ->orderBy('reservation_date')
-                     ->orderBy('reservation_time');
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->orderBy('reservation_date')
+            ->orderBy('reservation_time');
     }
 
     /**
@@ -82,13 +86,13 @@ class Reservation extends Model
      */
     public function scopePast($query)
     {
-        return $query->where(function($q) {
-                $q->where('reservation_date', '<', now()->toDateString())
-                  ->orWhere(function($q2) {
-                      $q2->where('reservation_date', '=', now()->toDateString())
-                         ->where('reservation_time', '<', now()->format('H:i'));
-                  });
-            })
+        return $query->where(function ($q) {
+            $q->where('reservation_date', '<', now()->toDateString())
+                ->orWhere(function ($q2) {
+                    $q2->where('reservation_date', '=', now()->toDateString())
+                        ->where('reservation_time', '<', now()->format('H:i'));
+                });
+        })
             ->orderBy('reservation_date', 'desc')
             ->orderBy('reservation_time', 'desc');
     }

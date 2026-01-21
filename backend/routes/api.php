@@ -142,10 +142,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bookmarks/{restaurant_id}', [NotificationController::class, 'toggleBookmark']);
     Route::get('/bookmarks', [NotificationController::class, 'getBookmarks']);
 
-    // Notification routes
+    // Notification PREFERENCES routes (what users want to be notified about)
     Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);
-    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
+    Route::get('/notifications', [NotificationController::class, 'getNotifications']); // Gets preferences
     Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']);
+
+    // NEW: Get ACTUAL notifications sent to user
+    Route::get('/user-notifications', [NotificationController::class, 'getUserNotifications']);
 
     // Feature route - MOVED HERE
     Route::post('/restaurant/request-feature', [RestaurantController::class, 'requestFeature']);
@@ -227,7 +230,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/', [ReservationController::class, 'store']);
         Route::get('/{id}', [ReservationController::class, 'show']);
         Route::delete('/{id}', [ReservationController::class, 'destroy']);
+        Route::post('/hold-spot', [ReservationController::class, 'holdSpot']);
     });
 });
-
-Route::post('/reservations/hold-spot', [ReservationController::class, 'holdSpot']);

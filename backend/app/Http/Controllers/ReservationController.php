@@ -151,66 +151,92 @@ class ReservationController extends Controller
 
     public function holdSpot(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'restaurant_id' => 'required|exists:restaurants,id',
-            'party_size' => 'required|integer|min:1|max:10',
-            'hold_type' => 'required|in:quick_10min,extended_20min',
-            'special_requests' => 'nullable|string|max:200',
-            'notification_id' => 'nullable|exists:notifications,id'
-        ]);
+        try {
+            $user = $request->user();
 
-        if ($validator->fails()) {
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User not authenticated'
+                ], 401);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'restaurant_id' => 'required|exists:restaurants,id',
+                'party_size' => 'required|integer|min:1|max:10',
+                'hold_type' => 'required|in:quick_10min,extended_20min',
+                'special_requests' => 'nullable|string|max:200',
+                'notification_id' => 'nullable|exists:notification_logs,id'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $data = $validator->validated();
+
+            // Check if user already has an active hold at this restaurant
+            $existingHold = Reservation::where('user_id', $user->id)
+                ->where('restaurant_id', $data['restaurant_id'])
+                ->where('hold_status', 'pending')
+                ->where('expires_at', '>', now())
+                ->first();
+
+            if ($existingHold) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You already have an active hold at this restaurant'
+                ], 400);
+            }
+
+            // Calculate expiry time
+            $expiryMinutes = $data['hold_type'] === 'quick_10min' ? 10 : 20;
+            $expiresAt = now()->addMinutes($expiryMinutes);
+
+            // Create hold - ALL REQUIRED FIELDS
+            $hold = new Reservation([
+                'user_id' => $user->id,
+                'restaurant_id' => $data['restaurant_id'],
+                'party_size' => $data['party_size'],
+                'hold_type' => $data['hold_type'],
+                'expires_at' => $expiresAt,
+                'hold_status' => 'pending',
+
+                // REQUIRED: reservation_date and reservation_time
+                'reservation_date' => now()->format('Y-m-d'), // Current date
+                'reservation_time' => now()->format('H:i:s'), // Current time
+
+                'special_requests' => $data['special_requests'] ?? null,
+                'status' => 'pending_hold', // Use the new status
+                'confirmation_code' => strtoupper(substr(md5(uniqid()), 0, 8)),
+
+                // Default values for other columns
+                'notification_count' => 0,
+                'last_notified_at' => null
+            ]);
+
+            $hold->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Spot hold created successfully',
+                'hold' => $hold->load('restaurant'),
+                'confirmation_code' => $hold->confirmation_code,
+                'expires_at' => $expiresAt->toDateTimeString(),
+                'expires_in' => $expiryMinutes . ' minutes'
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Hold spot error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Failed to create spot hold',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
         }
-
-        $user = $request->user();
-        $data = $validator->validated();
-
-        // Check if user already has an active hold at this restaurant
-        $existingHold = Reservation::where('user_id', $user->id)
-            ->where('restaurant_id', $data['restaurant_id'])
-            ->where('hold_status', 'accepted')
-            ->where('expires_at', '>', now())
-            ->first();
-
-        if ($existingHold) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You already have an active hold at this restaurant'
-            ], 400);
-        }
-
-        // Calculate expiry time
-        $expiryMinutes = $data['hold_type'] === 'quick_10min' ? 10 : 20;
-        $expiresAt = now()->addMinutes($expiryMinutes);
-
-        // Create hold
-        $hold = new Reservation([
-            'user_id' => $user->id,
-            'restaurant_id' => $data['restaurant_id'],
-            'party_size' => $data['party_size'],
-            'hold_type' => $data['hold_type'],
-            'expires_at' => $expiresAt,
-            'hold_status' => 'pending', // Restaurant needs to accept
-            'special_requests' => $data['special_requests'] ?? null,
-            'status' => 'pending_hold', // Using existing status field
-            'confirmation_code' => strtoupper(substr(md5(uniqid()), 0, 8))
-        ]);
-
-        $hold->save();
-
-        // TODO: Notify restaurant (push notification or dashboard alert)
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Spot hold created successfully',
-            'hold' => $hold->load('restaurant'),
-            'confirmation_code' => $hold->confirmation_code,
-            'expires_at' => $expiresAt->toDateTimeString()
-        ], 201);
     }
     /**
      * Cancel the specified reservation.

@@ -275,3 +275,96 @@
     margin: 0 auto;
   }
 }
+
+/* New styles for actual notifications */
+.unread-badge {
+  background: #4CAF50;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.notification-message {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #4CAF50;
+}
+
+.notification-message p {
+  margin: 0;
+  color: #333;
+}
+
+.notification-details {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.notification-type {
+  color: #666;
+  font-size: 13px;
+}
+
+.notification-time {
+  color: #888;
+  font-size: 13px;
+}
+
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+}
+
+.status-green { background-color: #51CF66; }
+.status-yellow { background-color: #FCC419; color: #333; }
+.status-orange { background-color: #FF922B; }
+.status-red { background-color: #FF6B6B; }
+
+/* Preferences section */
+.preferences-section {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.preferences-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.preferences-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preference-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.preference-status {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
