@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MenuItem;
 use App\Models\Review;
 use App\Models\RestaurantPhoto;
+use App\Models\UserNotification;
+// use App\Models\NotificationLog;
 use Illuminate\Support\Facades\Storage; // ← ADD THIS LINE
+use Illuminate\Support\Facades\Schema;
 use Exception; // ← ADD THIS
 
 class RestaurantController extends Controller
@@ -306,6 +309,7 @@ class RestaurantController extends Controller
     }
 
     // Update occupancy (for IoT device)
+    // Update occupancy (for IoT device) - MODIFIED VERSION
     public function updateOccupancy(Request $request)
     {
         $user = Auth::user();
@@ -319,15 +323,29 @@ class RestaurantController extends Controller
             'current_occupancy' => 'required|integer|min:0|max:' . $restaurant->max_capacity
         ]);
 
+        // Get old crowd level before update
+        $oldCrowdLevel = $restaurant->crowd_level;
+
+        // Update restaurant
         $restaurant->update($validated);
         $restaurant->refresh();
+
+        // Get new crowd level after update
+        $newCrowdLevel = $restaurant->crowd_level;
+
+        // TRIGGER NOTIFICATIONS IF CROWD LEVEL CHANGED
+        if ($oldCrowdLevel !== $newCrowdLevel) {
+            $this->triggerCrowdNotifications($restaurant, $newCrowdLevel);
+        }
 
         return response()->json([
             'message' => 'Occupancy updated',
             'restaurant' => $restaurant,
             'crowd_status' => $restaurant->crowd_status,
             'crowd_level' => $restaurant->crowd_level,
-            'occupancy_percentage' => $restaurant->occupancy_percentage
+            'occupancy_percentage' => $restaurant->occupancy_percentage,
+            'old_level' => $oldCrowdLevel,
+            'new_level' => $newCrowdLevel
         ]);
     }
 
@@ -504,6 +522,140 @@ class RestaurantController extends Controller
         ]);
     }
 
+    public function updateCrowdLevel(Request $request, $id)
+    {
+        try {
+            $restaurant = Restaurant::findOrFail($id);
+
+            // Check if user owns the restaurant
+            if ($request->user()->id !== $restaurant->owner_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            $validated = $request->validate([
+                'crowd_level' => 'required|in:green,yellow,orange,red'
+            ]);
+
+            $oldLevel = $restaurant->crowd_level;
+            $newLevel = $validated['crowd_level'];
+
+            // Update the restaurant
+            $restaurant->crowd_level = $newLevel;
+            $restaurant->last_updated = now();
+            $restaurant->save();
+
+            // TRIGGER NOTIFICATIONS
+            if ($oldLevel !== $newLevel) {
+                $notificationCount = $this->triggerCrowdNotifications($restaurant, $newLevel);
+
+                Log::info("Crowd level changed for restaurant {$restaurant->id} from {$oldLevel} to {$newLevel}. Notifications sent: {$notificationCount}");
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Crowd level updated',
+                'restaurant' => $restaurant,
+                'old_level' => $oldLevel,
+                'new_level' => $newLevel,
+                'notification_count' => $notificationCount ?? 0
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Update crowd level error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update crowd level'
+            ], 500);
+        }
+    }
+
+    private function triggerCrowdNotifications($restaurant, $newLevel)
+    {
+        try {
+            // Find users who want notifications for this status
+            $notifications = UserNotification::where('restaurant_id', $restaurant->id)
+                ->where('notify_when_status', $newLevel)
+                ->where('is_active', true)
+                ->with('user')
+                ->get();
+
+            $sentCount = 0;
+
+            foreach ($notifications as $notification) {
+                // Create notification record for each user
+                $this->createNotificationRecord($notification->user, $restaurant, $newLevel);
+                $sentCount++;
+
+                Log::info("Notification sent to user {$notification->user->id} " .
+                    "about restaurant {$restaurant->name} " .
+                    "reaching {$newLevel} status");
+            }
+
+            return $sentCount;
+        } catch (\Exception $e) {
+            Log::error('Trigger notifications error: ' . $e->getMessage());
+            return 0;
+        }
+    }
+
+    private function createNotificationRecord($user, $restaurant, $status)
+    {
+        try {
+            // Check if notification_logs table exists
+            if (!Schema::hasTable('notification_logs')) {
+                // Create the table if it doesn't exist
+                $this->createNotificationLogsTable();
+            }
+
+            // Create notification log
+            DB::table('notification_logs')->insert([
+                'user_id' => $user->id,
+                'restaurant_id' => $restaurant->id,
+                'notification_type' => 'crowd_alert',
+                'title' => 'Crowd Level Alert',
+                'message' => $restaurant->name . ' has reached ' . $this->getCrowdLevelText($status) . ' crowd level',
+                'status' => $status,
+                'read' => false,
+                'sent_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Create notification record error: ' . $e->getMessage());
+        }
+    }
+
+    private function createNotificationLogsTable()
+    {
+        try {
+            DB::statement("
+                CREATE TABLE IF NOT EXISTS notification_logs (
+                    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    user_id BIGINT UNSIGNED NOT NULL,
+                    restaurant_id BIGINT UNSIGNED NOT NULL,
+                    notification_type VARCHAR(50) NOT NULL,
+                    title VARCHAR(255) NOT NULL,
+                    message TEXT NOT NULL,
+                    status ENUM('green', 'yellow', 'orange', 'red') NULL,
+                    `read` BOOLEAN DEFAULT FALSE,
+                    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    created_at TIMESTAMP NULL DEFAULT NULL,
+                    updated_at TIMESTAMP NULL DEFAULT NULL,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE,
+                    INDEX idx_user_read (user_id, `read`, sent_at)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+
+            Log::info('Created notification_logs table');
+        } catch (\Exception $e) {
+            Log::error('Failed to create notification_logs table: ' . $e->getMessage());
+        }
+    }
+
+
     public function requestVerification(Request $request)
     {
         try {
@@ -548,6 +700,39 @@ class RestaurantController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to submit verification request'
+            ], 500);
+        }
+    }
+
+    public function getRestaurantCurrentStatus($id)
+    {
+        try {
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'restaurant' => [
+                    'id' => $restaurant->id,
+                    'name' => $restaurant->name,
+                    'crowd_level' => $restaurant->crowd_level,
+                    'current_occupancy' => $restaurant->current_occupancy,
+                    'max_capacity' => $restaurant->max_capacity,
+                    'occupancy_percentage' => $restaurant->occupancy_percentage,
+                    'updated_at' => $restaurant->updated_at
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Get restaurant status error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get restaurant status'
             ], 500);
         }
     }
