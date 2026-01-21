@@ -229,3 +229,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [ReservationController::class, 'destroy']);
     });
 });
+
+Route::post('/reservations/hold-spot', [ReservationController::class, 'holdSpot']);

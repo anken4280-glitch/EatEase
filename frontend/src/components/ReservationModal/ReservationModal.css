@@ -174,3 +174,362 @@
     background: #ccc;
     cursor: not-allowed;
 }
+
+/* Spot Hold Specific Styles */
+.hold-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.hold-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.hold-option:hover {
+    border-color: #4CAF50;
+    background: #f9f9f9;
+}
+
+.hold-option input[type="radio"] {
+    margin-right: 15px;
+    transform: scale(1.2);
+}
+
+.hold-option input[type="radio"]:checked + .option-content {
+    color: #4CAF50;
+}
+
+.hold-option input[type="radio"]:checked + .option-content .option-title {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.option-content {
+    flex: 1;
+}
+
+.option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.option-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.option-badge {
+    background: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.option-details {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.option-icon {
+    font-size: 18px;
+}
+
+.option-text {
+    font-size: 14px;
+}
+
+.option-expiry {
+    font-size: 12px;
+    color: #888;
+    font-style: italic;
+}
+
+.party-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.size-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #4CAF50;
+    background: white;
+    color: #4CAF50;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.size-btn:hover:not(:disabled) {
+    background: #4CAF50;
+    color: white;
+}
+
+.size-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #ccc;
+    color: #ccc;
+}
+
+.party-size-display {
+    font-size: 18px;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+}
+
+.restaurant-status {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.crowd-level {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.capacity {
+    color: #666;
+}
+
+.notification-context {
+    background: #e8f5e9;
+    border-left: 4px solid #4CAF50;
+    padding: 10px 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.notification-badge {
+    background: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.hold-disclaimer {
+    background: #fff8e1;
+    border-left: 4px solid #ffb300;
+    padding: 10px 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.disclaimer-icon {
+    font-size: 20px;
+}
+
+.disclaimer-text {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.char-count {
+    display: block;
+    text-align: right;
+    color: #888;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+/* Confirmation Styles */
+.confirmation-content {
+    text-align: center;
+    padding: 20px;
+}
+
+.confirmation-icon {
+    font-size: 50px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.confirmation-details {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-item .label {
+    font-weight: 500;
+    color: #666;
+}
+
+.detail-item .value {
+    font-weight: 600;
+    color: #333;
+}
+
+.detail-item .value.code {
+    font-family: monospace;
+    background: #e8f5e9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #2e7d32;
+}
+
+.detail-item .value.highlight {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.instructions {
+    text-align: left;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.instructions h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+.instructions ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.instructions li {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.note.important {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.done-btn {
+    padding: 12px 30px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.done-btn:hover {
+    background: #45a049;
+}
+
+.view-holds-btn {
+    padding: 12px 30px;
+    background: white;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-holds-btn:hover {
+    background: #4CAF50;
+    color: white;
+}
+
+/* Hold button specific */
+.hold-btn {
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hold-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.hold-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
