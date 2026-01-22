@@ -341,23 +341,8 @@ const ReservationModal = ({
             </div>
           </div>
 
-          <div className="form-group">
-            <label>Special Instructions (Optional)</label>
-            <textarea
-              name="special_requests"
-              value={formData.special_requests}
-              onChange={handleChange}
-              placeholder="Any special needs, high chair, wheelchair access, etc."
-              rows="2"
-              maxLength="200"
-            />
-            <small className="char-count">
-              {formData.special_requests.length}/200 characters
-            </small>
-          </div>
-
           <div className="hold-disclaimer">
-            <div className="disclaimer-icon">ℹ️</div>
+            <div className="disclaimer-icon">ℹ</div>
             <div className="disclaimer-text">
               <strong>Note:</strong> This is a spot hold, not a guaranteed
               reservation. The restaurant will accommodate you based on
@@ -366,7 +351,7 @@ const ReservationModal = ({
             </div>
           </div>
 
-          {error && <div className="error-message">❌ {error}</div>}
+          {error && <div className="error-message">{error}</div>}
 
           <div className="modal-actions">
             <button

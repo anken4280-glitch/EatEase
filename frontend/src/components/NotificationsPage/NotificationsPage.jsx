@@ -27,8 +27,8 @@ function NotificationsPage({ user, onBack }) {
 
     try {
       setLoading(true);
+      setError("");
 
-      // Use the new endpoint for actual notifications
       const response = await fetch(
         "http://localhost:8000/api/user-notifications",
         {
@@ -46,17 +46,16 @@ function NotificationsPage({ user, onBack }) {
       const data = await response.json();
 
       if (data.success) {
-        console.log("Actual notifications:", data.notifications);
-        console.log("Notification preferences:", data.preferences);
+        // Set actual notifications
+        const notificationsList = data.notifications || [];
+        setNotifications(notificationsList);
 
-        // Set both arrays
-        setNotifications(data.notifications || []);
-        setNotificationPreferences(data.preferences || []); // This line was missing
         // Calculate unread count
-        const unread = (data.notifications || []).filter(
-          (n) => !n.is_read,
-        ).length;
+        const unread = notificationsList.filter((n) => !n.is_read).length;
         setUnreadCount(unread);
+
+        // Keep preferences if needed
+        setNotificationPreferences(data.preferences || []);
       } else {
         setError(data.message || "Failed to load notifications");
       }
@@ -96,6 +95,79 @@ function NotificationsPage({ user, onBack }) {
       }
     } catch (error) {
       console.error("Error marking as read:", error);
+    }
+  };
+
+  // Add these new functions to your component:
+
+  const deleteNotification = async (notificationId) => {
+    if (!window.confirm("Delete this notification?")) return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        `http://localhost:8000/api/user-notifications/${notificationId}`, // NEW ENDPOINT
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        // Remove from local state
+        setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+        // Update unread count if needed
+        if (
+          notifications.find((n) => n.id === notificationId)?.is_read === false
+        ) {
+          setUnreadCount((prev) => Math.max(0, prev - 1));
+        }
+        alert("Notification deleted!");
+      } else {
+        alert(data.message || "Failed to delete notification");
+      }
+    } catch (error) {
+      console.error("Delete notification error:", error);
+      alert("Failed to delete notification");
+    }
+  };
+
+  const deleteAllNotifications = async () => {
+    if (notifications.length === 0) return;
+
+    if (!window.confirm(`Delete all ${notifications.length} notifications?`))
+      return;
+
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        "http://localhost:8000/api/user-notifications", // NEW ENDPOINT
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        setNotifications([]);
+        setUnreadCount(0);
+        alert(
+          `All notifications deleted! (${data.deleted_count || notifications.length} removed)`,
+        );
+      } else {
+        alert(data.message || "Failed to delete all notifications");
+      }
+    } catch (error) {
+      console.error("Delete all notifications error:", error);
+      alert("Failed to delete all notifications");
     }
   };
 
@@ -302,17 +374,32 @@ function NotificationsPage({ user, onBack }) {
           </svg>
         </button>
         <h1>
+          {" "}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="30px"
             viewBox="0 -960 960 960"
             width="30px"
-            fill="Gray"
+            fill="black"
           >
             <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
           </svg>{" "}
           My Notifications
+          {unreadCount > 0 && (
+            <span className="unread-counter">({unreadCount} new)</span>
+          )}
         </h1>
+
+        {/* ADD THIS - Delete All button */}
+        {notifications.length > 0 && (
+          <button
+            className="delete-all-btn"
+            onClick={deleteAllNotifications}
+            title="Delete all notifications"
+          >
+            Delete All
+          </button>
+        )}
       </div>
 
       {loading && (
@@ -333,7 +420,17 @@ function NotificationsPage({ user, onBack }) {
           {/* SHOW ACTUAL NOTIFICATIONS */}
           {notifications.length === 0 ? (
             <div className="notifications-empty-state">
-              <div className="empty-icon">📭</div>
+              <div className="empty-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="40px"
+                  viewBox="0 -960 960 960"
+                  width="40px"
+                  fill="black"
+                >
+                  <path d="M620-520q25 0 42.5-17.5T680-580q0-25-17.5-42.5T620-640q-25 0-42.5 17.5T560-580q0 25 17.5 42.5T620-520Zm-280 0q25 0 42.5-17.5T400-580q0-25-17.5-42.5T340-640q-25 0-42.5 17.5T280-580q0 25 17.5 42.5T340-520Zm140 100q-68 0-123.5 38.5T276-280h66q22-37 58.5-58.5T480-360q43 0 79.5 21.5T618-280h66q-25-63-80.5-101.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Z" />
+                </svg>
+              </div>
               <h3>No notifications yet</h3>
               <p>
                 You'll get alerts here when restaurants reach your preferred
@@ -407,12 +504,22 @@ function NotificationsPage({ user, onBack }) {
                         <button
                           className="remove-btn"
                           onClick={() => {
-                            // You might want to mark as read instead of remove
                             markAsRead(notification.id);
                           }}
                           title="Mark as read"
                         >
                           ✓
+                        </button>
+
+                        {/* ADD THIS - Delete button */}
+                        <button
+                          className="delete-btn"
+                          onClick={() => {
+                            deleteNotification(notification.id);
+                          }}
+                          title="Delete notification"
+                        >
+                          ×
                         </button>
                       </div>
                     </div>

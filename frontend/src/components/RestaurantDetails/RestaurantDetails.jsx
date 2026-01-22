@@ -320,15 +320,8 @@ function RestaurantDetails({ restaurantId, onBack }) {
           onClick={() => setShowReservationModal(true)}
         >
           <span role="img" aria-label="plate">
-            🍽️
           </span>{" "}
           Make Reservation
-        </button>
-        <button className="bookmark-btn">
-          <span role="img" aria-label="heart">
-            ❤️
-          </span>{" "}
-          Bookmark
         </button>
       </div>
 

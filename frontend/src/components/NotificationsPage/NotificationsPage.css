@@ -26,7 +26,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: .5px solid;
+  border: 0.5px solid;
 }
 
 .back-button:hover {
@@ -278,7 +278,7 @@
 
 /* New styles for actual notifications */
 .unread-badge {
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
@@ -292,7 +292,7 @@
   padding: 10px;
   background: #f8f9fa;
   border-radius: 6px;
-  border-left: 3px solid #4CAF50;
+  border-left: 3px solid #4caf50;
 }
 
 .notification-message p {
@@ -326,10 +326,19 @@
   color: white;
 }
 
-.status-green { background-color: #51CF66; }
-.status-yellow { background-color: #FCC419; color: #333; }
-.status-orange { background-color: #FF922B; }
-.status-red { background-color: #FF6B6B; }
+.status-green {
+  background-color: inherit;
+}
+.status-yellow {
+  background-color: inherit;
+  color: #333;
+}
+.status-orange {
+  background-color: inherit;
+}
+.status-red {
+  background-color: inherit;
+}
 
 /* Preferences section */
 .preferences-section {
@@ -349,6 +358,105 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+/* Add these styles to your NotificationsPage.css */
+
+/* Delete All button in header */
+.delete-all-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: auto;
+  margin-right: 15px;
+  transition: background-color 0.2s;
+}
+
+.delete-all-btn:hover {
+  background-color: #c82333;
+}
+
+/* Unread counter */
+.unread-counter {
+  background-color: #007bff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Delete button in notification actions */
+.delete-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  transition: background 0.2s;
+}
+
+.delete-btn:hover {
+  background: #ff5252;
+}
+
+/* Update notification-actions to space buttons */
+.notification-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Adjust remove-btn to match delete-btn */
+.remove-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: #218838;
+}
+
+/* Optional: Add warning color for delete all */
+@media (max-width: 768px) {
+  .delete-all-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-right: 10px;
+  }
+
+  .notification-actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .delete-btn,
+  .remove-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
 }
 
 .preference-item {

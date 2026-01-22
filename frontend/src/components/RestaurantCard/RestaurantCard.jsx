@@ -136,7 +136,7 @@ function RestaurantCard({
         }
 
         alert(
-          `✅ You'll be notified when ${restaurant.name} has ${getStatusText(
+          `You'll be notified when ${restaurant.name} has ${getStatusText(
             crowdLevel
           )} crowd!`
         );
