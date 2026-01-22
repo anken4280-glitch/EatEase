@@ -432,4 +432,83 @@ class NotificationController extends Controller
             ], 500);
         }
     }
+
+        // ========== NEW DELETE METHODS ==========
+    
+    /**
+     * Delete a single notification from notification_logs
+     */
+    public function destroy($id)
+    {
+        try {
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+
+            // Find the notification in notification_logs
+            $notification = DB::table('notification_logs')
+                ->where('id', $id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (!$notification) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Notification not found'
+                ], 404);
+            }
+
+            // Delete the notification
+            DB::table('notification_logs')
+                ->where('id', $id)
+                ->where('user_id', $user->id)
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notification deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Delete notification error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete notification',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete ALL notifications for the current user
+     */
+    public function destroyAll()
+    {
+        try {
+            $user = Auth::user();
+
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+
+            // Delete all notifications for this user from notification_logs
+            $deleted = DB::table('notification_logs')
+                ->where('user_id', $user->id)
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All notifications deleted successfully',
+                'deleted_count' => $deleted
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Delete all notifications error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete all notifications',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

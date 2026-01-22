@@ -136,7 +136,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reviews/{id}', [ReviewController::class, 'deleteReview']);
 });
 
-// Notification
+/// Notification
+
 Route::middleware('auth:sanctum')->group(function () {
     // Bookmark routes
     Route::post('/bookmarks/{restaurant_id}', [NotificationController::class, 'toggleBookmark']);
@@ -145,14 +146,21 @@ Route::middleware('auth:sanctum')->group(function () {
     // Notification PREFERENCES routes (what users want to be notified about)
     Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);
     Route::get('/notifications', [NotificationController::class, 'getNotifications']); // Gets preferences
-    Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']);
+    Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']); // Remove preference
 
     // Mark notification as read
     Route::put('/notifications/{notification_id}/mark-read', [NotificationController::class, 'markAsRead']);
 
-
     // NEW: Get ACTUAL notifications sent to user
     Route::get('/user-notifications', [NotificationController::class, 'getUserNotifications']);
+
+    // ========== NEW DELETE ENDPOINTS ==========
+    // Delete single actual notification (from notification_logs)
+    Route::delete('/user-notifications/{id}', [NotificationController::class, 'destroy']);
+
+    // Delete ALL actual notifications for user
+    Route::delete('/user-notifications', [NotificationController::class, 'destroyAll']);
+    // ==========================================
 
     // Feature route - MOVED HERE
     Route::post('/restaurant/request-feature', [RestaurantController::class, 'requestFeature']);
