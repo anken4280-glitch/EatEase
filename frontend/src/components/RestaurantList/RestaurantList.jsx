@@ -25,6 +25,8 @@ function RestaurantList({
   const [notificationCount, setNotificationCount] = useState(0); // ADD THIS
   const [showOnlyPremium, setShowOnlyPremium] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false); // Add this for refresh animation
+  // In RestaurantList function, add with other states:
+  const [allNotifications, setAllNotifications] = useState([]);
 
   // ========== USE EFFECTS ==========
   // Effect for closing hamburger menu when clicking outside
@@ -54,6 +56,37 @@ function RestaurantList({
     fetchRestaurants();
     fetchNotificationCount(); // ADD THIS
   }, []); // Empty dependency array means this runs once on mount
+
+  useEffect(() => {
+    const fetchAllNotifications = async () => {
+      const token = localStorage.getItem("auth_token");
+      if (!token) return;
+
+      try {
+        const response = await fetch(
+          "http://localhost:8000/api/notifications",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          },
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setAllNotifications(data.notifications || []);
+            setNotificationCount(data.count || data.notifications?.length || 0);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchAllNotifications();
+  }, []); // Empty dependency = runs once on mount
 
   // ========== API FUNCTIONS ==========
   /**
@@ -147,9 +180,10 @@ function RestaurantList({
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Notifications API response:", data); // Debug log
+        console.log("Notifications API response:", data);
 
         if (data.success) {
+          setAllNotifications(data.notifications || []); // UPDATE THIS
           setNotificationCount(data.count || data.notifications?.length || 0);
         } else {
           console.warn(
@@ -164,7 +198,7 @@ function RestaurantList({
       }
     } catch (error) {
       console.error("Error fetching notification count:", error);
-      setNotificationCount(0); // Set to 0 on error
+      setNotificationCount(0);
     }
   };
 
@@ -540,6 +574,7 @@ function RestaurantList({
                     key={restaurant.id}
                     restaurant={restaurant}
                     onRestaurantClick={handleRestaurantClick}
+                    allNotifications={allNotifications}
                   />
                 ))
               )}

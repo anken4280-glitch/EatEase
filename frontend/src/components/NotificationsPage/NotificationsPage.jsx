@@ -10,6 +10,8 @@ function NotificationsPage({ user, onBack }) {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [restaurantCurrentStatus, setRestaurantCurrentStatus] = useState({}); // Track restaurant current status
   const [notificationPreferences, setNotificationPreferences] = useState([]); // ADD THIS LINE
+  // Add this with other state variables:
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     fetchNotifications();
@@ -50,6 +52,11 @@ function NotificationsPage({ user, onBack }) {
         // Set both arrays
         setNotifications(data.notifications || []);
         setNotificationPreferences(data.preferences || []); // This line was missing
+        // Calculate unread count
+        const unread = (data.notifications || []).filter(
+          (n) => !n.is_read,
+        ).length;
+        setUnreadCount(unread);
       } else {
         setError(data.message || "Failed to load notifications");
       }
@@ -58,6 +65,37 @@ function NotificationsPage({ user, onBack }) {
       setError("Failed to load notifications. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const markAsRead = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) return;
+
+      const response = await fetch(
+        `http://localhost:8000/api/notifications/${notificationId}/mark-read`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      if (response.ok) {
+        // Update local state
+        setNotifications((prev) =>
+          prev.map((n) =>
+            n.id === notificationId ? { ...n, is_read: true } : n,
+          ),
+        );
+        // Decrease unread count
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      }
+    } catch (error) {
+      console.error("Error marking as read:", error);
     }
   };
 

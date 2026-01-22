@@ -2,28 +2,35 @@ import React, { useState, useEffect } from "react";
 import "./RestaurantCard.css";
 import TierBadge from "../TierBadge/TierBadge";
 
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=location_on"
-/>;
-
-function RestaurantCard({ restaurant, onRestaurantClick }) {
+function RestaurantCard({ 
+  restaurant, 
+  onRestaurantClick,
+  allNotifications = [] // ADD THIS PROP
+}) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userHasNotification, setUserHasNotification] = useState(null);
 
-  // Check if restaurant is already bookmarked & has notification on load
+  // Find notification from parent's pre-fetched data
   useEffect(() => {
-    checkUserPreferences();
+    const notification = allNotifications.find(
+      n => n.restaurant_id === restaurant.id
+    );
+    setUserHasNotification(notification?.notify_when_status || null);
+  }, [allNotifications, restaurant.id]);
+
+  // Keep bookmark check but remove notification fetch
+  useEffect(() => {
+    checkBookmarks();
   }, [restaurant.id]);
 
-  const checkUserPreferences = async () => {
+  const checkBookmarks = async () => {
     const token = localStorage.getItem("auth_token");
     if (!token) return;
 
     try {
-      // Check bookmarks
+      // Check bookmarks only
       const bookmarksRes = await fetch("http://localhost:8000/api/bookmarks", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,32 +47,8 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
           setIsBookmarked(bookmarked);
         }
       }
-
-      // Check notifications - ADD ERROR HANDLING
-      const notificationsRes = await fetch(
-        "http://localhost:8000/api/notifications",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (notificationsRes.ok) {
-        const notificationsData = await notificationsRes.json();
-        if (notificationsData.success && notificationsData.notifications) {
-          const notification = notificationsData.notifications.find(
-            (n) => n.restaurant_id === restaurant.id
-          );
-          setUserHasNotification(notification?.notify_when_status || null);
-        }
-      } else {
-        console.warn("Notifications API returned:", notificationsRes.status);
-        // Don't set userHasNotification on error
-      }
     } catch (error) {
-      console.error("Error checking preferences:", error);
+      console.error("Error checking bookmarks:", error);
     }
   };
 
@@ -147,7 +130,7 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
       if (data.success) {
         setUserHasNotification(crowdLevel);
 
-        // TRIGGER GLOBAL REFRESH
+        // TRIGGER GLOBAL REFRESH - This will update parent's allNotifications
         if (window.refreshNotificationCount) {
           window.refreshNotificationCount();
         }
@@ -177,48 +160,34 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
 
     setLoading(true);
     try {
-      // First get the notification ID
-      const notificationsRes = await fetch(
-        "http://localhost:8000/api/notifications",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
+      // Since we have allNotifications from parent, find the ID
+      const notification = allNotifications.find(
+        n => n.restaurant_id === restaurant.id
       );
 
-      const notificationsData = await notificationsRes.json();
-      if (notificationsData.success) {
-        const notification = notificationsData.notifications.find(
-          (n) => n.restaurant_id === restaurant.id
+      if (notification) {
+        const deleteRes = await fetch(
+          `http://localhost:8000/api/notifications/${notification.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
         );
 
-        if (notification) {
-          const deleteRes = await fetch(
-            `http://localhost:8000/api/notifications/${notification.id}`,
-            {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-            }
-          );
+        const deleteData = await deleteRes.json();
+        if (deleteData.success) {
+          setUserHasNotification(null);
 
-          const deleteData = await deleteRes.json();
-          if (deleteData.success) {
-            setUserHasNotification(null);
-
-            // TRIGGER GLOBAL REFRESH
-            if (window.refreshNotificationCount) {
-              window.refreshNotificationCount();
-            }
-
-            alert("Notification removed");
+          // TRIGGER GLOBAL REFRESH
+          if (window.refreshNotificationCount) {
+            window.refreshNotificationCount();
           }
+
+          alert("Notification removed");
         }
       }
     } catch (error) {
@@ -265,14 +234,6 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
   return (
     <>
       <div className="restaurant-card" onClick={handleClick}>
-        {/* <div className="card-badges">
-          {restaurant.isPremium && (
-            <div className="premium-restaurant-badge">⭐</div>
-          )}
-          {/* {restaurant.isVerified && (
-            <div className="verified-badge">✅ Verified</div>
-          )}
-        </div> */}
         <div className="card-header">
           <div className="card-title-section">
             <div className="restaurant-title-row">
@@ -282,10 +243,8 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
               </div>
 
               <div className="rating-display">
-                {/* Check if restaurant has ratings */}
                 {restaurant.average_rating > 0 ? (
                   <div className="star-rating-small">
-                    {/* Stars container */}
                     <div className="stars-container">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <span
@@ -309,11 +268,6 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
                         </span>
                       ))}
                     </div>
-
-                    {/* Rating number */}
-                    {/* <span className="list-rating-number">
-                      {parseFloat(restaurant.average_rating).toFixed(1)}
-                    </span> */}
                   </div>
                 ) : (
                   <div className="no-rating">No reviews yet</div>
@@ -336,7 +290,7 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
               fill="orange"
               aria-hidden="true"
             >
-              <path d="m175-120-56-56 410-410q-18-42-5-95t57-95q53-53 118-62t106 32q41 41 32 106t-62 118q-42 44-95 57t-95-5l-50 50 304 304-56 56-304-302-304 302Zm118-342L173-582q-54-54-54-129t54-129l248 250-128 128Z" />
+              <path d="m175-120-56-56 410-410q-18-42-5-95t57-95q53-53 118-62t106 32q41 41 32 106t-62 118q-42 44-95 57t-95-5l-50 50 304 304-56 56-304-302-304 302Z" />
             </svg>
             Cuisine: {restaurant.cuisine}
           </p>
@@ -448,12 +402,6 @@ function RestaurantCard({ restaurant, onRestaurantClick }) {
           </div>
         )}
       </div>
-
-      {/* {restaurant.is_verified && (
-        <div className="verified-badge" title="Verified Restaurant">
-          ✅ Verified
-        </div>
-      )} */}
 
       {/* Notification Modal */}
       {showNotificationModal && (
