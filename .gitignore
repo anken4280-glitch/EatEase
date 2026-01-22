@@ -1,0 +1,76 @@
+# ============================================
+# EATEASE BACKEND - GIT IGNORE RULES
+# ============================================
+
+# LARAVEL BACKEND
+backend/vendor/
+backend/node_modules/
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+backend/storage/framework/cache/*
+!backend/storage/framework/cache/.gitkeep
+backend/storage/framework/sessions/*
+!backend/storage/framework/sessions/.gitkeep
+backend/storage/framework/views/*
+!backend/storage/framework/views/.gitkeep
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+backend/public/hot
+backend/public/storage
+backend/storage/*.key
+backend/phpunit.xml
+
+# ENVIRONMENT FILES
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# COMPOSER
+backend/composer.lock
+backend/composer.phar
+
+# DEVELOPMENT TOOLS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# TESTING & LOGS
+backend/.phpunit.result.cache
+backend/coverage/
+backend/error_log
+backend/phpcs.cache
+backend/.php_cs.cache
+backend/.styleci.yml
+
+# LARAVEL SAIL & HOMESTEAD
+backend/docker-compose.override.yml
+backend/Homestead.json
+backend/Homestead.yaml
+
+# NPM/YARN LOGS
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+# WINDOWS SPECIFIC
+Desktop.ini
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+*.lnk
+
+# MAC SPECIFIC
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# DO NOT IGNORE (MUST BE TRACKED):
+# !backend/database/migrations/
+# !backend/database/seeders/
+# !backend/app/
+# !backend/config/
+# !backend/routes/

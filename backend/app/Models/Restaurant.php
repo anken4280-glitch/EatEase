@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use App\Models\User; // ADD THIS LINE
+
 
 class Restaurant extends Model
 {
@@ -39,8 +42,8 @@ class Restaurant extends Model
         'has_analytics_access',
         'has_api_access',
         'profile_image',
-        'banner_image', 
-        'banner_position' 
+        'banner_image',
+        'banner_position'
     ];
 
     protected $casts = [
@@ -127,28 +130,100 @@ class Restaurant extends Model
         ]);
     }
 
+
+
     protected static function boot()
     {
         parent::boot();
 
+        static::updated(function ($restaurant) {
+            // Check if crowd status changed
+            if ($restaurant->isDirty('crowd_status')) {
+                Log::info("Crowd status changed for {$restaurant->name}: {$restaurant->crowd_status}");
+
+                // CALL NOTIFICATION LOGIC DIRECTLY (no job)
+                self::checkAndCreateNotifications($restaurant);
+            }
+        });
+
         static::saving(function ($restaurant) {
-            // Calculate occupancy percentage
+            // Your existing saving logic...
             if ($restaurant->max_capacity > 0) {
                 $restaurant->occupancy_percentage =
                     round(($restaurant->current_occupancy / $restaurant->max_capacity) * 100);
 
                 // 4-tier crowd status
                 if ($restaurant->occupancy_percentage <= 50) {
-                    $restaurant->crowd_status = 'green';
+                    $newStatus = 'green';
                 } elseif ($restaurant->occupancy_percentage <= 79) {
-                    $restaurant->crowd_status = 'yellow';
+                    $newStatus = 'yellow';
                 } elseif ($restaurant->occupancy_percentage <= 89) {
-                    $restaurant->crowd_status = 'orange';
+                    $newStatus = 'orange';
                 } else {
-                    $restaurant->crowd_status = 'red';
+                    $newStatus = 'red';
+                }
+
+                // Check if status changed
+                if ($restaurant->crowd_status !== $newStatus) {
+                    $restaurant->crowd_status = $newStatus;
                 }
             }
         });
+    }
+
+    // Add this method anywhere in the Restaurant class (after boot method):
+
+    /**
+     * Check user preferences and create notifications when crowd status matches
+     */
+    public static function checkAndCreateNotifications(Restaurant $restaurant)
+    {
+        try {
+            Log::info("Checking notifications for restaurant {$restaurant->id} ({$restaurant->name})");
+
+            // Find users who want notifications for this status
+            $preferences = \App\Models\UserNotification::with('user')
+                ->where('restaurant_id', $restaurant->id)
+                ->where('notify_when_status', $restaurant->crowd_status)
+                ->where('is_active', true)
+                ->get();
+
+            Log::info("Found {$preferences->count()} preferences for status: {$restaurant->crowd_status}");
+
+            $createdCount = 0;
+            foreach ($preferences as $preference) {
+                // Check if notification already sent recently (last 6 hours)
+                $recentNotification = \App\Models\NotificationLog::where('user_id', $preference->user_id)
+                    ->where('restaurant_id', $restaurant->id)
+                    ->where('status', $restaurant->crowd_status)
+                    ->where('sent_at', '>=', now()->subHours(6))
+                    ->exists();
+
+                if (!$recentNotification) {
+                    // Create notification
+                    \App\Models\NotificationLog::create([
+                        'user_id' => $preference->user_id,
+                        'restaurant_id' => $restaurant->id,
+                        'notification_type' => 'crowd_alert',
+                        'title' => "Crowd Alert: {$restaurant->name}",
+                        'message' => "{$restaurant->name} has reached {$restaurant->crowd_level} crowd level",
+                        'status' => $restaurant->crowd_status,
+                        'is_read' => false,
+                        'sent_at' => now(),
+                    ]);
+
+                    $createdCount++;
+                    Log::info("✓ Notification created for user {$preference->user_id}");
+                }
+            }
+
+            Log::info("Created {$createdCount} notifications for restaurant {$restaurant->id}");
+            return $createdCount;
+        } catch (\Exception $e) {
+            Log::error("Notification check failed: " . $e->getMessage());
+            Log::error("Stack trace: " . $e->getTraceAsString());
+            return 0;
+        }
     }
 
     public function owner()

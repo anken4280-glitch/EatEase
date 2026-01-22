@@ -147,6 +147,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'getNotifications']); // Gets preferences
     Route::delete('/notifications/{notification_id}', [NotificationController::class, 'removeNotification']);
 
+    // Mark notification as read
+    Route::put('/notifications/{notification_id}/mark-read', [NotificationController::class, 'markAsRead']);
+
+
     // NEW: Get ACTUAL notifications sent to user
     Route::get('/user-notifications', [NotificationController::class, 'getUserNotifications']);
 
