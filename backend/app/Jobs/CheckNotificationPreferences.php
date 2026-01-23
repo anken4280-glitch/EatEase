@@ -84,7 +84,7 @@ class CheckNotificationPreferences implements ShouldQueue
             case 'green': return 'Low';
             case 'yellow': return 'Moderate';
             case 'orange': return 'Busy';
-            case 'red': return 'Very High';
+            case 'red': return 'Full';
             default: return $status;
         }
     }

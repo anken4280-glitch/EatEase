@@ -142,6 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Bookmark routes
     Route::post('/bookmarks/{restaurant_id}', [NotificationController::class, 'toggleBookmark']);
     Route::get('/bookmarks', [NotificationController::class, 'getBookmarks']);
+    Route::delete('/bookmarks/cleanup', [NotificationController::class, 'cleanupOrphanedBookmarks']);
 
     // Notification PREFERENCES routes (what users want to be notified about)
     Route::post('/notifications/{restaurant_id}', [NotificationController::class, 'setNotification']);

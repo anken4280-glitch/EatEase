@@ -53,7 +53,7 @@ class RecommendationController extends Controller
                     $crowdLevel = 'Busy';
                 } else {
                     $status = 'red';
-                    $crowdLevel = 'Very High';
+                    $crowdLevel = 'Full';
                 }
 
                 return [

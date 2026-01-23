@@ -128,7 +128,7 @@ class RestaurantController extends Controller
             case 'orange':
                 return 'Busy';
             case 'red':
-                return 'Very High';
+                return 'Full';
             default:
                 return 'Unknown';
         }
@@ -436,7 +436,7 @@ class RestaurantController extends Controller
                     $waitTime = 25;
                 } else {
                     $status = 'red';
-                    $crowdLevel = 'Very High';
+                    $crowdLevel = 'Full';
                     $waitTime = 30;
                 }
 
