@@ -2,20 +2,65 @@ import React, { useState, useEffect } from "react";
 import "./RestaurantCard.css";
 import TierBadge from "../TierBadge/TierBadge";
 
-function RestaurantCard({ 
-  restaurant, 
+function RestaurantCard({
+  restaurant,
   onRestaurantClick,
-  allNotifications = [] // ADD THIS PROP
+  allNotifications = [], // ADD THIS PROP
 }) {
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+
+    // ✅ CORRECT: Use WAMP URL, not artisan serve URL
+    const backendBase = "http://localhost/EatEase/backend/public";
+
+    if (imagePath.startsWith("http")) {
+      return imagePath;
+    }
+
+    // The API returns paths like "/storage/restaurant-banners/..."
+    // Just prepend the correct backend base URL
+    return `${backendBase}${imagePath}`;
+  };
+  console.log("🚀 Image URL Debug:", {
+    original: restaurant.banner_image,
+    processed: getImageUrl(restaurant.banner_image),
+    backendBase: "http://localhost:8000",
+  });
+
+  // ========== IMAGE URLS (MUST BE BEFORE HOOKS) ==========
+  const bannerImageUrl = restaurant.banner_image
+    ? getImageUrl(restaurant.banner_image)
+    : null;
+
+  const profileImageUrl = restaurant.profile_image
+    ? getImageUrl(restaurant.profile_image)
+    : null;
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userHasNotification, setUserHasNotification] = useState(null);
 
+  console.log("🔍 RESTAURANT IMAGE DEBUG:", {
+    name: restaurant.name,
+    banner_image: restaurant.banner_image,
+    profile_image: restaurant.profile_image,
+
+    // What getImageUrl produces:
+    bannerUrl: restaurant.banner_image
+      ? getImageUrl(restaurant.banner_image)
+      : "NO BANNER",
+    profileUrl: restaurant.profile_image
+      ? getImageUrl(restaurant.profile_image)
+      : "NO PROFILE",
+
+    // Full restaurant object:
+    restaurantData: restaurant,
+  });
+
   // Find notification from parent's pre-fetched data
   useEffect(() => {
     const notification = allNotifications.find(
-      n => n.restaurant_id === restaurant.id
+      (n) => n.restaurant_id === restaurant.id,
     );
     setUserHasNotification(notification?.notify_when_status || null);
   }, [allNotifications, restaurant.id]);
@@ -42,7 +87,7 @@ function RestaurantCard({
         const bookmarksData = await bookmarksRes.json();
         if (bookmarksData.success && bookmarksData.bookmarks) {
           const bookmarked = bookmarksData.bookmarks.some(
-            (b) => b.restaurant_id === restaurant.id
+            (b) => b.restaurant_id === restaurant.id,
           );
           setIsBookmarked(bookmarked);
         }
@@ -77,7 +122,7 @@ function RestaurantCard({
             "Content-Type": "application/json",
             Accept: "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -123,7 +168,7 @@ function RestaurantCard({
             Accept: "application/json",
           },
           body: JSON.stringify({ notify_when_status: crowdLevel }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -137,13 +182,13 @@ function RestaurantCard({
 
         alert(
           `You'll be notified when ${restaurant.name} has ${getStatusText(
-            crowdLevel
-          )} crowd!`
+            crowdLevel,
+          )} crowd!`,
         );
         setShowNotificationModal(false);
       } else {
         alert(
-          "Failed to set notification: " + (data.message || "Unknown error")
+          "Failed to set notification: " + (data.message || "Unknown error"),
         );
       }
     } catch (error) {
@@ -162,7 +207,7 @@ function RestaurantCard({
     try {
       // Since we have allNotifications from parent, find the ID
       const notification = allNotifications.find(
-        n => n.restaurant_id === restaurant.id
+        (n) => n.restaurant_id === restaurant.id,
       );
 
       if (notification) {
@@ -175,7 +220,7 @@ function RestaurantCard({
               "Content-Type": "application/json",
               Accept: "application/json",
             },
-          }
+          },
         );
 
         const deleteData = await deleteRes.json();
@@ -234,12 +279,59 @@ function RestaurantCard({
   return (
     <>
       <div className="restaurant-card" onClick={handleClick}>
+        {/* UPDATED: Banner Image Section - ALWAYS SHOW CONTAINER */}
+        <div className="restaurant-banner-container">
+          {bannerImageUrl ? (
+            <img
+              src={bannerImageUrl}
+              alt={`${restaurant.name} banner`}
+              className="restaurant-banner"
+              onError={(e) => {
+                // On error, show placeholder instead of hiding
+                console.error("Banner failed to load:", bannerImageUrl);
+                e.target.style.display = "none";
+                // Create and show placeholder
+                const placeholder = document.createElement("div");
+                placeholder.className = "banner-placeholder";
+                placeholder.textContent = restaurant.name;
+                e.target.parentElement.appendChild(placeholder);
+              }}
+            />
+          ) : (
+            <div className="banner-placeholder">{restaurant.name}</div>
+          )}
+        </div>
+
         <div className="card-header">
           <div className="card-title-section">
             <div className="restaurant-title-row">
-              <div className="restaurant-name-and-tier">
-                <h3 className="restaurant-name">{restaurant.name}</h3>
-                <TierBadge restaurantData={restaurant} />
+              {/* Profile Picture - ALWAYS SHOW CONTAINER */}
+              <div className="restaurant-profile-container">
+                <div className="profile-image-wrapper">
+                  {profileImageUrl ? (
+                    <img
+                      src={profileImageUrl}
+                      alt={`${restaurant.name} profile`}
+                      className="restaurant-profile-pic"
+                      onError={(e) => {
+                        // Show placeholder on error
+                        e.target.style.display = "none";
+                        const placeholder = e.target.nextElementSibling;
+                        if (placeholder) placeholder.style.display = "block";
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    className="restaurant-profile-placeholder"
+                    style={{ display: profileImageUrl ? "none" : "block" }}
+                  >
+                    {restaurant.name.charAt(0)}
+                  </div>
+                </div>
+                <div className="restaurant-name-and-tier">
+                  <h3 className="restaurant-name">{restaurant.name}</h3>
+                  <TierBadge restaurantData={restaurant} />
+                </div>
               </div>
 
               <div className="rating-display">

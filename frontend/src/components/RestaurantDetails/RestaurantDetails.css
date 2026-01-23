@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* ============================================
    RESTAURANT DETAILS PAGE - MOBILE FIRST PWA
@@ -8,11 +8,56 @@
 .restaurant-details-page {
   min-height: 100vh;
   background: #f8f9fa03;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    sans-serif;
   overflow-x: hidden; /* PREVENT HORIZONTAL SCROLLING */
   width: 100%;
   box-sizing: border-box;
+}
+
+/* ADD TO YOUR EXISTING RestaurantDetails.css file */
+
+/* Banner Styles for Details Page */
+.restaurant-details-banner {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f5f5f5;
+}
+
+.restaurant-details-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Profile Image Update */
+.restaurant-profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Adjust header spacing when banner is present */
+.restaurant-details-page:has(.restaurant-details-banner) .restaurant-header {
+  margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .restaurant-details-banner {
+    height: 180px;
+  }
+
+  .restaurant-profile-image {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 /* ===== RESTAURANT HEADER ===== */
@@ -215,7 +260,7 @@
 
 /* ===== TAB NAVIGATION ===== */
 .tab-navigation {
-  background: #F8F3B7;
+  background: #f8f3b7;
   margin: 0 16px 16px 16px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -305,7 +350,8 @@
   font-family: Inter;
 }
 
-#section-title-location, .location-icon {
+#section-title-location,
+.location-icon {
   margin-bottom: 0px;
 }
 
@@ -327,7 +373,7 @@
 }
 
 .feature-tag {
-  background: #F8F3B7;
+  background: #f8f3b7;
   padding: 6px 8px; /* Reduced padding */
   border-radius: 10px;
   font-size: 12px; /* Smaller */
@@ -1068,7 +1114,7 @@
 }
 
 .save-btn {
-  background-color: #F8F3B7;
+  background-color: #f8f3b7;
   color: black;
 }
 
@@ -1313,7 +1359,7 @@
 }
 
 .submit-btn {
-  background: #F8F3B7;
+  background: #f8f3b7;
   color: white;
   border: none;
   padding: 14px 32px;
@@ -1382,7 +1428,6 @@
   background: white;
   font-size: 14px;
 }
-
 
 .no-reviews-icon {
   font-size: 48px;
@@ -1461,58 +1506,58 @@
 
 /* Reservation Action Bar */
 .reservation-action-bar {
-    display: flex;
-    gap: 15px;
-    margin: 20px 0;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
 }
 
 .reservation-btn {
-    background: #6b5b95;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    flex: 1;
-    justify-content: center;
+  background: #6b5b95;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  flex: 1;
+  justify-content: center;
 }
 
 .reservation-btn:hover {
-    background: #5a4a84;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(107, 91, 149, 0.3);
+  background: #5a4a84;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107, 91, 149, 0.3);
 }
 
 .bookmark-btn {
-    background: white;
-    color: #6b5b95;
-    border: 2px solid #6b5b95;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-    flex: 1;
-    justify-content: center;
+  background: white;
+  color: #6b5b95;
+  border: 2px solid #6b5b95;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+  flex: 1;
+  justify-content: center;
 }
 
 .bookmark-btn:hover {
-    background: #f9f7ff;
-    transform: translateY(-2px);
+  background: #f9f7ff;
+  transform: translateY(-2px);
 }
 
 .review-content {
@@ -1823,11 +1868,11 @@ body {
   margin-bottom: 25px;
 }
 
-
-.reviews-tab.loading, .photos-tab.loading {
-    display: flex;
-    justify-content: center;
-    align-content: center;
+.reviews-tab.loading,
+.photos-tab.loading {
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
 .loading-spinner {
@@ -1840,6 +1885,10 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

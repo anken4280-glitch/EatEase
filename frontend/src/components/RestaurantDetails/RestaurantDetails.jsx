@@ -11,6 +11,20 @@ import PremiumRecommendations from "../PremiumRecommendations/PremiumRecommendat
 import ReservationModal from "../ReservationModal/ReservationModal";
 
 function RestaurantDetails({ restaurantId, onBack }) {
+  // ========== HELPER FUNCTION ==========
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    const backendBase = "http://localhost:8000";
+
+    if (imagePath.startsWith("http")) return imagePath;
+    if (imagePath.startsWith("storage/")) return `${backendBase}/${imagePath}`;
+    if (imagePath.startsWith("public/")) {
+      return `${backendBase}/storage/${imagePath.replace("public/", "")}`;
+    }
+    return `${backendBase}/storage/${imagePath}`;
+  };
+
+  // ========== STATE VARIABLES ==========
   const [activeTab, setActiveTab] = useState("overview");
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,11 +32,30 @@ function RestaurantDetails({ restaurantId, onBack }) {
   const [error, setError] = useState(null);
   const [showReservationModal, setShowReservationModal] = useState(false);
   const [reviewsData, setReviewsData] = useState({
-    // ADD THIS STATE
     reviews: [],
     average_rating: 0,
     total_reviews: 0,
   });
+
+  // ========== IMAGE URLS (CALCULATED FROM RESTAURANT) ==========
+  // Calculate these AFTER restaurant is loaded
+  const bannerImageUrl = restaurant?.banner_image
+    ? getImageUrl(restaurant.banner_image)
+    : null;
+
+  const profileImageUrl = restaurant?.profile_image
+    ? getImageUrl(restaurant.profile_image)
+    : null;
+
+  useEffect(() => {
+    if (restaurantId) {
+      fetchRestaurantDetails();
+      fetchReviewsData();
+    } else {
+      setError("No restaurant ID provided");
+      setLoading(false);
+    }
+  }, [restaurantId]);
 
   useEffect(() => {
     if (restaurantId) {
@@ -106,6 +139,9 @@ function RestaurantDetails({ restaurantId, onBack }) {
         // ADD THESE LINES - Get rating from reviewsData if not in restaurant data
         average_rating: data.average_rating || reviewsData.average_rating || 0,
         total_reviews: data.total_reviews || reviewsData.total_reviews || 0,
+        // ADD THESE LINES - Banner and Profile images
+        banner_image: data.banner_image || null,
+        profile_image: data.profile_image || null,
       };
 
       console.log("Transformed data:", transformedData);
@@ -206,10 +242,35 @@ function RestaurantDetails({ restaurantId, onBack }) {
 
   return (
     <div className="restaurant-details-page">
-      {/* Restaurant Header */}
+      {/* Restaurant Header - UPDATED with Banner */}
+      {bannerImageUrl && (
+        <div className="restaurant-details-banner">
+          <img
+            src={bannerImageUrl}
+            alt={`${restaurant.name} banner`}
+            className="restaurant-details-banner-image"
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.parentElement.style.display = "none";
+            }}
+          />
+        </div>
+      )}
+
       <div className="restaurant-header">
         <div className="restaurant-image-container">
-          <img src={profileImage} alt="Restaurant Profile" />
+          {profileImageUrl ? (
+            <img
+              src={profileImageUrl}
+              alt={`${restaurant.name} profile`}
+              className="restaurant-profile-image"
+              onError={(e) => {
+                e.target.src = profileImage; // Fallback to imported image
+              }}
+            />
+          ) : (
+            <img src={profileImage} alt="Restaurant Profile" />
+          )}
           {/* <div className="restaurant-image-placeholder">
             /* {restaurant.is_verified && (
               <span className="verified-badge">✅ Verified</span>
@@ -319,9 +380,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
           className="reservation-btn"
           onClick={() => setShowReservationModal(true)}
         >
-          <span role="img" aria-label="plate">
-          </span>{" "}
-          Make Reservation
+          <span role="img" aria-label="plate"></span> Make Reservation
         </button>
       </div>
 
@@ -361,13 +420,15 @@ function RestaurantDetails({ restaurantId, onBack }) {
 
       {/* Premium Recommendations */}
       <PremiumRecommendations currentRestaurantId={restaurantId} limit={1} />
-     {/* ADD THIS - Reservation Modal */}
+      {/* ADD THIS - Reservation Modal */}
       {showReservationModal && restaurant && (
         <ReservationModal
           restaurant={restaurant}
           onClose={() => setShowReservationModal(false)}
           onSuccess={(reservation) => {
-            alert(`✅ Reservation confirmed! Your code: ${reservation.confirmation_code}`);
+            alert(
+              `✅ Reservation confirmed! Your code: ${reservation.confirmation_code}`,
+            );
             // Optional: Refresh or update UI
           }}
         />

@@ -251,7 +251,7 @@ const ReservationModal = ({
 
         {notificationData && (
           <div className="notification-context">
-            <div className="notification-badge">⚡ Responding to Alert</div>
+            <div className="notification-badge">Responding to Alert</div>
             <p>
               {notificationData.preferred_crowd_level === "low"
                 ? "Low crowd"

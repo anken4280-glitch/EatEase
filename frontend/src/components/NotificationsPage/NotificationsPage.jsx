@@ -389,17 +389,6 @@ function NotificationsPage({ user, onBack }) {
             <span className="unread-counter">({unreadCount} new)</span>
           )}
         </h1>
-
-        {/* ADD THIS - Delete All button */}
-        {notifications.length > 0 && (
-          <button
-            className="delete-all-btn"
-            onClick={deleteAllNotifications}
-            title="Delete all notifications"
-          >
-            Delete All
-          </button>
-        )}
       </div>
 
       {loading && (

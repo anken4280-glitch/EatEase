@@ -17,7 +17,7 @@ const ReservationsPage = ({ user, onBack }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/reservations', {
+      const response = await fetch("http://localhost:8000/api/reservations", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -86,7 +86,7 @@ const ReservationsPage = ({ user, onBack }) => {
             <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
           </svg>
         </button>
-        <h1>📅 My Reservations</h1>
+        <h1>My Reservations</h1>
       </div>
 
       {loading ? (
