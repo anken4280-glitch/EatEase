@@ -582,27 +582,11 @@
 
 .banner-action-buttons {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 5px;
+  right: 5px;
   display: flex;
-  gap: 8px;
+  gap: 0px;
   z-index: 10;
-}
-
-.bookmark-btn-icon,
-.notification-btn-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Icon Button Styles */
@@ -617,9 +601,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: none;
 }
 
 .bookmark-btn-icon:hover,
@@ -630,11 +612,15 @@
 }
 
 .bookmark-btn-icon.active {
-  background: #ffd700;
+  color: white;
+}
+
+.bookmark-btn-icon.active svg {
+  fill: white;
 }
 
 .notification-btn-icon.active {
-  background: #4CAF50;
+  color: white;
 }
 
 .notification-btn-icon.active svg {
@@ -643,29 +629,10 @@
 
 .bookmark-btn-icon svg,
 .notification-btn-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
 }
 
-/* Loading State */
-.bookmark-btn-icon.loading,
-.notification-btn-icon.loading {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.loading-spinner-small {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: #333;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
 
 /* Banner Image */
 .restaurant-banner {
