@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage; // ← ADD THIS LINE
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,9 +13,9 @@ use App\Models\Review;
 use App\Models\RestaurantPhoto;
 use App\Models\UserNotification;
 // use App\Models\NotificationLog;
-use Illuminate\Support\Facades\Storage; // ← ADD THIS LINE
 use Illuminate\Support\Facades\Schema;
 use Exception; // ← ADD THIS
+
 
 class RestaurantController extends Controller
 {
@@ -456,6 +457,14 @@ class RestaurantController extends Controller
                     'isVerified' => $restaurant->is_verified ?? false,
                     'isPremium' => $restaurant->subscription_tier === 'premium',
                     'subscription_tier' => $restaurant->subscription_tier ?? 'basic',
+                    // ✅ ADD THESE LINES - IMAGE FIELDS
+                    'banner_image' => $restaurant->banner_image
+                        ? Storage::url($restaurant->banner_image)
+                        : null,
+                    'profile_image' => $restaurant->profile_image
+                        ? Storage::url($restaurant->profile_image)
+                        : null,
+                    'banner_position' => $restaurant->banner_position,
                     'average_rating' => $restaurant->average_rating ? (float)$restaurant->average_rating : 0.00,
                     'total_reviews' => $restaurant->total_reviews ? (int)$restaurant->total_reviews : 0
                 ];
