@@ -7,11 +7,22 @@
 
 .filter-button {
   padding: 0.75rem 1rem;
-  background: white;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background-color: black;
+  color: white;
+}
+
+.filter-button svg {
+  font-weight: 900;
+  height: 17px;
+  width: 17px;
+  color: white;
 }
 
 .filter-button:hover {

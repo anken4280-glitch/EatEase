@@ -6,7 +6,7 @@
   border-radius: 12px;
   padding: 0px;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -33,10 +33,6 @@
 }
 
 /* Star Rating Styles */
-.rating-display {
-  display: flex;
-  align-items: center;
-}
 
 .star-rating {
   display: flex;
@@ -77,20 +73,20 @@
   font-size: 10px;
   color: #999;
   font-family: Inter;
+  align-items: center;
+  margin: 0 0 0 0px;
+  padding: 3px;
 }
 
-.card-header {
-  padding-top: 5px; /* Make space for badges */
-  position: relative;
-}
 
 .card-header h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #333;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #000000;
   flex: 1;
   font-family: Inter;
+  text-align: start;
 }
 
 .status-badge {
@@ -105,27 +101,27 @@
 }
 
 .status-badge.green {
-  background: #51cf66;
-  color: white;
+  background: linear-gradient(135deg, #00ff88 0%, #00cc66 50%, #00994d 100%);
+  color: rgba(76, 74, 74, 0.212);
 }
 
 .status-badge.yellow {
-  background: #fcc419;
-  color: #333;
+  background: linear-gradient(135deg, #ffeb3b 0%, #ffc107 100%);
+  color: rgba(76, 74, 74, 0.212);
 }
 
 .status-badge.red {
-  background: #ff6b6b;
-  color: white;
+  background: linear-gradient(to right, #ff0000 0%, #990000 100%);;
+  color: rgba(76, 74, 74, 0.212);
 }
 
 .status-badge.orange {
-  background: #ff922b;
-  color: white;
+  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+  color: rgba(76, 74, 74, 0.212);
 }
 
 .card-details {
-  color: #666;
+  color: #000000;
   font-size: 0.9rem;
 }
 
@@ -133,27 +129,27 @@
   margin: 0.25rem 0;
 }
 
-.cuisine {
-  color: #888;
+.card-cuisine {
+  color: #000000;
   font-size: 13px;
   display: flex;
   align-items: center;
   font-family: Inter;
   padding: 3px;
-  padding-top: 10px;
+  padding-top: 2px;
 }
 
-.occupancy {
+.card-occupancy {
   display: flex;
-  color: #666;
+  color: #000000;
   font-family: Inter;
   font-size: 13px;
   padding: 3px;
 }
 
-.location-container {
+.card-location-container {
   display: flex;
-  color: #666;
+  color: #000000;
   font-family: Inter;
   font-size: 13px;
   padding: 3px;
@@ -172,6 +168,9 @@
   align-self: center;
   align-items: center;
   gap: 0.5rem;
+  margin: 0 0 0 3px;
+  padding: 3px;
+  font-size: 13px;
 }
 
 .rating-stars {
@@ -343,7 +342,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0.75rem;
   padding: 0.5rem 0.75rem;
   background: #f8f8f8;
   border-radius: 8px;
@@ -503,7 +501,8 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin-bottom: 1px;
+  width: 100%;
 }
 
 .restaurant-name {
@@ -600,31 +599,16 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
   background: none;
 }
 
-.bookmark-btn-icon:hover,
-.notification-btn-icon:hover {
-  transform: scale(1.1);
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.bookmark-btn-icon.active {
-  color: white;
-}
 
 .bookmark-btn-icon.active svg {
-  fill: white;
-}
-
-.notification-btn-icon.active {
-  color: white;
+  fill: #FFD700;
 }
 
 .notification-btn-icon.active svg {
-  fill: white;
+  fill: #FFD700;
 }
 
 .bookmark-btn-icon svg,
@@ -671,7 +655,7 @@
 .restaurant-profile-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 2px;
   margin-bottom: 8px;
 }
 
@@ -680,7 +664,7 @@
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #fff;
+  border: 1.5px solid #000000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -712,11 +696,11 @@
 }
 
 .card-header {
-  padding: 16px 16px 8px 16px; /* Adjust padding if needed */
+  padding: 5px 10px 5px 10px; /* Adjust padding if needed */
 }
 
 .card-details {
-  padding: 0 16px 16px 16px;
+  padding: 0 16px 5px 16px;
 }
 
 /* For cards without banner, ensure profile picture still looks good */
@@ -739,7 +723,7 @@
   }
 
   .restaurant-profile-container {
-    gap: 10px;
+    gap: 2px;
   }
 }
 
@@ -771,6 +755,8 @@
 
 /* Profile image wrapper */
 .profile-image-wrapper {
+  display: flex;
+  align-items: center;
   position: relative;
   width: 50px;
   height: 50px;

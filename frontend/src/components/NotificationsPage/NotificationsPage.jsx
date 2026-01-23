@@ -227,7 +227,7 @@ function NotificationsPage({ user, onBack }) {
       green: 0, // Low crowd
       yellow: 1, // Moderate
       orange: 2, // Busy
-      red: 3, // Very High
+      red: 3, // Full
       unknown: -1,
     };
 
@@ -329,7 +329,7 @@ function NotificationsPage({ user, onBack }) {
       case "orange":
         return "Busy";
       case "red":
-        return "Very High Crowd";
+        return "Full";
       default:
         return status;
     }
@@ -457,8 +457,8 @@ function NotificationsPage({ user, onBack }) {
                         <div className="notification-details">
                           <span className="notification-type">
                             {isCrowdAlert
-                              ? "👥 Crowd Alert"
-                              : "📢 Notification"}
+                              ? "Crowd Alert"
+                              : "Notification"}
                           </span>
                           <span
                             className={`status-badge status-${notification.status}`}
@@ -551,7 +551,7 @@ const getStatusText = (status) => {
     case "orange":
       return "Busy";
     case "red":
-      return "Very High Crowd";
+      return "Full";
     default:
       return status;
   }

@@ -236,7 +236,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
       case "orange":
         return "Busy";
       case "red":
-        return "Very High";
+        return "Full";
       default:
         return "Unknown";
     }
@@ -355,7 +355,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
               </span>
             )}
             {restaurant.crowd_status === "red" && (
-              <span className="status-circle red" title="Very High Crowd">
+              <span className="status-circle red" title="Full">
                 🔴
               </span>
             )}
@@ -371,7 +371,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
             {restaurant.crowd_status === "green" && "Low"}
             {restaurant.crowd_status === "yellow" && "Moderate"}
             {restaurant.crowd_status === "orange" && "Busy"}
-            {restaurant.crowd_status === "red" && "Very High"}
+            {restaurant.crowd_status === "red" && "Full"}
           </span>
         </div>
         <div className="stat-divider"></div>

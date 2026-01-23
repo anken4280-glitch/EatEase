@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./RestaurantCard.css";
 import TierBadge from "../TierBadge/TierBadge";
 
+const API_BASE_URL = "http://localhost/EatEase/backend/public";
+
 function RestaurantCard({
   restaurant,
   onRestaurantClick,
@@ -76,7 +78,7 @@ function RestaurantCard({
 
     try {
       // Check bookmarks only
-      const bookmarksRes = await fetch("http://localhost:8000/api/bookmarks", {
+      const bookmarksRes = await fetch(`${API_BASE_URL}/api/bookmarks`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -114,7 +116,7 @@ function RestaurantCard({
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/bookmarks/${restaurant.id}`,
+        `${API_BASE_URL}/api/bookmarks/${restaurant.id}`,
         {
           method: "POST",
           headers: {
@@ -159,7 +161,7 @@ function RestaurantCard({
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/notifications/${restaurant.id}`,
+        `${API_BASE_URL}/api/notifications/${restaurant.id}`,
         {
           method: "POST",
           headers: {
@@ -212,7 +214,7 @@ function RestaurantCard({
 
       if (notification) {
         const deleteRes = await fetch(
-          `http://localhost:8000/api/notifications/${notification.id}`,
+          `${API_BASE_URL}/api/notifications/${notification.id}`,
           {
             method: "DELETE",
             headers: {
@@ -251,7 +253,7 @@ function RestaurantCard({
       case "orange":
         return "Busy";
       case "red":
-        return "Very High";
+        return "Full";
       default:
         return status;
     }
@@ -316,20 +318,28 @@ function RestaurantCard({
                   xmlns="http://www.w3.org/2000/svg"
                   width="50"
                   height="50"
-                  fill="black"
+                  fill="Gold"
                   viewBox="0 0 256 256"
                 >
-                  <path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"></path>
+                  <path
+                    d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"
+                    stroke="black"
+                    stroke-width="5"
+                  ></path>
                 </svg>
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="50"
                   height="50"
-                  fill="black"
+                  fill="white"
                   viewBox="0 0 256 256"
                 >
-                  <path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"></path>
+                  <path
+                    d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"
+                    stroke="black"
+                    stroke-width="5"
+                  ></path>
                 </svg>
               )}
             </button>
@@ -355,7 +365,11 @@ function RestaurantCard({
                   height="100"
                   viewBox="0 0 30 30"
                 >
-                  <path d="M 15 3 C 13.9 3 13 3.9 13 5 L 13 5.265625 C 9.5610846 6.1606069 7 9.2910435 7 13 L 7 15.400391 C 7 17.000391 6.6996094 18.5 6.0996094 20 L 23.900391 20 C 23.300391 18.5 23 17.000391 23 15.400391 L 23 13 C 23 9.2910435 20.438915 6.1606069 17 5.265625 L 17 5 C 17 3.9 16.1 3 15 3 z M 5 22 A 1.0001 1.0001 0 1 0 5 24 L 12.173828 24 C 12.068319 24.312339 12 24.644428 12 25 C 12 26.7 13.3 28 15 28 C 16.7 28 18 26.7 18 25 C 18 24.644428 17.931681 24.312339 17.826172 24 L 25 24 A 1.0001 1.0001 0 1 0 25 22 L 5 22 z"></path>
+                  <path
+                    d="M 15 3 C 13.9 3 13 3.9 13 5 L 13 5.265625 C 9.5610846 6.1606069 7 9.2910435 7 13 L 7 15.400391 C 7 17.000391 6.6996094 18.5 6.0996094 20 L 23.900391 20 C 23.300391 18.5 23 17.000391 23 15.400391 L 23 13 C 23 9.2910435 20.438915 6.1606069 17 5.265625 L 17 5 C 17 3.9 16.1 3 15 3 z M 5 22 A 1.0001 1.0001 0 1 0 5 24 L 12.173828 24 C 12.068319 24.312339 12 24.644428 12 25 C 12 26.7 13.3 28 15 28 C 16.7 28 18 26.7 18 25 C 18 24.644428 17.931681 24.312339 17.826172 24 L 25 24 A 1.0001 1.0001 0 1 0 25 22 L 5 22 z"
+                    stroke="black"
+                    stroke-width=".5"
+                  ></path>
                 </svg>
               ) : (
                 <svg
@@ -364,9 +378,14 @@ function RestaurantCard({
                   y="0px"
                   width="100"
                   height="100"
+                  fill="white"
                   viewBox="0 0 30 30"
                 >
-                  <path d="M 15 3 C 13.9 3 13 3.9 13 5 L 13 5.265625 C 9.5610846 6.1606069 7 9.2910435 7 13 L 7 15.400391 C 7 17.000391 6.6996094 18.5 6.0996094 20 L 23.900391 20 C 23.300391 18.5 23 17.000391 23 15.400391 L 23 13 C 23 9.2910435 20.438915 6.1606069 17 5.265625 L 17 5 C 17 3.9 16.1 3 15 3 z M 5 22 A 1.0001 1.0001 0 1 0 5 24 L 12.173828 24 C 12.068319 24.312339 12 24.644428 12 25 C 12 26.7 13.3 28 15 28 C 16.7 28 18 26.7 18 25 C 18 24.644428 17.931681 24.312339 17.826172 24 L 25 24 A 1.0001 1.0001 0 1 0 25 22 L 5 22 z"></path>
+                  <path
+                    d="M 15 3 C 13.9 3 13 3.9 13 5 L 13 5.265625 C 9.5610846 6.1606069 7 9.2910435 7 13 L 7 15.400391 C 7 17.000391 6.6996094 18.5 6.0996094 20 L 23.900391 20 C 23.300391 18.5 23 17.000391 23 15.400391 L 23 13 C 23 9.2910435 20.438915 6.1606069 17 5.265625 L 17 5 C 17 3.9 16.1 3 15 3 z M 5 22 A 1.0001 1.0001 0 1 0 5 24 L 12.173828 24 C 12.068319 24.312339 12 24.644428 12 25 C 12 26.7 13.3 28 15 28 C 16.7 28 18 26.7 18 25 C 18 24.644428 17.931681 24.312339 17.826172 24 L 25 24 A 1.0001 1.0001 0 1 0 25 22 L 5 22 z"
+                    stroke="black"
+                    stroke-width=".5"
+                  ></path>
                 </svg>
               )}
             </button>
@@ -404,38 +423,6 @@ function RestaurantCard({
                   <TierBadge restaurantData={restaurant} />
                 </div>
               </div>
-
-              <div className="rating-display">
-                {restaurant.average_rating > 0 ? (
-                  <div className="star-rating-small">
-                    <div className="stars-container">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${
-                            star <= Math.round(restaurant.average_rating)
-                              ? "filled"
-                              : ""
-                          }`}
-                          style={{
-                            color:
-                              star <= Math.round(restaurant.average_rating)
-                                ? "#FFD700"
-                                : "#ddd",
-                            fontSize: "14px",
-                          }}
-                        >
-                          {star <= Math.round(restaurant.average_rating)
-                            ? "★"
-                            : "☆"}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="no-rating">No reviews yet</div>
-                )}
-              </div>
             </div>
           </div>
 
@@ -445,7 +432,7 @@ function RestaurantCard({
         </div>
 
         <div className="card-details">
-          <p className="cuisine">
+          <p className="card-cuisine">
             <svg
               width="16"
               height="16"
@@ -457,7 +444,7 @@ function RestaurantCard({
             </svg>
             Cuisine: {restaurant.cuisine}
           </p>
-          <p className="occupancy">
+          <p className="card-occupancy">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="16"
@@ -471,7 +458,7 @@ function RestaurantCard({
             Occupancy: {restaurant.occupancy}%
           </p>
 
-          <div className="location-container">
+          <div className="card-location-container">
             <svg
               className="location-icon"
               width="16"
@@ -484,6 +471,38 @@ function RestaurantCard({
               <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
             </svg>
             <span className="location-text">{shortAddress}</span>
+          </div>
+
+          <div className="rating-display">
+            {restaurant.average_rating > 0 ? (
+              <div className="star-rating-small">
+                <div className="stars-container">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={`star ${
+                        star <= Math.round(restaurant.average_rating)
+                          ? "filled"
+                          : ""
+                      }`}
+                      style={{
+                        color:
+                          star <= Math.round(restaurant.average_rating)
+                            ? "#FFD700"
+                            : "#ddd",
+                        fontSize: "16px",
+                      }}
+                    >
+                      {star <= Math.round(restaurant.average_rating)
+                        ? "★"
+                        : "☆"}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="no-rating">No reviews yet</div>
+            )}
           </div>
         </div>
 
