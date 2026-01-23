@@ -279,7 +279,7 @@ function RestaurantCard({
   return (
     <>
       <div className="restaurant-card" onClick={handleClick}>
-        {/* UPDATED: Banner Image Section - ALWAYS SHOW CONTAINER */}
+        {/* Banner Container with Buttons */}
         <div className="restaurant-banner-container">
           {bannerImageUrl ? (
             <img
@@ -287,10 +287,8 @@ function RestaurantCard({
               alt={`${restaurant.name} banner`}
               className="restaurant-banner"
               onError={(e) => {
-                // On error, show placeholder instead of hiding
                 console.error("Banner failed to load:", bannerImageUrl);
                 e.target.style.display = "none";
-                // Create and show placeholder
                 const placeholder = document.createElement("div");
                 placeholder.className = "banner-placeholder";
                 placeholder.textContent = restaurant.name;
@@ -300,6 +298,74 @@ function RestaurantCard({
           ) : (
             <div className="banner-placeholder">{restaurant.name}</div>
           )}
+
+          {/* Action Buttons - POSITIONED TOP RIGHT */}
+          <div className="banner-action-buttons">
+            <button
+              className={`bookmark-btn-icon ${isBookmarked ? "active" : ""} ${
+                loading ? "loading" : ""
+              }`}
+              onClick={handleBookmarkClick}
+              disabled={loading}
+              aria-label={isBookmarked ? "Remove bookmark" : "Bookmark"}
+            >
+              {loading ? (
+                <div className="loading-spinner-small"></div>
+              ) : isBookmarked ? (
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 -960 960 960"
+                  fill="black"
+                >
+                  <path d="M200-120v-560q0-33 23.5-56.5T280-760h400q33 0 56.5 23.5T760-680v560L480-200 200-120Z" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  fill="black"
+                  viewBox="0 0 256 256"
+                >
+                  <path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"></path>
+                </svg>
+              )}
+            </button>
+
+            <button
+              className={`notification-btn-icon ${
+                userHasNotification ? "active" : ""
+              } ${loading ? "loading" : ""}`}
+              onClick={handleNotificationClick}
+              disabled={loading}
+              aria-label={
+                userHasNotification ? "Change notification" : "Set notification"
+              }
+            >
+              {loading ? (
+                <div className="loading-spinner-small"></div>
+              ) : userHasNotification ? (
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                </svg>
+              ) : (
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 -960 960 960"
+                  fill="currentColor"
+                >
+                  <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="card-header">
@@ -322,8 +388,8 @@ function RestaurantCard({
                     />
                   ) : null}
                   <div
-                    className="restaurant-profile-placeholder"
-                    style={{ display: profileImageUrl ? "none" : "block" }}
+                    className="restaurant-card-profile-placeholder"
+                    style={{ display: profileImageUrl ? "none" : "flex" }}
                   >
                     {restaurant.name.charAt(0)}
                   </div>
@@ -414,63 +480,6 @@ function RestaurantCard({
             </svg>
             <span className="location-text">{shortAddress}</span>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="card-actions">
-          <button
-            className={`bookmark-btn ${isBookmarked ? "active" : ""} ${
-              loading ? "loading" : ""
-            }`}
-            onClick={handleBookmarkClick}
-            disabled={loading}
-            aria-label={
-              isBookmarked ? "Remove bookmark" : "Bookmark restaurant"
-            }
-          >
-            {loading ? "..." : isBookmarked ? "★ Bookmarked" : "☆ Bookmark"}
-          </button>
-
-          <button
-            className={`notification-btn ${
-              userHasNotification ? "active" : ""
-            } ${loading ? "loading" : ""}`}
-            onClick={handleNotificationClick}
-            disabled={loading}
-            aria-label={
-              userHasNotification ? "Change notification" : "Set notification"
-            }
-          >
-            {loading ? (
-              "..."
-            ) : userHasNotification ? (
-              <>
-                <svg
-                  className="notification-icon"
-                  width="16"
-                  height="14"
-                  viewBox="0 -960 960 960"
-                  fill="currentColor"
-                >
-                  <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
-                </svg>
-                {getStatusText(userHasNotification)}
-              </>
-            ) : (
-              <>
-                <svg
-                  className="notification-icon"
-                  width="16"
-                  height="14"
-                  viewBox="0 -960 960 960"
-                  fill="currentColor"
-                >
-                  <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
-                </svg>
-                Notify Me
-              </>
-            )}
-          </button>
         </div>
 
         {/* Show current notification setting */}

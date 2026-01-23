@@ -14,14 +14,16 @@ function RestaurantDetails({ restaurantId, onBack }) {
   // ========== HELPER FUNCTION ==========
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
-    const backendBase = "http://localhost:8000";
 
-    if (imagePath.startsWith("http")) return imagePath;
-    if (imagePath.startsWith("storage/")) return `${backendBase}/${imagePath}`;
-    if (imagePath.startsWith("public/")) {
-      return `${backendBase}/storage/${imagePath.replace("public/", "")}`;
+    // ✅ CORRECT: Use WAMP URL
+    const backendBase = "http://localhost/EatEase/backend/public";
+
+    if (imagePath.startsWith("http")) {
+      return imagePath;
     }
-    return `${backendBase}/storage/${imagePath}`;
+
+    // The API returns paths like "/storage/restaurant-banners/..."
+    return `${backendBase}${imagePath}`;
   };
 
   // ========== STATE VARIABLES ==========

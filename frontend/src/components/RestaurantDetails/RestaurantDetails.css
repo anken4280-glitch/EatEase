@@ -35,17 +35,31 @@
 
 /* Profile Image Update */
 .restaurant-profile-image {
-  width: 100px;
-  height: 100px;
+  width: 60px;  /* Smaller like in cards */
+  height: 60px; /* Smaller like in cards */
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.restaurant-profile-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border: 3px solid white;
+}
+
 /* Adjust header spacing when banner is present */
 .restaurant-details-page:has(.restaurant-details-banner) .restaurant-header {
-  margin-top: 20px;
+  margin-top: 0px;
 }
 
 /* Responsive adjustments */
@@ -71,15 +85,14 @@
 }
 
 .restaurant-image-container {
-  width: 55%;
-  height: 205px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
+  width: auto; /* Remove 55% width */
+  height: auto; /* Remove 205px height */
+  background: none; /* Remove gradient */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
+  flex-shrink: 0; /* Don't shrink */
 }
 
 .restaurant-image-container img {
