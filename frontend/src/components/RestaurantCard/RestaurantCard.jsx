@@ -301,6 +301,16 @@ function RestaurantCard({
             <div className="banner-placeholder">{restaurant.name}</div>
           )}
 
+          {/* ✅ ADD RATING DISPLAY HERE - Top Left of Banner */}
+          <div className="banner-rating-display">
+            <span className="rating-star">★</span>
+            <span className="card-rating-number">
+              {restaurant.average_rating > 0
+                ? Number(restaurant.average_rating).toFixed(1)
+                : "0.0"}
+            </span>
+          </div>
+
           {/* Action Buttons - POSITIONED TOP RIGHT */}
           <div className="banner-action-buttons">
             <button
@@ -316,29 +326,29 @@ function RestaurantCard({
               ) : isBookmarked ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="Gold"
+                  width="30"
+                  height="30"
+                  fill="gold"
                   viewBox="0 0 256 256"
                 >
                   <path
                     d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"
-                    stroke="black"
-                    stroke-width="5"
+                    // stroke="white"
+                    // stroke-width="10"
                   ></path>
                 </svg>
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="50"
-                  height="50"
-                  fill="white"
+                  width="30"
+                  height="30"
+                  fill="black"
                   viewBox="0 0 256 256"
                 >
                   <path
                     d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"
                     stroke="black"
-                    stroke-width="5"
+                    stroke-width="3"
                   ></path>
                 </svg>
               )}
@@ -378,7 +388,7 @@ function RestaurantCard({
                   y="0px"
                   width="100"
                   height="100"
-                  fill="white"
+                  fill="black"
                   viewBox="0 0 30 30"
                 >
                   <path
@@ -472,38 +482,6 @@ function RestaurantCard({
             </svg>
             <span className="location-text">{shortAddress}</span>
           </div>
-
-          <div className="rating-display">
-            {restaurant.average_rating > 0 ? (
-              <div className="star-rating-small">
-                <div className="stars-container">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      className={`star ${
-                        star <= Math.round(restaurant.average_rating)
-                          ? "filled"
-                          : ""
-                      }`}
-                      style={{
-                        color:
-                          star <= Math.round(restaurant.average_rating)
-                            ? "#FFD700"
-                            : "#ddd",
-                        fontSize: "16px",
-                      }}
-                    >
-                      {star <= Math.round(restaurant.average_rating)
-                        ? "★"
-                        : "☆"}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="no-rating">No reviews yet</div>
-            )}
-          </div>
         </div>
 
         {/* Show current notification setting */}
@@ -580,7 +558,7 @@ function RestaurantCard({
 
             <div className="modal-actions">
               <button
-                className="cancel-btn"
+                className="notification-cancel-btn"
                 onClick={() => setShowNotificationModal(false)}
                 disabled={loading}
               >
