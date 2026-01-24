@@ -127,8 +127,8 @@ const TierBadge = ({
             <span className="tier-text">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="17"
-                height="14"
+                width="12"
+                height="12"
                 fill="white"
                 viewBox="0 0 256 256"
               >
@@ -141,8 +141,8 @@ const TierBadge = ({
             <span className="tier-text">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="17"
-                height="14"
+                width="12"
+                height="12"
                 fill="white"
                 viewBox="0 0 256 256"
               >
