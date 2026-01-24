@@ -78,7 +78,6 @@
   padding: 3px;
 }
 
-
 .card-header h3 {
   margin: 0;
   font-size: 2rem;
@@ -92,32 +91,30 @@
 .status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 5px;
   font-family: Inter;
+  border: 1px solid black;
+  color: rgb(76, 74, 74);
 }
 
 .status-badge.green {
   background: linear-gradient(135deg, #00ff88 0%, #00cc66 50%, #00994d 100%);
-  color: rgba(76, 74, 74, 0.212);
 }
 
 .status-badge.yellow {
   background: linear-gradient(135deg, #ffeb3b 0%, #ffc107 100%);
-  color: rgba(76, 74, 74, 0.212);
 }
 
 .status-badge.red {
-  background: linear-gradient(to right, #ff0000 0%, #990000 100%);;
-  color: rgba(76, 74, 74, 0.212);
+  background: linear-gradient(to right, #ff0000 0%, #990000 100%);
 }
 
 .status-badge.orange {
   background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
-  color: rgba(76, 74, 74, 0.212);
 }
 
 .card-details {
@@ -196,7 +193,6 @@
   min-height: 44px; /* Fixed height for container */
   height: 44px;
 }
-
 
 /* Notification Modal */
 .notification-modal-overlay {
@@ -342,11 +338,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0.75rem;
-  background: #f8f8f8;
-  border-radius: 8px;
+  padding: 0.3rem 0.75rem;
+  background: #000000;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
   font-size: 0.85rem;
-  color: #666;
+  color: #ffffff;
 }
 
 .current-notification .status-green {
@@ -372,7 +369,7 @@
 .remove-notification-btn {
   background: none;
   border: none;
-  color: #999;
+  color: #ffffff;
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0 0.5rem;
@@ -578,7 +575,6 @@
   border-radius: 12px 12px 0 0;
 }
 
-
 .banner-action-buttons {
   position: absolute;
   top: 5px;
@@ -602,13 +598,12 @@
   background: none;
 }
 
-
 .bookmark-btn-icon.active svg {
-  fill: #FFD700;
+  fill: #ffd700;
 }
 
 .notification-btn-icon.active svg {
-  fill: #FFD700;
+  fill: #ffd700;
 }
 
 .bookmark-btn-icon svg,
@@ -616,7 +611,6 @@
   width: 30px;
   height: 30px;
 }
-
 
 /* Banner Image */
 .restaurant-banner {
@@ -656,7 +650,7 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .restaurant-profile-pic {

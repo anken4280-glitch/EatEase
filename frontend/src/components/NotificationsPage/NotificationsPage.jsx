@@ -461,7 +461,7 @@ function NotificationsPage({ user, onBack }) {
                               : "Notification"}
                           </span>
                           <span
-                            className={`status-badge status-${notification.status}`}
+                            className={`notifications-status-badge status-${notification.status}`}
                           >
                             {getStatusText(notification.status)}
                           </span>

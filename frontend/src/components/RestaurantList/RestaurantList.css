@@ -36,7 +36,7 @@
 .menu-button {
   padding: 0.5rem .5rem;
   background: black;
-  border: 1px solid #e1e1e1;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -64,7 +64,7 @@
   top: 100%;
   right: 0;
   background: white;
-  border: 1px solid #e1e1e1;
+  border: none;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -195,7 +195,7 @@
 .restaurant-list-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   flex-wrap: wrap;
   padding: 5px;
   position: relative;
