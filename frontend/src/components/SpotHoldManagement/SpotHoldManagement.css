@@ -1,0 +1,429 @@
+.spot-hold-management {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.management-header h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 28px;
+}
+
+.restaurant-name {
+  margin: 5px 0 0 0;
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.capacity-status {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  min-width: 250px;
+}
+
+.capacity-bar {
+  margin-bottom: 10px;
+}
+
+.capacity-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+.capacity-progress {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.capacity-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.available-capacity {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.management-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  background: #f8f9fa;
+}
+
+.tab.active {
+  color: var(--accent-blue);
+  background: #e7f5ff;
+}
+
+.tab-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--red-status);
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.management-content {
+  min-height: 400px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-secondary);
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Active Holds Styles */
+.holds-list {
+  display: grid;
+  gap: 15px;
+}
+
+.hold-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hold-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hover-shadow);
+}
+
+.hold-card.expired {
+  opacity: 0.7;
+  background: #f8f9fa;
+}
+
+.hold-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hold-user {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.user-email {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.hold-meta {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.party-size {
+  background: #e7f5ff;
+  color: var(--accent-blue);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.hold-type {
+  color: var(--orange-status);
+  font-weight: 500;
+}
+
+.confirmation-code {
+  font-family: monospace;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.hold-details {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.time-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.time-remaining {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.time-value {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.time-value.expired {
+  color: var(--red-status);
+}
+
+.expires-at {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.special-requests {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding-top: 10px;
+  border-top: 1px solid #dee2e6;
+  margin-top: 10px;
+}
+
+.hold-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-accept, .btn-reject {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.btn-accept {
+  background: var(--green-status);
+  color: white;
+}
+
+.btn-accept:hover:not(:disabled) {
+  background: #40a057;
+  transform: translateY(-1px);
+}
+
+.btn-accept:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-reject {
+  background: var(--red-status);
+  color: white;
+}
+
+.btn-reject:hover {
+  background: #ff5252;
+  transform: translateY(-1px);
+}
+
+.expired-label {
+  color: var(--red-status);
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+  display: block;
+  padding: 10px;
+}
+
+/* Table Styles */
+.reservations-table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.reservations-table th {
+  background: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid #e9ecef;
+}
+
+.reservations-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  color: var(--text-secondary);
+}
+
+.reservations-table tr:last-child td {
+  border-bottom: none;
+}
+
+.reservations-table tr:hover td {
+  background: #f8f9fa;
+}
+
+/* Expired Holds Styles */
+.expired-holds {
+  display: grid;
+  gap: 10px;
+}
+
+.expired-hold-card {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-left: 4px solid #dee2e6;
+}
+
+.expired-hold-header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.customer-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.expired-hold-details {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.expired-hold-details div {
+  margin-bottom: 3px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .management-header {
+    flex-direction: column;
+  }
+  
+  .capacity-status {
+    width: 100%;
+  }
+  
+  .hold-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .hold-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .time-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .hold-actions {
+    flex-direction: column;
+  }
+  
+  .reservations-table {
+    font-size: 14px;
+  }
+  
+  .reservations-table th,
+  .reservations-table td {
+    padding: 10px;
+  }
+}

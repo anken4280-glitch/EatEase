@@ -9,6 +9,8 @@ import OwnerReviewsTab from "./OwnerReviewsTab";
 import OwnerPhotosTab from "./OwnerPhotosTab";
 import AnalyticsTab from "./AnalyticsTab";
 import ImageUpload from "../ImageUpload/ImageUpload";
+// Add this with your other imports:
+import SpotHoldManagement from "../SpotHoldManagement/SpotHoldManagement"; // Or the correct path
 
 function RestaurantOwnerDashboard({ user }) {
   const [showVerificationForm, setShowVerificationForm] = useState(false);
@@ -326,6 +328,9 @@ function RestaurantOwnerDashboard({ user }) {
       case "photos":
         console.log("Photos tab - restaurant object:", restaurant);
         return <OwnerPhotosTab restaurant={restaurant} />;
+      // ADD THIS NEW CASE
+      case "reservations":
+        return <SpotHoldManagement restaurant={restaurant} />;
       case "analytics": // NEW TAB
         return (
           <AnalyticsTab
@@ -667,6 +672,29 @@ function RestaurantOwnerDashboard({ user }) {
                 onClick={() => setActiveTab("photos")}
               >
                 Photos
+              </button>
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "analytics" ? "active" : ""
+                } ${tier === "premium" ? "premium-unlocked" : "premium-locked"}`}
+                onClick={() => setActiveTab("analytics")}
+                title={
+                  tier === "basic"
+                    ? "Upgrade to Premium to access analytics"
+                    : "View analytics"
+                }
+              >
+                {tier === "premium" ? "Analytics" : "Analytics"}
+              </button>
+
+              {/*RESERVATIONS TAB */}
+              <button
+                className={`owner-tab-btn ${
+                  activeTab === "reservations" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("reservations")}
+              >
+                Reservations
               </button>
               <button
                 className={`owner-tab-btn ${
