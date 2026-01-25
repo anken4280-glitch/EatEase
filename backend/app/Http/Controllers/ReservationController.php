@@ -371,4 +371,363 @@ class ReservationController extends Controller
             ], 500);
         }
     }
+
+    public function getRestaurantSpotHolds(Request $request)
+    {
+        // Use Log facade (without backslash)
+        Log::info('========== getRestaurantSpotHolds CALLED ==========');
+
+        try {
+            // Check authentication
+            if (!Auth::check()) {
+                Log::error('User not authenticated');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Not authenticated'
+                ], 401);
+            }
+
+            $user = Auth::user();
+            Log::info('User info', [
+                'id' => $user->id,
+                'email' => $user->email,
+                'user_type' => $user->user_type
+            ]);
+
+            // Check if user is a restaurant owner
+            if ($user->user_type !== 'restaurant_owner') {
+                Log::warning('User is not restaurant owner', [
+                    'actual_type' => $user->user_type,
+                    'required_type' => 'restaurant_owner'
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Access denied. Restaurant owners only.',
+                    'user_type' => $user->user_type
+                ], 403);
+            }
+
+            // Get the restaurant owned by this user
+            Log::info('Looking for restaurant with owner_id', ['owner_id' => $user->id]);
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                Log::warning('No restaurant found for user', [
+                    'user_id' => $user->id,
+                    'user_email' => $user->email
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No restaurant found for this user.',
+                    'user_id' => $user->id
+                ], 404);
+            }
+
+            Log::info('Restaurant found', [
+                'id' => $restaurant->id,
+                'name' => $restaurant->name,
+                'owner_id' => $restaurant->owner_id
+            ]);
+
+            // Get active spot holds
+            $query = Reservation::with(['user' => function ($q) {
+                $q->select('id', 'name', 'email', 'phone');
+            }])
+                ->where('restaurant_id', $restaurant->id)
+                ->where('status', 'pending_hold');
+
+            // Filter by expiration
+            $query->where(function ($q) {
+                $q->where('expires_at', '>', now())
+                    ->orWhereNull('expires_at');
+            });
+
+            // Filter by hold type if specified
+            if ($request->has('hold_type')) {
+                $query->where('hold_type', $request->hold_type);
+            }
+
+            // Order by expiration (soonest first)
+            $reservations = $query->orderBy('expires_at', 'asc')->get();
+
+            Log::info('Found reservations', [
+                'count' => $reservations->count(),
+                'restaurant_id' => $restaurant->id
+            ]);
+
+            // Calculate time remaining for each hold
+            $reservations->each(function ($reservation) {
+                if ($reservation->expires_at) {
+                    $reservation->time_remaining = now()->diffInMinutes($reservation->expires_at, false);
+                    $reservation->is_expired = $reservation->time_remaining <= 0;
+                } else {
+                    $reservation->time_remaining = null;
+                    $reservation->is_expired = false;
+                }
+            });
+
+            Log::info('========== REQUEST COMPLETED SUCCESSFULLY ==========');
+
+            return response()->json([
+                'success' => true,
+                'restaurant' => [
+                    'id' => $restaurant->id,
+                    'name' => $restaurant->name,
+                    'max_capacity' => $restaurant->max_capacity,
+                    'current_occupancy' => $restaurant->current_occupancy
+                ],
+                'spot_holds' => $reservations,
+                'counts' => [
+                    'active_holds' => $reservations->count(),
+                    'expired_holds' => Reservation::where('restaurant_id', $restaurant->id)
+                        ->where('status', 'pending_hold')
+                        ->where('expires_at', '<=', now())
+                        ->count(),
+                    'total_confirmed' => Reservation::where('restaurant_id', $restaurant->id)
+                        ->where('status', 'confirmed')
+                        ->count(),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error in getRestaurantSpotHolds: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Accept a spot hold (convert to confirmed reservation)
+     */
+    public function acceptSpotHold($id)
+    {
+        try {
+            $user = Auth::user();
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No restaurant found'
+                ], 404);
+            }
+
+            $hold = Reservation::where('id', $id)
+                ->where('restaurant_id', $restaurant->id)
+                ->where('status', 'pending_hold')
+                ->where('expires_at', '>', now()) // Only accept if not expired
+                ->firstOrFail();
+
+            // Check restaurant capacity
+            $currentOccupancy = $restaurant->current_occupancy;
+            $availableCapacity = $restaurant->max_capacity - $currentOccupancy;
+
+            if ($availableCapacity < $hold->party_size) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Not enough capacity to accept this hold. Available: ' . $availableCapacity
+                ], 422);
+            }
+
+            // Convert hold to confirmed reservation
+            $hold->status = 'confirmed';
+            $hold->hold_status = 'accepted';
+            $hold->expires_at = null; // Remove expiration since it's now confirmed
+            $hold->save();
+
+            // Update restaurant occupancy
+            $restaurant->current_occupancy = $currentOccupancy + $hold->party_size;
+            $restaurant->save();
+
+            // Create notification for diner
+            $this->createHoldNotification($hold, 'accepted');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Spot hold accepted! Reservation confirmed.',
+                'reservation' => $hold->load('user'),
+                'restaurant_occupancy' => [
+                    'current' => $restaurant->current_occupancy,
+                    'max' => $restaurant->max_capacity,
+                    'available' => $restaurant->max_capacity - $restaurant->current_occupancy
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to accept spot hold: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Reject a spot hold
+     */
+    public function rejectSpotHold($id)
+    {
+        try {
+            $user = Auth::user();
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No restaurant found'
+                ], 404);
+            }
+
+            $hold = Reservation::where('id', $id)
+                ->where('restaurant_id', $restaurant->id)
+                ->where('status', 'pending_hold')
+                ->first();
+
+            if (!$hold) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Spot hold not found or already processed'
+                ], 404);
+            }
+
+            // Reject the hold
+            $hold->status = 'cancelled';
+            $hold->hold_status = 'rejected';
+            $hold->save();
+
+            // Create notification for diner
+            $this->createHoldNotification($hold, 'rejected');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Spot hold rejected.',
+                'reservation' => $hold
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reject spot hold: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get today's confirmed reservations (from accepted holds)
+     */
+    public function getTodaysReservations()
+    {
+        try {
+            $user = Auth::user();
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No restaurant found'
+                ], 404);
+            }
+
+            $today = now()->toDateString();
+
+            $reservations = Reservation::with(['user' => function ($q) {
+                $q->select('id', 'name', 'email', 'phone');
+            }])
+                ->where('restaurant_id', $restaurant->id)
+                ->where('status', 'confirmed')
+                ->where('reservation_date', $today)
+                ->orderBy('reservation_time')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'date' => $today,
+                'reservations' => $reservations
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch today\'s reservations: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get expired spot holds (for cleanup/reporting)
+     */
+    public function getExpiredSpotHolds()
+    {
+        try {
+            $user = Auth::user();
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No restaurant found'
+                ], 404);
+            }
+
+            $expiredHolds = Reservation::with(['user'])
+                ->where('restaurant_id', $restaurant->id)
+                ->where('status', 'pending_hold')
+                ->where('expires_at', '<=', now())
+                ->orderBy('expires_at', 'desc')
+                ->limit(50)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'expired_holds' => $expiredHolds
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch expired holds: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper: Create notification for diner about hold status
+     */
+    private function createHoldNotification($reservation, $action)
+    {
+        try {
+            // You'll need to implement this based on your notification system
+            $message = '';
+            $notificationType = '';
+
+            if ($action === 'accepted') {
+                $message = "Your spot hold at {$reservation->restaurant->name} has been accepted! Your table for {$reservation->party_size} is confirmed.";
+                $notificationType = 'hold_accepted';
+            } else {
+                $message = "Your spot hold at {$reservation->restaurant->name} was not accepted. Please try another restaurant.";
+                $notificationType = 'hold_rejected';
+            }
+
+            // Create notification in your notification_logs table
+            \App\Models\NotificationLog::create([
+                'user_id' => $reservation->user_id,
+                'type' => $notificationType,
+                'title' => 'Spot Hold Update',
+                'message' => $message,
+                'related_id' => $reservation->id,
+                'related_type' => 'App\Models\Reservation',
+                'is_read' => false,
+                'metadata' => json_encode([
+                    'reservation_id' => $reservation->id,
+                    'restaurant_name' => $reservation->restaurant->name,
+                    'party_size' => $reservation->party_size,
+                    'confirmation_code' => $reservation->confirmation_code
+                ])
+            ]);
+        } catch (\Exception $e) {
+            // Log error but don't fail the main operation
+            Log::error('Failed to create hold notification: ' . $e->getMessage());
+        }
+    }
 }
