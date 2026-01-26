@@ -18,7 +18,7 @@ class ReservationController extends Controller
     {
         try {
             $reservations = Reservation::with(['restaurant' => function ($query) {
-                $query->select('id', 'name', 'address', 'phone', 'profile_image');
+                $query->select('id', 'name', 'address', 'profile_image');
             }])
                 ->where('user_id', Auth::id())
                 ->orderBy('reservation_date', 'desc')
@@ -433,7 +433,7 @@ class ReservationController extends Controller
 
             // Get active spot holds
             $query = Reservation::with(['user' => function ($q) {
-                $q->select('id', 'name', 'email', 'phone');
+                $q->select('id', 'name', 'email');
             }])
                 ->where('restaurant_id', $restaurant->id)
                 ->where('status', 'pending_hold');
@@ -538,7 +538,13 @@ class ReservationController extends Controller
             // Convert hold to confirmed reservation
             $hold->status = 'confirmed';
             $hold->hold_status = 'accepted';
-            $hold->expires_at = null; // Remove expiration since it's now confirmed
+            // Don't set expires_at to null if column doesn't allow null
+            // Instead, set it to a future date or leave it as is
+            if ($hold->expires_at) {
+                // Option 1: Keep the original expires_at
+                // Option 2: Set to a far future date if needed
+                // $hold->expires_at = now()->addYears(10);
+            }
             $hold->save();
 
             // Update restaurant occupancy
@@ -634,7 +640,7 @@ class ReservationController extends Controller
             $today = now()->toDateString();
 
             $reservations = Reservation::with(['user' => function ($q) {
-                $q->select('id', 'name', 'email', 'phone');
+                $q->select('id', 'name', 'email');
             }])
                 ->where('restaurant_id', $restaurant->id)
                 ->where('status', 'confirmed')
