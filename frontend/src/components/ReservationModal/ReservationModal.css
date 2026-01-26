@@ -28,6 +28,7 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #eee;
+  text-align: start;
 }
 
 .modal-header h2 {
@@ -138,6 +139,35 @@
   gap: 10px;
   justify-content: flex-end;
   padding-top: 5px;
+}
+
+.modal-actions .modal-cancel-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #030303;
+    color: #f9f8f8;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.modal-actions .modal-hold-btn {
+      width: 100%;
+    padding: 0.75rem;
+    background: #F8F3B7;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease;
+
 }
 
 .reserve-btn {
@@ -271,6 +301,7 @@
   align-items: center;
   gap: 15px;
   margin: 10px 0;
+  justify-content: center;
 }
 
 .size-btn {
@@ -323,6 +354,9 @@
 
 .capacity {
   color: #666;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 5px;
 }
 
 .notification-context {
@@ -376,7 +410,7 @@
 /* Confirmation Styles */
 .confirmation-content {
   text-align: center;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
 }
 
 .confirmation-icon {
@@ -386,10 +420,10 @@
 }
 
 .confirmation-details {
-  background: #f9f9f9;
+  background: #efedde;
   padding: 20px;
   border-radius: 10px;
-  margin: 20px 0;
+  margin: 0 0 20px 0;
   text-align: left;
 }
 

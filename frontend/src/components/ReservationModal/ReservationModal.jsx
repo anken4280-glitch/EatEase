@@ -127,7 +127,7 @@ const ReservationModal = ({
       <div className="reservation-modal-overlay">
         <div className="reservation-modal">
           <div className="modal-header">
-            <h2>✅ Spot Reserved!</h2>
+            <h2>Spot Reserved!</h2>
             <button className="close-btn" onClick={onClose}>
               ✕
             </button>
@@ -136,7 +136,7 @@ const ReservationModal = ({
           <div className="confirmation-content">
             <div className="confirmation-icon">
               <span role="img" aria-label="check mark">
-                ✅
+                
               </span>
             </div>
 
@@ -187,7 +187,7 @@ const ReservationModal = ({
             </div>
 
             <div className="instructions">
-              <h4>🚗 What to do next:</h4>
+              <h4>What to do next:</h4>
               <ul>
                 <li>Go to the restaurant within the hold duration</li>
                 <li>Show your confirmation code at the entrance</li>
@@ -196,7 +196,7 @@ const ReservationModal = ({
               </ul>
 
               <div className="note important">
-                <strong>⚠️ Important:</strong> Your spot will be released
+                <strong>Important:</strong> Your spot will be released
                 automatically after{" "}
                 {confirmation.hold.hold_type === "quick_10min" ? "10" : "20"}{" "}
                 minutes if you don't arrive.
@@ -236,14 +236,14 @@ const ReservationModal = ({
 
         {restaurant && (
           <div className="restaurant-info">
-            <p className="restaurant-name">📍 {restaurant.name}</p>
+            <p className="restaurant-name"> {restaurant.name}</p>
             <p className="restaurant-address">{restaurant.address}</p>
             <div className="restaurant-status">
               <span className="crowd-level">
                 Current crowd: {restaurant.crowd_level || "Moderate"}
               </span>
               <span className="capacity">
-                👥 Max: {restaurant.max_capacity} people
+                Max: {restaurant.max_capacity} people
               </span>
             </div>
           </div>
@@ -288,7 +288,6 @@ const ReservationModal = ({
                 +
               </button>
             </div>
-            <small>Maximum 10 people per spot hold</small>
           </div>
 
           <div className="form-group">
@@ -308,7 +307,6 @@ const ReservationModal = ({
                     <span className="option-badge">Recommended</span>
                   </div>
                   <div className="option-details">
-                    <span className="option-icon">⚡</span>
                     <span className="option-text">I'm ready to go now</span>
                   </div>
                   <div className="option-expiry">
@@ -330,7 +328,6 @@ const ReservationModal = ({
                     <span className="option-title">Extended Hold (20 min)</span>
                   </div>
                   <div className="option-details">
-                    <span className="option-icon">⏱️</span>
                     <span className="option-text">Need a bit more time</span>
                   </div>
                   <div className="option-expiry">
@@ -341,35 +338,25 @@ const ReservationModal = ({
             </div>
           </div>
 
-          <div className="hold-disclaimer">
-            <div className="disclaimer-icon">ℹ</div>
-            <div className="disclaimer-text">
-              <strong>Note:</strong> This is a spot hold, not a guaranteed
-              reservation. The restaurant will accommodate you based on
-              availability when you arrive. Your spot will expire automatically
-              after the selected duration.
-            </div>
-          </div>
-
           {error && <div className="error-message">{error}</div>}
 
           <div className="modal-actions">
             <button
               type="button"
-              className="cancel-btn"
+              className="modal-cancel-btn"
               onClick={onClose}
               disabled={loading}
             >
               Cancel
             </button>
-            <button type="submit" className="hold-btn" disabled={loading}>
+            <button type="submit" className="modal-hold-btn" disabled={loading}>
               {loading ? (
                 <>
                   <span className="spinner"></span>
-                  Holding your spot...
+                  Loading...
                 </>
               ) : (
-                "Hold My Spot Now"
+                "Confirm"
               )}
             </button>
           </div>
