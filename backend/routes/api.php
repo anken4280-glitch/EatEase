@@ -28,6 +28,17 @@ Route::get('/test-spot-holds-public', function() {
     ]);
 });
 
+// Delete too
+// In api.php - temporary test
+Route::get('/test-remove-route', function() {
+    return response()->json([
+        'routes' => [
+            'DELETE /api/reservations/{id}/remove' => 'Exists',
+            'test' => 'Working'
+        ]
+    ]);
+});
+
 // DEBUG ROUTES - Add these at the VERY TOP
 Route::get('/debug-public', function() {
     return response()->json([
@@ -123,6 +134,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [ReservationController::class, 'show']);
         Route::delete('/{id}', [ReservationController::class, 'destroy']);
         Route::post('/hold-spot', [ReservationController::class, 'holdSpot']);
+        Route::delete('/{id}/remove', [ReservationController::class, 'removeFromView']);
     });
     
     // ========== RESTAURANT OWNER RESERVATION MANAGEMENT ==========

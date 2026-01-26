@@ -17,19 +17,35 @@ class ReservationController extends Controller
     public function index()
     {
         try {
+            // First, auto-update any expired holds
+            $expiredHolds = Reservation::where('user_id', Auth::id())
+                ->where('status', 'pending_hold')
+                ->where('expires_at', '<', now())
+                ->get();
+
+            foreach ($expiredHolds as $hold) {
+                $hold->status = 'cancelled';
+                $hold->hold_status = 'rejected';
+                $hold->save();
+            }
+
+            // Now get non-hidden reservations
             $reservations = Reservation::with(['restaurant' => function ($query) {
                 $query->select('id', 'name', 'address', 'profile_image');
             }])
                 ->where('user_id', Auth::id())
+                ->where('is_hidden', false)
                 ->orderBy('reservation_date', 'desc')
                 ->orderBy('reservation_time', 'desc')
                 ->paginate(10);
 
             return response()->json([
                 'success' => true,
-                'reservations' => $reservations
+                'reservations' => $reservations,
+                'auto_updated_expired' => $expiredHolds->count()
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to fetch reservations: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch reservations'
@@ -152,6 +168,8 @@ class ReservationController extends Controller
     public function holdSpot(Request $request)
     {
         try {
+            Log::info('HoldSpot Request Data:', $request->all());
+
             $user = $request->user();
 
             if (!$user) {
@@ -166,10 +184,10 @@ class ReservationController extends Controller
                 'party_size' => 'required|integer|min:1|max:10',
                 'hold_type' => 'required|in:quick_10min,extended_20min',
                 'special_requests' => 'nullable|string|max:200',
-                'notification_id' => 'nullable|exists:notification_logs,id'
             ]);
 
             if ($validator->fails()) {
+                Log::error('Validation failed:', $validator->errors()->toArray());
                 return response()->json([
                     'success' => false,
                     'errors' => $validator->errors()
@@ -182,7 +200,10 @@ class ReservationController extends Controller
             $existingHold = Reservation::where('user_id', $user->id)
                 ->where('restaurant_id', $data['restaurant_id'])
                 ->where('hold_status', 'pending')
-                ->where('expires_at', '>', now())
+                ->where(function ($query) {
+                    $query->where('expires_at', '>', now())
+                        ->orWhereNull('expires_at');
+                })
                 ->first();
 
             if ($existingHold) {
@@ -196,45 +217,65 @@ class ReservationController extends Controller
             $expiryMinutes = $data['hold_type'] === 'quick_10min' ? 10 : 20;
             $expiresAt = now()->addMinutes($expiryMinutes);
 
-            // Create hold - ALL REQUIRED FIELDS
-            $hold = new Reservation([
+            // Create hold
+            $holdData = [
                 'user_id' => $user->id,
                 'restaurant_id' => $data['restaurant_id'],
                 'party_size' => $data['party_size'],
                 'hold_type' => $data['hold_type'],
-                'expires_at' => $expiresAt,
+                'status' => 'pending_hold', // This column needs to exist!
                 'hold_status' => 'pending',
-
-                // REQUIRED: reservation_date and reservation_time
-                'reservation_date' => now()->format('Y-m-d'), // Current date
-                'reservation_time' => now()->format('H:i:s'), // Current time
-
+                'expires_at' => $expiresAt,
+                'reservation_date' => now()->format('Y-m-d'),
+                'reservation_time' => now()->format('H:i:s'),
                 'special_requests' => $data['special_requests'] ?? null,
-                'status' => 'pending_hold', // Use the new status
-                'confirmation_code' => strtoupper(substr(md5(uniqid()), 0, 8)),
-
-                // Default values for other columns
+                'confirmation_code' => 'HOLD-' . strtoupper(substr(md5(uniqid()), 0, 8)),
                 'notification_count' => 0,
-                'last_notified_at' => null
-            ]);
+                'last_notified_at' => null,
+            ];
 
-            $hold->save();
+            Log::info('Creating hold with data:', $holdData);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Spot hold created successfully',
-                'hold' => $hold->load('restaurant'),
-                'confirmation_code' => $hold->confirmation_code,
-                'expires_at' => $expiresAt->toDateTimeString(),
-                'expires_in' => $expiryMinutes . ' minutes'
-            ], 201);
+            try {
+                $hold = Reservation::create($holdData);
+
+                Log::info('Hold created successfully:', ['hold_id' => $hold->id]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Spot hold created successfully',
+                    'hold' => $hold->load('restaurant'),
+                    'confirmation_code' => $hold->confirmation_code,
+                    'expires_at' => $expiresAt->toDateTimeString(),
+                    'expires_in' => $expiryMinutes . ' minutes'
+                ], 201);
+            } catch (\Exception $dbError) {
+                Log::error('Database error creating hold:', [
+                    'error' => $dbError->getMessage(),
+                    'trace' => $dbError->getTraceAsString(),
+                    'data' => $holdData
+                ]);
+
+                // Check if it's a missing column error
+                if (strpos($dbError->getMessage(), 'Unknown column') !== false) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Database configuration issue. Please run migrations or add missing columns.',
+                        'error_details' => $dbError->getMessage()
+                    ], 500);
+                }
+
+                throw $dbError;
+            }
         } catch (\Exception $e) {
-            Log::error('Hold spot error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create spot hold',
+            Log::error('Hold spot error:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create spot hold: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -244,34 +285,108 @@ class ReservationController extends Controller
     public function destroy($id)
     {
         try {
-            $reservation = Reservation::where('user_id', Auth::id())->findOrFail($id);
+            $reservation = Reservation::where('user_id', Auth::id())->find($id);
 
-            if (!$reservation->canBeCancelled()) {
+            if (!$reservation) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Reservations can only be cancelled at least 2 hours in advance.'
+                    'message' => 'Hold not found'
+                ], 404);
+            }
+
+            // Check if it's already cancelled or expired
+            if ($reservation->status === 'cancelled') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This hold is already cancelled'
                 ], 422);
             }
 
-            $reservation->status = 'cancelled';
-            $reservation->save();
+            // Check if it's already expired
+            if ($reservation->status === 'pending_hold' && $reservation->expires_at) {
+                $expiresAt = new \DateTime($reservation->expires_at);
+                $now = new \DateTime();
+                if ($expiresAt < $now) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'This hold has already expired'
+                    ], 422);
+                }
+            }
 
-            // Update restaurant occupancy (optional)
-            $restaurant = $reservation->restaurant;
-            $restaurant->current_occupancy = max(
-                $restaurant->current_occupancy - $reservation->party_size,
-                0
-            );
-            $restaurant->save();
+            // Cancel the hold
+            $reservation->status = 'cancelled';
+            $reservation->hold_status = 'cancelled_by_user';
+            $reservation->save();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Reservation cancelled successfully.'
+                'message' => 'Hold cancelled successfully.'
             ]);
         } catch (\Exception $e) {
+            Log::error('Hold cancellation error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to cancel reservation'
+                'message' => 'Failed to cancel hold'
+            ], 500);
+        }
+    }
+    /**
+     * Remove/hide a reservation from user's view
+     */
+    public function removeFromView($id)
+    {
+        try {
+            $user = Auth::user();
+
+            // Find reservation owned by user
+            $reservation = Reservation::where('user_id', $user->id)->find($id);
+
+            if (!$reservation) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reservation not found'
+                ], 404);
+            }
+
+            // Check if reservation can be removed
+            // Allow: cancelled, rejected, completed
+            // Also check for expired holds (pending_hold with expired expires_at)
+            $canRemove = false;
+
+            if (in_array($reservation->status, ['cancelled', 'rejected', 'completed'])) {
+                $canRemove = true;
+            }
+
+            // Check if it's an expired hold
+            if ($reservation->status === 'pending_hold' && $reservation->expires_at) {
+                $expiresAt = new \DateTime($reservation->expires_at);
+                $now = new \DateTime();
+                if ($expiresAt < $now) {
+                    $canRemove = true;
+                }
+            }
+
+            if (!$canRemove) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only cancelled, rejected, completed, or expired reservations can be removed'
+                ], 422);
+            }
+
+            // Mark as hidden
+            $reservation->is_hidden = true;
+            $reservation->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reservation removed from view'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Remove reservation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove reservation: ' . $e->getMessage()
             ], 500);
         }
     }

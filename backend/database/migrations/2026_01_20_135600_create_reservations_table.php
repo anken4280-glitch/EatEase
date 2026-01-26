@@ -15,13 +15,14 @@ return new class extends Migration
             $table->integer('party_size')->default(2);
             $table->date('reservation_date');
             $table->time('reservation_time');
-            $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed', 'no_show'])->default('pending');
+            // In your reservations migration file
+            $table->enum('hold_status', ['pending', 'accepted', 'rejected', 'cancelled_by_user'])->default('pending');
             $table->text('special_requests')->nullable();
             $table->string('confirmation_code')->nullable();
             $table->integer('notification_count')->default(0);
             $table->timestamp('last_notified_at')->nullable();
             $table->timestamps();
-            
+
             // Indexes for performance
             $table->index(['restaurant_id', 'reservation_date', 'status']);
             $table->index(['user_id', 'reservation_date']);

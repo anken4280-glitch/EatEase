@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User; // ✅ ADD THIS
 use App\Models\Restaurant; // ✅ ADD THIS
+use Illuminate\Support\Facades\Log;
 
 class Reservation extends Model
 {
@@ -25,14 +26,17 @@ class Reservation extends Model
         'last_notified_at',
         'hold_type',      // ← ADD THIS
         'expires_at',     // ← ADD THIS
-        'hold_status'
+        'hold_status',
+        'is_hidden' // ✅ ADD THIS LINE
     ];
 
     protected $casts = [
         'reservation_date' => 'date',
         'last_notified_at' => 'datetime',
         'party_size' => 'integer',
-        'expires_at' => 'datetime' // ← ADD THIS
+        'expires_at' => 'datetime', // ← ADD THIS
+        'is_hidden' => 'boolean' // ✅ ADD THIS LINE
+
     ];
 
     /**
@@ -51,15 +55,62 @@ class Reservation extends Model
         return $this->belongsTo(Restaurant::class);
     }
 
+        public function isExpired(): bool
+    {
+        if ($this->status !== 'pending_hold') {
+            return false;
+        }
+
+        if (!$this->expires_at) {
+            return false;
+        }
+
+        $expiresAt = new \DateTime($this->expires_at);
+        $now = new \DateTime();
+        return $expiresAt < $now;
+    }
+
+    /**
+     * Auto-update status if hold is expired
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($reservation) {
+            // Auto-update expired holds
+            if ($reservation->status === 'pending_hold' && $reservation->expires_at) {
+                $expiresAt = new \DateTime($reservation->expires_at);
+                $now = new \DateTime();
+                
+                if ($expiresAt < $now) {
+                    $reservation->status = 'cancelled';
+                    $reservation->hold_status = 'rejected';
+                }
+            }
+        });
+    }
+
     /**
      * Check if reservation can be cancelled
      */
+    // Option 1: Remove it completely and handle logic in controller
+    // Option 2: Keep it simple
     public function canBeCancelled(): bool
     {
-        $reservationDateTime = $this->reservation_date . ' ' . $this->reservation_time;
-        $hoursUntilReservation = now()->diffInHours($reservationDateTime, false);
+        // Only pending holds can be cancelled
+        if ($this->status !== 'pending_hold') {
+            return false;
+        }
 
-        return $hoursUntilReservation >= 2 && in_array($this->status, ['pending', 'confirmed']);
+        // Check if already expired
+        if ($this->expires_at) {
+            $expiresAt = new \DateTime($this->expires_at);
+            $now = new \DateTime();
+            return $expiresAt > $now; // Can cancel if not expired
+        }
+
+        return true;
     }
 
     /**

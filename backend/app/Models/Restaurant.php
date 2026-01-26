@@ -21,6 +21,8 @@ class Restaurant extends Model
         'hours',
         'max_capacity',
         'current_occupancy',
+        'occupancy_percentage', // ✅ ADD THIS
+        'crowd_status', // ✅ ADD THIS
         'features',
         'is_featured',
         'is_verified',
@@ -60,6 +62,9 @@ class Restaurant extends Model
         'can_run_ads' => 'boolean',
         'has_analytics_access' => 'boolean',
         'has_api_access' => 'boolean',
+        'occupancy_percentage' => 'float', // ✅ ADD THIS
+        'current_occupancy' => 'integer', // ✅ ADD THIS
+        'max_capacity' => 'integer', // ✅ ADD THIS
     ];
 
     protected $appends = ['profile_image_url', 'banner_image_url'];
