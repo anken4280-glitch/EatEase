@@ -1,7 +1,86 @@
-import React from "react";
+import React, { useState } from "react";
 import "./OwnerOverviewTab.css";
 
 const OwnerOverviewTab = ({ restaurant, onEdit }) => {
+  const [isEditingOccupancy, setIsEditingOccupancy] = useState(false);
+  const [newOccupancy, setNewOccupancy] = useState(restaurant.current_occupancy);
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdateOccupancy = async () => {
+    if (newOccupancy < 0 || newOccupancy > restaurant.max_capacity) {
+      alert(`Occupancy must be between 0 and ${restaurant.max_capacity}`);
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        "http://localhost/EatEase-Backend/backend/public/api/restaurant/occupancy",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            current_occupancy: Number(newOccupancy),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("✅ Occupancy updated successfully!");
+        setIsEditingOccupancy(false);
+        // Refresh restaurant data by calling parent's refresh function
+        if (window.location) {
+          window.location.reload(); // Simple refresh for now
+        }
+      } else {
+        alert("Failed to update occupancy: " + (data.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error updating occupancy:", error);
+      alert("Error updating occupancy. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCrowdStatusText = (status) => {
+    switch (status) {
+      case "green":
+        return "Low";
+      case "yellow":
+        return "Moderate";
+      case "orange":
+        return "Busy";
+      case "red":
+        return "Very High";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getCrowdStatusColor = (percentage) => {
+    if (percentage <= 50) return "green";
+    if (percentage <= 79) return "yellow";
+    if (percentage <= 89) return "orange";
+    return "red";
+  };
+
+  // Calculate occupancy percentage
+  const occupancyPercentage = restaurant.max_capacity > 0 
+    ? Math.round((restaurant.current_occupancy / restaurant.max_capacity) * 100)
+    : 0;
+
+  // Calculate crowd status based on percentage
+  const calculatedCrowdStatus = getCrowdStatusColor(occupancyPercentage);
+
   return (
     <div className="owner-overview-tab">
       <div className="tab-section">
@@ -19,6 +98,19 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
             </svg>
           </button>
         </div>
+
+          <h3>Location & Contact</h3>
+          <button className="section-edit-btn" onClick={onEdit}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="17px"
+              viewBox="0 -960 960 960"
+              width="17px"
+              fill="black"
+            >
+              <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+            </svg>
+          </button>
 
         <div className="info-grid">
           <div className="info-section">
@@ -127,30 +219,63 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
       <div className="tab-section">
         <div className="section-header">
           <h3>Current Status</h3>
-          <button className="section-edit-btn" onClick={onEdit}>
-            <svg
+          <div className="status-header-actions">
+            {!isEditingOccupancy ? (
+              <button 
+                className="update-occupancy-btn"
+                onClick={() => setIsEditingOccupancy(true)}
+              >
+                 <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="17px"
+              height="11px"
               viewBox="0 -960 960 960"
-              width="17px"
-              fill="black"
+              width="11px"
+              fill="white"
             >
               <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-            </svg>
-          </button>
+            </svg>Update
+              </button>
+            ) : (
+              <div className="occupancy-edit-controls">
+                <input
+                  type="number"
+                  value={newOccupancy}
+                  onChange={(e) => setNewOccupancy(e.target.value)}
+                  min="0"
+                  max={restaurant.max_capacity}
+                  className="occupancy-input"
+                  placeholder="Enter current occupancy"
+                />
+                <button 
+                  className="status-save-btn"
+                  onClick={handleUpdateOccupancy}
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save"}
+                </button>
+                <button 
+                  className="status-cancel-btn"
+                  onClick={() => {
+                    setIsEditingOccupancy(false);
+                    setNewOccupancy(restaurant.current_occupancy);
+                  }}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="status-info">
           <div className="status-item">
-            <span className="status-label">Crowd Level:</span>
-            <span className={`status-value status-${restaurant.crowd_status}`}>
-              {restaurant.crowd_status === "green"
-                ? "Low"
-                : restaurant.crowd_status === "yellow"
-                  ? "Moderate"
-                  : restaurant.crowd_status === "orange"
-                    ? "Busy"
-                    : "Very High"}
+            <span className="status-label">Current Crowd:</span>
+            <span className={`status-value status-${calculatedCrowdStatus}`}>
+              {getCrowdStatusText(calculatedCrowdStatus)}
+              {calculatedCrowdStatus !== restaurant.crowd_status && (
+                <span className="status-note"> (Calculated: {getCrowdStatusText(restaurant.crowd_status)} in DB)</span>
+              )}
             </span>
           </div>
           <div className="status-item">
@@ -162,8 +287,26 @@ const OwnerOverviewTab = ({ restaurant, onEdit }) => {
           <div className="status-item">
             <span className="status-label">Occupancy:</span>
             <span className="status-value">
-              {restaurant.occupancy_percentage}%
+              {occupancyPercentage}%
             </span>
+          </div>
+          <div className="status-visual">
+            <div className="capacity-bar">
+              <div 
+                className="capacity-fill"
+                style={{ 
+                  width: `${Math.min(occupancyPercentage, 100)}%`,
+                  backgroundColor: getCrowdStatusColor(occupancyPercentage)
+                }}
+              ></div>
+            </div>
+            <div className="capacity-labels">
+              <span>0</span>
+              <span>25%</span>
+              <span>50%</span>
+              <span>75%</span>
+              <span>100%</span>
+            </div>
           </div>
         </div>
       </div>

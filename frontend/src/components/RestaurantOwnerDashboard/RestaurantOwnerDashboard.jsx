@@ -673,19 +673,7 @@ function RestaurantOwnerDashboard({ user }) {
               >
                 Photos
               </button>
-              <button
-                className={`owner-tab-btn ${
-                  activeTab === "analytics" ? "active" : ""
-                } ${tier === "premium" ? "premium-unlocked" : "premium-locked"}`}
-                onClick={() => setActiveTab("analytics")}
-                title={
-                  tier === "basic"
-                    ? "Upgrade to Premium to access analytics"
-                    : "View analytics"
-                }
-              >
-                {tier === "premium" ? "Analytics" : "Analytics"}
-              </button>
+
 
               {/*RESERVATIONS TAB */}
               <button
@@ -887,8 +875,13 @@ function RestaurantOwnerDashboard({ user }) {
                     "Outdoor Seating",
                     "Takeout",
                     "Delivery",
-                  ].map((feature) => (
-                    <label className="feature-checkbox">
+                  ].map((feature, index) => (
+                    <label
+                      key={`feature-${index}`}
+                      className="feature-checkbox"
+                    >
+                      {" "}
+                      {/* ✅ ADD KEY HERE */}
                       <input
                         type="checkbox"
                         checked={formData.features.includes(feature)}
@@ -904,7 +897,6 @@ function RestaurantOwnerDashboard({ user }) {
                   ))}
                 </div>
               </div>
-
               <div className="form-actions">
                 <button type="button" onClick={() => setIsEditing(false)}>
                   Cancel
