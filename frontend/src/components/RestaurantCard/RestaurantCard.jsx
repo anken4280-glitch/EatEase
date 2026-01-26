@@ -544,7 +544,7 @@ function RestaurantCard({
                 onClick={handleRemoveNotification}
                 disabled={loading}
               >
-                Remove My Notification
+                Remove Notification
               </button>
             )}
 

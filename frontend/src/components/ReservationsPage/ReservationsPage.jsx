@@ -119,7 +119,7 @@ const ReservationsPage = ({ user, onBack }) => {
       const expiresDate = new Date(expiresAt);
       const now = new Date();
       if (expiresDate < now) {
-        return "expired";
+        return "Expired";
       }
     }
 
@@ -207,25 +207,35 @@ const ReservationsPage = ({ user, onBack }) => {
   const handleRemove = async (id) => {
     if (!confirm("Remove this reservation from your list?")) return;
 
-    // Since we don't have a delete endpoint for users to remove their own reservations,
-    // we'll just remove it from the frontend state
-    // Alternatively, you could mark it as "hidden" in the backend
+    const token = localStorage.getItem("auth_token");
+    try {
+      const response = await fetch(
+        `http://localhost/EatEase-Backend/backend/public/api/reservations/${id}/remove`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
 
-    setReservations((prev) => prev.filter((res) => res.id !== id));
-
-    // Optional: If you want to actually delete from backend, add an API endpoint
-    // const token = localStorage.getItem("auth_token");
-    // try {
-    //   const response = await fetch(
-    //     `http://localhost/EatEase-Backend/backend/public/api/reservations/${id}/remove`,
-    //     {
-    //       method: "DELETE",
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     }
-    //   );
-    // } catch (error) {
-    //   console.error("Error removing:", error);
-    // }
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          // Remove from current view immediately
+          setReservations((prev) => prev.filter((res) => res.id !== id));
+        } else {
+          alert(data.message || "Failed to remove reservation");
+        }
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Failed to remove reservation");
+      }
+    } catch (error) {
+      console.error("Error removing:", error);
+      alert("Error removing reservation");
+    }
   };
 
   // Check if reservation can be removed (cancelled, rejected, or expired)
@@ -320,7 +330,6 @@ const ReservationsPage = ({ user, onBack }) => {
                     )}
                   </div>
                 </div>
-
                 <div className="reservation-details">
                   <div className="detail-item">
                     <span className="detail-label">Date & Time:</span>
@@ -359,16 +368,23 @@ const ReservationsPage = ({ user, onBack }) => {
                     </div>
                   )}
                 </div>
-
                 <div className="reservation-actions">
-                  {(res.status === "confirmed" || res.status === "pending") && (
+                  {res.status === "pending_hold" ? (
+                    <button
+                      className="cancel-hold-btn"
+                      onClick={() => handleCancel(res.id)}
+                      title="Cancel this spot hold"
+                    >
+                      Cancel Hold
+                    </button>
+                  ) : res.status === "confirmed" || res.status === "pending" ? (
                     <button
                       className="cancel-btn"
                       onClick={() => handleCancel(res.id)}
                     >
                       Cancel Reservation
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
             );

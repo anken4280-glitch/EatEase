@@ -3,6 +3,10 @@
   max-width: 800px;
   margin: 0 auto;
   background-color: #efedde;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
 .page-header {
@@ -13,16 +17,16 @@
 }
 
 .reservations-back-button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-right: 25px;
-    height: 40px;
-    border: none;
-    background-color: inherit;
-    padding-right: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 25px;
+  height: 40px;
+  border: none;
+  background-color: inherit;
+  padding-right: 20px;
 }
 
 .back-button:hover {
@@ -124,12 +128,6 @@
   color: white;
 }
 
-.reservations-page {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
 .back-button {
   background: none;
   border: none;
@@ -227,12 +225,6 @@
   background-color: #0056b3;
 }
 
-.reservations-page {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
 .back-button {
   background: none;
   border: none;
@@ -262,8 +254,6 @@
   align-items: flex-start;
   margin-bottom: 15px;
 }
-
-
 
 .header-right {
   display: flex;
@@ -388,7 +378,7 @@
   flex-wrap: wrap;
 }
 
-.cancel-btn {
+.cancel-hold-btn {
   background-color: #dc3545;
   color: white;
   border: none;
@@ -397,6 +387,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.2s;
+  width: 100%;
 }
 
 .cancel-btn:hover {
