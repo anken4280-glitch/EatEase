@@ -69,6 +69,31 @@ class Restaurant extends Model
 
     protected $appends = ['profile_image_url', 'banner_image_url'];
 
+    // Add this method to Restaurant model:
+    protected static function booted()
+    {
+        static::updated(function ($restaurant) {
+            // Log occupancy whenever it changes
+            if ($restaurant->isDirty('current_occupancy')) {
+                $oldValue = $restaurant->getOriginal('current_occupancy');
+                $newValue = $restaurant->current_occupancy;
+
+                // Only log if there's an actual change
+                if ($oldValue != $newValue) {
+                    \App\Models\OccupancyLog::create([
+                        'restaurant_id' => $restaurant->id,
+                        'occupancy_count' => $newValue,
+                        'occupancy_percentage' => $restaurant->occupancy_percentage,
+                        'crowd_status' => $restaurant->crowd_status,
+                        'source_type' => 'manual',
+                        'is_estimated' => true,
+                        'notes' => 'Updated via restaurant profile'
+                    ]);
+                }
+            }
+        });
+    }
+
     public function getProfileImageUrlAttribute()
     {
         if (!$this->profile_image) {
@@ -132,6 +157,36 @@ class Restaurant extends Model
             'can_run_ads' => false,
             'has_analytics_access' => false,
             'has_api_access' => false,
+        ]);
+    }
+
+    // Add this method in the Restaurant class
+    public function logOccupancy($occupancyCount, $sourceType = 'manual', $notes = null)
+    {
+        $percentage = $this->max_capacity > 0
+            ? round(($occupancyCount / $this->max_capacity) * 100, 2)
+            : 0;
+
+        // Determine crowd status based on percentage
+        if ($percentage <= 50) {
+            $status = 'green';
+        } elseif ($percentage <= 79) {
+            $status = 'yellow';
+        } elseif ($percentage <= 89) {
+            $status = 'orange';
+        } else {
+            $status = 'red';
+        }
+
+        // Create log entry
+        return OccupancyLog::create([
+            'restaurant_id' => $this->id,
+            'occupancy_count' => $occupancyCount,
+            'occupancy_percentage' => $percentage,
+            'crowd_status' => $status,
+            'source_type' => $sourceType,
+            'is_estimated' => $sourceType === 'manual',
+            'notes' => $notes
         ]);
     }
 
