@@ -122,6 +122,11 @@
 
 .notification-actions {
   margin-left: 1rem;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
 }
 
 .remove-btn {
@@ -222,7 +227,7 @@
 }
 
 .action-btn {
-  padding: 10px 16px;
+  padding: 8px 16px;
   border: none;
   border-radius: 6px;
   font-size: 14px;
@@ -232,40 +237,16 @@
   align-items: center;
   gap: 6px;
   transition: all 0.2s;
-}
-
-.book-now-btn {
-  background: #6b5b95;
+  width: 100%;
+  background-color: black;
   color: white;
-  flex: 2;
+  margin-top: 5px;
 }
 
-.book-now-btn:hover {
-  background: #5a4a84;
-  transform: translateY(-2px);
-}
-
-.snooze-btn {
-  background: white;
-  color: #666;
-  border: 1px solid #ddd;
-  flex: 1;
-}
-
-.snooze-btn:hover {
-  background: #f8f9fa;
-  border-color: #ccc;
-}
 
 /* Make notification item responsive */
 .notification-item {
   position: relative;
-}
-
-.notification-actions {
-  position: absolute;
-  top: 10px;
-  right: 10px;
 }
 
 @media (min-width: 768px) {
@@ -398,7 +379,7 @@
   border: none;
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  border-radius: 9px;
   cursor: pointer;
   font-size: 18px;
   display: flex;
@@ -410,12 +391,6 @@
 
 .delete-btn:hover {
   background: #ff5252;
-}
-
-/* Update notification-actions to space buttons */
-.notification-actions {
-  display: flex;
-  gap: 8px;
 }
 
 /* Adjust remove-btn to match delete-btn */

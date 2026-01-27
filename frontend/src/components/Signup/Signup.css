@@ -148,3 +148,241 @@
     padding: 2.5rem;
   }
 }
+
+/* Login.css & Signup.css additions */
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background-color: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #2e7d32;
+  margin-left: 10px;
+}
+
+.secure-icon {
+  font-size: 14px;
+}
+
+.security-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.password-strength-meter {
+  margin-top: 10px;
+}
+
+.strength-bar {
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.strength-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.strength-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+.password-feedback {
+  color: #666;
+  font-style: italic;
+}
+
+.password-match-error {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.secure-button {
+  background: linear-gradient(135deg, #4d96ff, #6b5b95);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.secure-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3a7de8, #5a4a85);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.secure-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-button {
+  background: linear-gradient(135deg, #cccccc, #999999);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: not-allowed;
+  font-size: 16px;
+  width: 100%;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.input-error {
+  border-color: #ff6b6b !important;
+  background-color: #fff5f5;
+}
+
+.security-error {
+  background-color: #fff5f5;
+  border-left: 4px solid #ff6b6b;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.error-icon {
+  margin-right: 8px;
+}
+
+.terms-agreement {
+  margin: 15px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.terms-agreement input {
+  margin-right: 8px;
+}
+
+.terms-agreement a {
+  color: #4d96ff;
+  text-decoration: none;
+}
+
+.terms-agreement a:hover {
+  text-decoration: underline;
+}
+
+.security-tips, .security-notice {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #4d96ff;
+}
+
+.security-tips h4, .security-notice h4 {
+  margin-top: 0;
+  color: #333;
+}
+
+.security-tips ul, .security-notice ul {
+  margin: 10px 0 0 0;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.password-requirements {
+  font-size: 12px;
+  color: #666;
+  font-weight: normal;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Add to your Signup.css */
+.password-requirements-list {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.requirement.met {
+  color: #37b24d;
+  background-color: #e8f5e9;
+}
+
+.requirement.not-met {
+  color: #666;
+  background-color: #f5f5f5;
+}
+
+.password-requirements {
+  font-size: 12px;
+  color: #666;
+  font-weight: normal;
+  display: block;
+  margin-top: 2px;
+}
+
+.signup-form-group label{
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+}

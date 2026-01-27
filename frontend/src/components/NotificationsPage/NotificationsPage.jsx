@@ -482,25 +482,14 @@ function NotificationsPage({ user, onBack }) {
                             }}
                           >
                             <span role="img" aria-label="plate">
-                              🍽️
+                            
                             </span>{" "}
-                            Book Now
+                            Reserve Now
                           </button>
                         )}
                       </div>
 
                       <div className="notification-actions">
-                        <button
-                          className="remove-btn"
-                          onClick={() => {
-                            markAsRead(notification.id);
-                          }}
-                          title="Mark as read"
-                        >
-                          ✓
-                        </button>
-
-                        {/* ADD THIS - Delete button */}
                         <button
                           className="delete-btn"
                           onClick={() => {
