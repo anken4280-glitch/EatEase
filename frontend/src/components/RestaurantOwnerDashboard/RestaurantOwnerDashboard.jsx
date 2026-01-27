@@ -104,6 +104,97 @@ function RestaurantOwnerDashboard({ user }) {
     }
   };
 
+  const handleFeatureRequest = async () => {
+    // Check if already featured
+    if (restaurant.is_featured) {
+      // Ask if they want to unfeature
+      if (
+        confirm(
+          "Your restaurant is currently featured. Remove from featured section?",
+        )
+      ) {
+        await unfeatureRestaurant();
+      }
+      return;
+    }
+
+    // Not featured yet - check requirements
+    if (!restaurant.banner_image) {
+      // No banner - ask to upload one
+      if (confirm("To be featured, you need a banner image. Upload one now?")) {
+        setEditingImageType("banner");
+      }
+      return;
+    }
+
+    // Has banner - confirm featuring
+    if (
+      confirm(
+        "Feature your restaurant in the main carousel? This will make it visible to all diners.",
+      )
+    ) {
+      await featureRestaurant();
+    }
+  };
+
+  const featureRestaurant = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        "http://localhost:8000/api/restaurant/feature",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert(
+          "✅ Your restaurant is now featured! It will appear in the featured carousel.",
+        );
+        fetchRestaurant(); // Refresh restaurant data
+      } else {
+        alert("Failed to feature: " + (data.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Feature error:", error);
+      alert("Failed to feature restaurant. Please try again.");
+    }
+  };
+
+  const unfeatureRestaurant = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const response = await fetch(
+        "http://localhost:8000/api/restaurant/unfeature",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        },
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        alert("✅ Your restaurant is no longer featured.");
+        fetchRestaurant(); // Refresh restaurant data
+      } else {
+        alert("Failed to unfeature: " + (data.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Unfeature error:", error);
+      alert("Failed to unfeature restaurant. Please try again.");
+    }
+  };
+
   const handleUpgrade = async () => {
     if (
       !confirm(
@@ -538,6 +629,38 @@ function RestaurantOwnerDashboard({ user }) {
                         <span>Edit Profile</span>
                       </button>
 
+                      {/* Be Featured Button - Only for Premium */}
+                      {tier === "premium" && (
+                        <button
+                          className="dropdown-item feature-item"
+                          onClick={() => {
+                            setShowMenu(false);
+                            handleFeatureRequest();
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="13px"
+                            viewBox="0 -960 960 960"
+                            width="13px"
+                            fill={restaurant.is_featured ? "green" : "gold"}
+                          >
+                            {restaurant.is_featured ? (
+                              // Checkmark icon for already featured
+                              <path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170Zm56 192q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z" />
+                            ) : (
+                              // Star icon for not featured
+                              <path d="M480-80 360-320l-280-40 200-192-56-280 216 160 216-160-56 280 200 192-280 40-120 240Z" />
+                            )}
+                          </svg>
+                          <span>
+                            {restaurant.is_featured
+                              ? "Featured ✓"
+                              : "Be Featured"}
+                          </span>
+                        </button>
+                      )}
+
                       <button
                         onClick={() => {
                           setShowMenu(false);
@@ -673,7 +796,6 @@ function RestaurantOwnerDashboard({ user }) {
               >
                 Photos
               </button>
-
 
               {/*RESERVATIONS TAB */}
               <button
