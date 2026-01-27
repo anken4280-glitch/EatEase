@@ -14,7 +14,13 @@ function RestaurantList({
 }) {
   // ========== STATE VARIABLES ==========
   const [searchQuery, setSearchQuery] = useState(""); // Search input value
-  const [filters, setFilters] = useState({}); // Active filters (cuisine, status, etc.)
+  const [filters, setFilters] = useState({
+    cuisine: "all",
+    crowd_status: [],
+    min_rating: 0,
+    tier: "all",
+    featured: false,
+  }); // Active filters (cuisine, status, etc.)
   const [showFilters, setShowFilters] = useState(false); // Toggle filter panel visibility
   const [selectedRestaurant, setSelectedRestaurant] = useState(null); // Currently selected restaurant for detail view
   const [showMenu, setShowMenu] = useState(false); // Toggle hamburger menu
@@ -93,29 +99,66 @@ function RestaurantList({
    * Fetches restaurants from the backend API
    * Replaces hardcoded data with real database records
    */
-  const fetchRestaurants = async () => {
+  // In RestaurantList.jsx - update fetchRestaurants function
+  const fetchRestaurants = async (filters = {}) => {
     try {
       setLoading(true);
       setError("");
 
-      const response = await fetch("http://localhost:8000/api/restaurants");
+      // Build query string from filters
+      const params = new URLSearchParams();
+
+      if (filters.cuisine && filters.cuisine !== "all") {
+        params.append("cuisine", filters.cuisine);
+      }
+
+      if (filters.crowd_status && filters.crowd_status.length > 0) {
+        filters.crowd_status.forEach((status) => {
+          params.append("crowd_status[]", status);
+        });
+      }
+
+      if (filters.min_rating && filters.min_rating > 0) {
+        params.append("min_rating", filters.min_rating);
+      }
+
+      if (filters.tier && filters.tier !== "all") {
+        params.append("tier", filters.tier);
+      }
+
+      if (filters.featured) {
+        params.append("featured", "true");
+      }
+
+      const queryString = params.toString();
+      const url = queryString
+        ? `http://localhost:8000/api/restaurants?${queryString}`
+        : `http://localhost:8000/api/restaurants`;
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      setRestaurants(data.restaurants || []); // Set restaurants from API response
+      setRestaurants(data.restaurants || []);
+
+      // Update active filters
+      if (data.filters) {
+        setFilters(filters);
+      }
     } catch (err) {
       console.error("Failed to fetch restaurants:", err);
       setError("Failed to load restaurants. Please try again.");
 
-      // Fallback to sample data if API fails (for development/demo)
+      // Fallback to sample data if API fails
       setRestaurants([
         {
           id: 1,
           name: "Chicken Unlimited",
           cuisine: "Fast Food",
+          cuisine_type: "Fast Food",
           status: "green",
           crowdLevel: "Low",
           occupancy: 45,
@@ -124,20 +167,10 @@ function RestaurantList({
           address: "123 Main St",
           phone: "(555) 123-4567",
           hours: "9AM-10PM",
+          isPremium: false,
+          subscription_tier: "basic",
         },
-        {
-          id: 2,
-          name: "Ahmad Brother's Cafe",
-          cuisine: "Cafe",
-          status: "yellow",
-          crowdLevel: "Moderate",
-          occupancy: 72,
-          waitTime: 15,
-          isFeatured: true,
-          address: "456 Oak Ave",
-          phone: "(555) 987-6543",
-          hours: "7AM-9PM",
-        },
+        // ... other sample restaurants
       ]);
     } finally {
       setLoading(false);
@@ -333,27 +366,6 @@ function RestaurantList({
           </button>
         )}
 
-        {/* ========== ADD PREMIUM FILTER HERE ========== */}
-        {/* {!selectedRestaurant && (
-          <div className="premium-filter-container">
-            <button
-              className={`premium-filter-btn ${
-                showOnlyPremium ? "active" : ""
-              }`}
-              onClick={() => setShowOnlyPremium(!showOnlyPremium)}
-              title={
-                showOnlyPremium
-                  ? "Show all restaurants"
-                  : "Show only Premium restaurants"
-              }
-            >
-              {showOnlyPremium ? "⭐" : "⭐"}
-              {showOnlyPremium}
-            </button>
-          </div>
-        )} */}
-        {/* ========== END PREMIUM FILTER ========== */}
-
         {/* Filters Toggle */}
         {!selectedRestaurant && (
           <Filters
@@ -361,6 +373,7 @@ function RestaurantList({
             setFilters={setFilters}
             showFilters={showFilters}
             setShowFilters={setShowFilters}
+            onApplyFilters={fetchRestaurants} // Pass the fetch function
           />
         )}
 
