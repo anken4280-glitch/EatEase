@@ -1428,3 +1428,15 @@
 .dropdown-item.feature-item svg {
   fill: #e6b31e;
 }
+
+.analytics-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.analytics-tools {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+}

@@ -1,0 +1,171 @@
+.manual-logger {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.manual-logger h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.capacity-display {
+  margin-bottom: 24px;
+}
+
+.capacity-meter {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.capacity-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.capacity-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.logger-form .form-group {
+  margin-bottom: 20px;
+}
+
+.logger-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.occupancy-slider {
+  width: 100%;
+  height: 6px;
+  margin-bottom: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e9ecef;
+  border-radius: 3px;
+  outline: none;
+}
+
+.occupancy-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4d96ff;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.occupancy-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4d96ff;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider-value {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.occupancy-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.max-label {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.logger-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.char-count {
+  display: block;
+  text-align: right;
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.log-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4d96ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.log-btn:hover:not(:disabled) {
+  background: #3d85ff;
+}
+
+.log-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.logger-info {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.logger-info p {
+  margin: 0 0 12px 0;
+  color: #333;
+}
+
+.logger-info ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.logger-info li {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}

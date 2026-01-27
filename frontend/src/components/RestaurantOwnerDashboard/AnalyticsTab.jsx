@@ -1,37 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./AnalyticsTab.css";
 
-// Move the mock data function OUTSIDE the component
-const getMockAnalyticsData = () => {
-  return {
-    occupancy: {
-      daily: [65, 70, 45, 80, 90, 75, 60],
-      weekly: [70, 65, 80, 75, 85, 90, 70],
-      monthly: [65, 70, 75, 80, 85, 90, 85, 80, 75, 70, 65, 60],
-    },
-    peakHours: [
-      { hour: "12 PM", occupancy: 90 },
-      { hour: "1 PM", occupancy: 85 },
-      { hour: "7 PM", occupancy: 95 },
-      { hour: "8 PM", occupancy: 88 },
-    ],
-    revenue: {
-      current: 125000,
-      previous: 110000,
-      growth: "+13.6%",
-    },
-    reviews: {
-      average: 4.2,
-      total: 47,
-      trend: "+8",
-    },
-    customers: {
-      repeat: 65,
-      new: 35,
-    },
-  };
-};
-
 const AnalyticsTab = ({ restaurantId, isPremium }) => {
   if (!restaurantId) {
     return (
@@ -41,22 +10,20 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
 
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState("week"); // week, month, year
+  const [timeRange, setTimeRange] = useState("week");
 
-  // Move the fetch function BEFORE using it
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("auth_token");
       const response = await fetch(
-        `http://localhost:8000/api/restaurants/${restaurantId}/analytics?range=${timeRange}`,
+        `http://localhost/EatEase-Backend/backend/public/api/restaurants/${restaurantId}/analytics?range=${timeRange}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
-            "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       console.log("Analytics API Response Status:", response.status);
@@ -65,20 +32,18 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
         const data = await response.json();
         console.log("Analytics API Data:", data);
 
-        // Check if data has the expected structure
         if (data.success && data.analytics) {
           setAnalyticsData(data.analytics);
         } else {
-          console.warn("API returned unexpected structure, using mock data");
-          setAnalyticsData(getMockAnalyticsData());
+          setAnalyticsData(null);
         }
       } else {
-        console.warn("API returned non-OK status, using mock data");
-        setAnalyticsData(getMockAnalyticsData());
+        console.warn("API returned non-OK status");
+        setAnalyticsData(null);
       }
     } catch (error) {
       console.error("Error fetching analytics:", error);
-      setAnalyticsData(getMockAnalyticsData());
+      setAnalyticsData(null);
     } finally {
       setLoading(false);
     }
@@ -89,18 +54,6 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
       fetchAnalytics();
     }
   }, [restaurantId, isPremium, timeRange]);
-
-  // Calculate safe data AFTER state is initialized
-  const safeAnalyticsData = analyticsData || getMockAnalyticsData();
-  const occupancyData = safeAnalyticsData?.occupancy || {};
-  const dailyOccupancy = occupancyData.daily || [];
-  const weeklyOccupancy = occupancyData.weekly || [];
-  const monthlyOccupancy = occupancyData.monthly || [];
-
-  const revenueData = safeAnalyticsData?.revenue || {};
-  const reviewsData = safeAnalyticsData?.reviews || {};
-  const customersData = safeAnalyticsData?.customers || {};
-  const peakHours = safeAnalyticsData?.peakHours || [];
 
   // If not premium, show upgrade prompt
   if (!isPremium) {
@@ -135,7 +88,7 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
               <span className="feature-text">Peak hour analysis</span>
             </div>
             <div className="feature-item">
-              <span className="feature-text">Unlock ads and feature</span>
+              <span className="feature-text">Revenue estimation</span>
             </div>
           </div>
         </div>
@@ -151,19 +104,50 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
     );
   }
 
-  // Use safe data instead of mockData
-  const currentOccupancyData =
-    timeRange === "week"
-      ? dailyOccupancy
-      : timeRange === "month"
-        ? weeklyOccupancy
-        : monthlyOccupancy;
+  // Check if we have data
+  const hasData = analyticsData?.occupancy?.has_data || false;
 
-  const averageRating = reviewsData.average || 0;
-  const totalReviews = reviewsData.total || 0;
-  const reviewTrend = reviewsData.trend || "+0";
-  const currentRevenue = revenueData.current || 0;
-  const revenueGrowth = revenueData.growth || "+0%";
+  if (!hasData) {
+    return (
+      <div className="analytics-empty-state">
+        <div className="empty-icon">📊</div>
+        <h3>No Analytics Data Yet</h3>
+        <p>
+          Your analytics dashboard will show occupancy trends, peak hours,
+          and customer patterns once you start updating your restaurant's occupancy.
+        </p>
+        <div className="empty-tips">
+          <p><strong>To get started:</strong></p>
+          <ol>
+            <li>Go to the <strong>Overview</strong> tab</li>
+            <li>Click <strong>Edit Profile</strong> in the menu</li>
+            <li>Update your current occupancy</li>
+            <li>Return here to see your analytics!</li>
+          </ol>
+        </div>
+        <p className="empty-note">
+          Analytics data is automatically collected when you update your restaurant's occupancy.
+        </p>
+      </div>
+    );
+  }
+
+  // Extract data safely
+  const occupancyData = analyticsData?.occupancy || {};
+  const dailyOccupancy = occupancyData.daily || [];
+  const weeklyOccupancy = occupancyData.weekly || [];
+  const monthlyOccupancy = occupancyData.monthly || [];
+  
+  const currentOccupancyData = 
+    timeRange === "week" ? dailyOccupancy :
+    timeRange === "month" ? weeklyOccupancy :
+    monthlyOccupancy;
+
+  const peakHours = analyticsData?.peakHours || [];
+  const revenueData = analyticsData?.revenue || {};
+  const reviewsData = analyticsData?.reviews || {};
+  const customersData = analyticsData?.customers || {};
+  const summaryData = analyticsData?.summary || {};
 
   return (
     <div className="analytics-tab">
@@ -195,25 +179,21 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
       <div className="kpi-cards">
         <div className="kpi-card">
           <div className="kpi-content">
-            <h3>
-              {currentOccupancyData.length > 0
-                ? `${(
-                    currentOccupancyData.reduce((a, b) => a + b, 0) /
-                    currentOccupancyData.length
-                  ).toFixed(1)}%`
-                : "0%"}
-            </h3>
+            <h3>{occupancyData.average || 0}%</h3>
             <p>Average Occupancy</p>
-            <span className="kpi-trend positive">+5% from last week</span>
+            <div className="kpi-comparison">
+              <span>Peak: {occupancyData.peak || 0}%</span>
+              <span>Low: {occupancyData.low || 0}%</span>
+            </div>
           </div>
         </div>
 
         <div className="kpi-card">
           <div className="kpi-content">
-            <h3>{averageRating.toFixed(1)}</h3>
+            <h3>{reviewsData.average || 0}</h3>
             <p>Average Rating</p>
-            <span className="kpi-trend positive">
-              {reviewTrend} new reviews
+            <span className={`kpi-trend ${(reviewsData.trend || 0) > 0 ? 'positive' : 'negative'}`}>
+              {(reviewsData.trend || 0) > 0 ? '+' : ''}{reviewsData.trend || 0} reviews
             </span>
           </div>
         </div>
@@ -224,60 +204,100 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
         <div className="chart-card">
           <h3>Occupancy Trend</h3>
           <div className="simple-chart">
-            {currentOccupancyData.map((value, index) => (
-              <div key={index} className="chart-bar">
-                <div
-                  className="bar-fill"
-                  style={{ height: `${value || 0}%` }}
-                  title={`${value || 0}%`}
-                ></div>
-                <span className="bar-label">
-                  {timeRange === "week"
-                    ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][
-                        index
-                      ] || `Day ${index + 1}`
-                    : timeRange === "month"
-                      ? `Week ${index + 1}`
-                      : [
-                          "Jan",
-                          "Feb",
-                          "Mar",
-                          "Apr",
-                          "May",
-                          "Jun",
-                          "Jul",
-                          "Aug",
-                          "Sep",
-                          "Oct",
-                          "Nov",
-                          "Dec",
-                        ][index] || `Month ${index + 1}`}
-                </span>
+            {currentOccupancyData.length > 0 ? (
+              currentOccupancyData.map((value, index) => (
+                <div key={index} className="chart-bar">
+                  <div
+                    className="bar-fill"
+                    style={{ height: `${value || 0}%` }}
+                    title={`${value || 0}%`}
+                  ></div>
+                  <span className="bar-label">
+                    {timeRange === "week"
+                      ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index] || `Day ${index + 1}`
+                      : timeRange === "month"
+                        ? `Week ${index + 1}`
+                        : [
+                            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                          ][index] || `Month ${index + 1}`}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="no-chart-data">
+                <p>No occupancy data for this period</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
         <div className="chart-card">
           <h3>Peak Hours</h3>
           <div className="peak-hours-list">
-            {peakHours.map((peak, index) => (
-              <div key={index} className="peak-hour-item">
-                <div className="peak-hour-time">{peak.hour}</div>
-                <div className="peak-hour-bar">
-                  <div
-                    className="peak-bar-fill"
-                    style={{ width: `${peak.occupancy || 0}%` }}
-                  ></div>
+            {peakHours.length > 0 ? (
+              peakHours.map((peak, index) => (
+                <div key={index} className="peak-hour-item">
+                  <div className="peak-hour-time">{peak.hour}</div>
+                  <div className="peak-hour-bar">
+                    <div
+                      className="peak-bar-fill"
+                      style={{ width: `${peak.occupancy || 0}%` }}
+                    ></div>
+                  </div>
+                  <div className="peak-hour-percent">{peak.occupancy || 0}%</div>
                 </div>
-                <div className="peak-hour-percent">{peak.occupancy || 0}%</div>
+              ))
+            ) : (
+              <div className="no-peak-data">
+                <p>No peak hour data yet</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
 
-      {/* Recommendations */}
+      {/* Insights & Recommendations */}
+      <div className="insights-section">
+        <div className="insights-card">
+          <h3>Insights</h3>
+          <div className="insights-content">
+            <div className="best-day">
+              <strong>Busiest Day:</strong> {summaryData.best_day || 'No data yet'}
+            </div>
+          </div>
+        </div>
+
+        <div className="customer-card">
+          <h3>Customer Analysis</h3>
+          <div className="customer-content">
+            <div className="customer-metric">
+              <div className="metric-value">{customersData.total || 0}</div>
+              <div className="metric-label">Total Customers</div>
+            </div>
+            <div className="customer-breakdown">
+              <div className="breakdown-item repeat">
+                <div className="breakdown-percent">{customersData.repeat || 0}%</div>
+                <div className="breakdown-label">Repeat</div>
+              </div>
+              <div className="breakdown-item new">
+                <div className="breakdown-percent">{customersData.new || 0}%</div>
+                <div className="breakdown-label">New</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Data Info */}
+      <div className="data-info">
+        <p>
+          <small>
+            Analytics based on {occupancyData.total_logs || 0} occupancy logs. 
+            Data updates automatically when you update your restaurant occupancy.
+          </small>
+        </p>
+      </div>
     </div>
   );
 };

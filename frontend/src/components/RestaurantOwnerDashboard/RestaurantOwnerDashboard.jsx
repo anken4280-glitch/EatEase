@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import VerificationRequest from "../VerificationRequest/VerificationRequest";
 import "./RestaurantOwnerDashboard.css";
-
+import ManualOccupancyLogger from "./ManualOccupancyLogger";
 // Import tab components (we'll create owner versions)
 import OwnerOverviewTab from "./OwnerOverviewTab";
 import OwnerMenuTab from "./OwnerMenuTab";
@@ -422,7 +422,7 @@ function RestaurantOwnerDashboard({ user }) {
       // ADD THIS NEW CASE
       case "reservations":
         return <SpotHoldManagement restaurant={restaurant} />;
-      case "analytics": // NEW TAB
+      case "analytics":
         return (
           <AnalyticsTab
             restaurantId={restaurant.id}
