@@ -78,7 +78,7 @@
 
 .card-header h3 {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: #000000;
   flex: 1;
@@ -89,14 +89,14 @@
 .status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
-  font-size: 0.5rem;
+  font-size: 0.4rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 5px;
   font-family: Inter;
   /* border: 1px solid black; */
-  color: rgba(76, 74, 74, 0); /* Invisible Text*/
+  color: rgb(0, 0, 0);
 }
 
 .status-badge.green {
@@ -115,18 +115,13 @@
   background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
 }
 
-.card-details {
-  color: #000000;
-  font-size: 0.9rem;
-}
-
 .card-details p {
   margin: 0.25rem 0;
 }
 
 .card-cuisine {
   color: #000000;
-  font-size: 13px;
+  font-size: 11px;
   display: flex;
   align-items: center;
   font-family: Inter;
@@ -144,11 +139,23 @@
 
 .card-location-container {
   display: flex;
-  color: #000000;
+  color: #000000f0;
   font-family: Inter;
-  font-size: 13px;
-  padding: 3px;
+  font-size: 11px;
+  padding-bottom: 5px;
   margin-bottom: 5px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.location-text {
+  color: #000000;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  font-family: Inter;
+  padding: 3px;
+  padding-top: 2px;
 }
 
 /* Existing styles... */
@@ -319,7 +326,7 @@
   background: #000000;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 12px;
   color: #ffffff;
 }
 
@@ -347,7 +354,7 @@
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 1.2rem;
+  font-size: 12px;
   cursor: pointer;
   padding: 0 0.5rem;
   border-radius: 50%;
@@ -685,7 +692,7 @@ button.bookmark-btn-icon.active.loading,
 }
 
 .card-details {
-  padding: 0 16px 5px 16px;
+  padding: 0 10px 0px 10px;
 }
 
 /* For cards without banner, ensure profile picture still looks good */
@@ -744,7 +751,7 @@ button.bookmark-btn-icon.active.loading,
   align-items: center;
   position: relative;
   width: 36px;
-  height: 36px;
+  height: 30px;
 }
 
 /* Make sure profile placeholder is ready */

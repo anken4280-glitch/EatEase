@@ -197,7 +197,6 @@
   align-items: center;
   gap: 5px;
   flex-wrap: wrap;
-  padding: 5px;
   position: relative;
   border-radius: 8px;
   min-height: 45px;
@@ -222,7 +221,7 @@
 .available-restaurants-header {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 20px;
+  padding: 5px 0px 5px 0px;
   flex-wrap: wrap;
   align-items: center; /* Changed from align-content to align-items */
 }

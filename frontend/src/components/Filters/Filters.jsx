@@ -182,7 +182,7 @@ function Filters({
                     checked={localFilters.cuisine === 'all'}
                     onChange={handleCuisineChange}
                   />
-                  <span>All Cuisines</span>
+                  <span>All</span>
                 </label>
                 {availableCuisines.map((cuisine) => (
                   <label key={cuisine} className="cuisine-option">
@@ -247,9 +247,6 @@ function Filters({
                           ★
                         </span>
                       ))}
-                    </span>
-                    <span className="rating-text">
-                      {rating === 0 ? 'Any' : `${rating}+`}
                     </span>
                   </button>
                 ))}
