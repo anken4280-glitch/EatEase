@@ -113,6 +113,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/restaurant/occupancy', [RestaurantController::class, 'updateOccupancy']);
     Route::post('/restaurant/request-verification', [RestaurantController::class, 'requestVerification']);
     Route::post('/restaurant/request-feature', [RestaurantController::class, 'requestFeature']);
+      // Add these new routes
+    Route::post('/restaurant/feature', [RestaurantController::class, 'featureRestaurant']);
+    Route::post('/restaurant/unfeature', [RestaurantController::class, 'unfeatureRestaurant']);
     
     // Restaurant owner only routes
     Route::middleware('business.only')->group(function () {

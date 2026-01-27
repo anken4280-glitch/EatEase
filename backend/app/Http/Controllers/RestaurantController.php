@@ -101,6 +101,12 @@ class RestaurantController extends Controller
             } elseif ($type === 'banner') {
                 $restaurant->banner_image = $path;
                 $restaurant->banner_position = $request->input('position', 'center');
+
+                // // ✅ AUTO-FEATURE: If restaurant is premium, automatically feature it
+                // if ($restaurant->isPremium()) {
+                //     $restaurant->is_featured = true;
+                //     Log::info("Auto-featured premium restaurant: {$restaurant->name} (ID: {$restaurant->id})");
+                // }
             }
 
             $restaurant->save();
@@ -118,6 +124,102 @@ class RestaurantController extends Controller
             ], 500);
         }
     }
+
+    public function featureRestaurant(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Not authenticated'
+                ], 401);
+            }
+
+            // Get restaurant
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            // Check if restaurant is premium
+            if (!$restaurant->isPremium()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only premium restaurants can be featured'
+                ], 403);
+            }
+
+            // Check if restaurant has a banner image
+            if (!$restaurant->banner_image) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please upload a banner image first to be featured'
+                ], 400);
+            }
+
+            // Feature the restaurant
+            $restaurant->update([
+                'is_featured' => true
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Your restaurant is now featured!',
+                'restaurant' => $restaurant
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to feature restaurant: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Unfeature a restaurant
+     */
+    public function unfeatureRestaurant(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Not authenticated'
+                ], 401);
+            }
+
+            // Get restaurant
+            $restaurant = Restaurant::where('owner_id', $user->id)->first();
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            // Unfeature the restaurant
+            $restaurant->update([
+                'is_featured' => false
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Your restaurant is no longer featured',
+                'restaurant' => $restaurant
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to unfeature restaurant: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function getCrowdLevelText($status)
     {
         switch ($status) {
