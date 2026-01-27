@@ -242,7 +242,6 @@ function Login({ onLogin, onSwitchToSignup }) {
             {loading ? (
               <>
                 <span className="spinner"></span>
-                Verifying...
               </>
             ) : (
               "Sign In"

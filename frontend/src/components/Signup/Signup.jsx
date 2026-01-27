@@ -238,7 +238,7 @@ function Signup({ onSignup, onSwitchToLogin }) {
     <div className="signup">
       <div className="signup-container">
         <div className="signup-header">
-          <h2>Create Your Account</h2>
+          <h2>Sign Up</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="secure-signup-form">
@@ -354,7 +354,7 @@ function Signup({ onSignup, onSwitchToLogin }) {
                 name="password_confirmation"
                 value={formData.password_confirmation}
                 onChange={handleChange}
-                placeholder="Confirm your password"
+                placeholder="Confirm password"
                 required
                 autoComplete="new-password"
               />
