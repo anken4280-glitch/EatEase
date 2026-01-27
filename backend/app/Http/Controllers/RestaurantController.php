@@ -404,60 +404,71 @@ class RestaurantController extends Controller
         }
     }
 
-    public function getAllRestaurants()
+    // In RestaurantController.php - UPDATED getAllRestaurants method
+    public function getAllRestaurants(Request $request)
     {
         try {
-            // Get all restaurants with premium ones FIRST
-            $restaurants = \App\Models\Restaurant::orderByRaw("subscription_tier = 'premium' DESC")
+            $query = Restaurant::query();
+
+            // Apply filters if provided
+            // 1. CUISINE FILTER
+            if ($request->has('cuisine') && $request->cuisine !== 'all' && $request->cuisine !== '') {
+                $query->where('cuisine_type', $request->cuisine);
+            }
+
+            // 2. CROWD STATUS FILTER
+            if ($request->has('crowd_status')) {
+                $statuses = is_array($request->crowd_status) ? $request->crowd_status : [$request->crowd_status];
+                if (!empty($statuses)) {
+                    $query->whereIn('crowd_status', $statuses);
+                }
+            }
+
+            // 3. RATING FILTER
+            if ($request->has('min_rating')) {
+                $query->where('average_rating', '>=', (float)$request->min_rating);
+            }
+
+            // 4. TIER FILTER
+            if ($request->has('tier') && $request->tier !== 'all') {
+                $query->where('subscription_tier', $request->tier);
+            }
+
+            // 5. FEATURED FILTER (optional)
+            if ($request->has('featured') && $request->featured === 'true') {
+                $query->where('is_featured', true);
+            }
+
+            // Get restaurants with premium ones FIRST
+            $restaurants = $query->orderByRaw("subscription_tier = 'premium' DESC")
                 ->orderBy('is_featured', 'DESC')
                 ->orderBy('is_verified', 'DESC')
                 ->orderBy('created_at', 'DESC')
                 ->get();
 
-            // Transform for frontend
-            $transformedRestaurants = $restaurants->map(function ($restaurant) {
-                // Calculate occupancy percentage
-                $occupancyPercentage = 0;
-                if ($restaurant->max_capacity > 0) {
-                    $occupancyPercentage = round(($restaurant->current_occupancy / $restaurant->max_capacity) * 100);
-                }
-
-                if ($occupancyPercentage < 40) {
-                    $status = 'green';
-                    $crowdLevel = 'Low';
-                    $waitTime = 5;
-                } elseif ($occupancyPercentage < 70) {
-                    $status = 'yellow';
-                    $crowdLevel = 'Moderate';
-                    $waitTime = 15;
-                } elseif ($occupancyPercentage < 90) {
-                    $status = 'orange';
-                    $crowdLevel = 'Busy';
-                    $waitTime = 25;
-                } else {
-                    $status = 'red';
-                    $crowdLevel = 'Full';
-                    $waitTime = 30;
-                }
+            // Transform for frontend (your existing transformation code)
+            $transformedRestaurants = $restaurants->map(function ($restaurant) use ($request) {
+                // Keep your existing transformation logic...
+                // [YOUR EXISTING TRANSFORMATION CODE HERE]
 
                 return [
                     'id' => $restaurant->id,
                     'name' => $restaurant->name,
                     'cuisine' => $restaurant->cuisine_type,
+                    'cuisine_type' => $restaurant->cuisine_type, // Add this for consistency
                     'address' => $restaurant->address,
                     'phone' => $restaurant->phone,
                     'hours' => $restaurant->hours,
                     'max_capacity' => $restaurant->max_capacity,
                     'current_occupancy' => $restaurant->current_occupancy,
-                    'status' => $status,
-                    'crowdLevel' => $crowdLevel,
-                    'occupancy' => $occupancyPercentage,
-                    'waitTime' => $waitTime,
+                    'status' => $restaurant->crowd_status,
+                    'crowdLevel' => $this->getCrowdLevelText($restaurant->crowd_status),
+                    'occupancy' => $restaurant->occupancy_percentage,
+                    'waitTime' => $this->calculateWaitTime($restaurant->occupancy_percentage),
                     'isFeatured' => $restaurant->is_featured ?? false,
                     'isVerified' => $restaurant->is_verified ?? false,
                     'isPremium' => $restaurant->subscription_tier === 'premium',
                     'subscription_tier' => $restaurant->subscription_tier ?? 'basic',
-                    // ✅ ADD THESE LINES - IMAGE FIELDS
                     'banner_image' => $restaurant->banner_image
                         ? Storage::url($restaurant->banner_image)
                         : null,
@@ -470,21 +481,74 @@ class RestaurantController extends Controller
                 ];
             });
 
-            // Count premium restaurants
+            // Counts for statistics
             $premiumCount = $restaurants->where('subscription_tier', 'premium')->count();
+            $featuredCount = $restaurants->where('is_featured', true)->count();
+
+            // Get unique cuisines from filtered results
+            $availableCuisines = $restaurants->pluck('cuisine_type')
+                ->filter()
+                ->unique()
+                ->values()
+                ->toArray();
 
             return response()->json([
                 'restaurants' => $transformedRestaurants,
                 'count' => $transformedRestaurants->count(),
                 'premium_count' => $premiumCount,
-                'featured_count' => $restaurants->where('is_featured', true)->count()
+                'featured_count' => $featuredCount,
+                'filters' => [
+                    'available_cuisines' => $availableCuisines,
+                    'applied_filters' => $request->all()
+                ]
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error fetching restaurants: ' . $e->getMessage());
-
             return response()->json([
                 'error' => 'Failed to fetch restaurants',
                 'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Add this helper method to RestaurantController class
+    private function calculateWaitTime($occupancyPercentage)
+    {
+        if ($occupancyPercentage < 40) {
+            return 5;
+        } elseif ($occupancyPercentage < 70) {
+            return 15;
+        } elseif ($occupancyPercentage < 90) {
+            return 25;
+        } else {
+            return 30;
+        }
+    }
+
+    // Add this method to RestaurantController.php
+    public function getAvailableCuisines()
+    {
+        try {
+            // Get all distinct cuisine types from restaurants
+            $cuisines = Restaurant::whereNotNull('cuisine_type')
+                ->where('cuisine_type', '!=', '')
+                ->select('cuisine_type')
+                ->distinct()
+                ->orderBy('cuisine_type')
+                ->pluck('cuisine_type')
+                ->filter() // Remove empty values
+                ->values() // Reset keys
+                ->toArray();
+
+            return response()->json([
+                'success' => true,
+                'cuisines' => $cuisines,
+                'count' => count($cuisines)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch cuisines: ' . $e->getMessage()
             ], 500);
         }
     }

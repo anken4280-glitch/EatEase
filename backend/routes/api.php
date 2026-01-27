@@ -89,8 +89,12 @@ Route::get('/test-api', function () {
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/signup', [AuthController::class, 'signup']);
 
+
 // Public restaurant routes
+// Add these routes in routes/api.php
 Route::get('/restaurants', [RestaurantController::class, 'getAllRestaurants']);
+Route::get('/restaurants/cuisines', [RestaurantController::class, 'getAvailableCuisines']);
+
 Route::get('/restaurants/{id}', [RestaurantController::class, 'getRestaurantById']);
 Route::get('/restaurants/{id}/menu', [RestaurantController::class, 'getMenuItems']);
 Route::get('/restaurants/{id}/photos', [RestaurantController::class, 'getPhotos']);
@@ -99,6 +103,7 @@ Route::get('/restaurants/{id}/reviews', [ReviewController::class, 'index']);
 Route::get('/restaurants/{id}/menu-text', [MenuController::class, 'show']);
 Route::get('/restaurants/premium/recommendations', [RecommendationController::class, 'getPremiumRecommendations']);
 Route::get('/restaurants/{id}/menu', [MenuController::class, 'show']);
+
 
 // ==================== PROTECTED ROUTES ====================
 Route::middleware('auth:sanctum')->group(function () {
