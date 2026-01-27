@@ -23,11 +23,6 @@
   cursor: pointer;
 }
 
-.filter-button:hover {
-  background: var(--accent-purple-dark, #5a4d7d);
-  transform: translateY(-1px);
-}
-
 .active-filter-indicator {
   display: inline-block;
   width: 8px;
