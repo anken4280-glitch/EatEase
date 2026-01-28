@@ -6,7 +6,7 @@ class PollingService {
   constructor() {
     this.intervals = new Map();
     this.subscribers = new Map();
-    this.pollingInterval = 10000; // 30 seconds
+    this.pollingInterval = 30000; // 30 seconds
     this.isTabActive = true;
     
     // Track tab visibility - SIMPLIFIED
