@@ -1906,3 +1906,53 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* Live update styles for details page */
+/* Live update styles for details page */
+.live-update-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 100;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+.live-indicator {
+  font-size: 0.7rem;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.crowd-status.pulsing {
+  animation: colorPulse 2s infinite;
+}
+
+@keyframes colorPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.quick-stats-bar.updating::before {
+  content: '🔄 Updating...';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #666;
+  animation: fadeInOut 1.5s ease-in-out;
+}

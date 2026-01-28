@@ -60,7 +60,14 @@ function RestaurantList({
   // Effect for fetching restaurants from API on component mount
   useEffect(() => {
     fetchRestaurants();
-    fetchNotificationCount(); // ADD THIS
+    fetchNotificationCount();
+    // Cleanup polling on unmount
+    return () => {
+      // You can add cleanup if needed, but pollingService manages its own cleanup
+      console.log(
+        "RestaurantList unmounting - polling cleanup handled by service",
+      );
+    }; // ADD THIS
   }, []); // Empty dependency array means this runs once on mount
 
   useEffect(() => {

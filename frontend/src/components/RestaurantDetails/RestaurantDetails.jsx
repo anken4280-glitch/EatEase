@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./RestaurantDetails.css";
 import profileImage from "../../Assets/Images/profile1.jpg";
+import pollingService from "../../services/pollingService"; // Adjust path
 
 // Tab Components
 import OverviewTab from "../OverviewTab/OverviewTab";
@@ -29,6 +30,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
   // ========== STATE VARIABLES ==========
   const [activeTab, setActiveTab] = useState("overview");
   const [restaurant, setRestaurant] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false); // ✅ ADD THIS
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
@@ -38,6 +40,60 @@ function RestaurantDetails({ restaurantId, onBack }) {
     average_rating: 0,
     total_reviews: 0,
   });
+
+// ========== POLLING FOR REAL-TIME UPDATES ========== 
+useEffect(() => {
+  if (!restaurantId) return;
+
+  console.log(`RestaurantDetails setting up polling for ${restaurantId}`);
+  
+  let isMounted = true; // ✅ ADD MOUNT CHECK
+  
+  // Subscribe to real-time updates
+  const unsubscribe = pollingService.subscribe(
+    restaurantId,
+    (updatedData) => {
+      if (!isMounted) return; // ✅ CHECK IF COMPONENT IS STILL MOUNTED
+      
+      console.log(
+        `Details update for restaurant ${restaurantId}:`,
+        updatedData,
+      );
+
+      setIsUpdating(true);
+
+      // Update restaurant data
+      setRestaurant((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          crowd_status: updatedData.crowd_status,
+          current_occupancy: updatedData.current_occupancy,
+          occupancy_percentage: updatedData.occupancy_percentage,
+          crowd_level:
+            updatedData.crowd_status === "green"
+              ? "Low"
+              : updatedData.crowd_status === "yellow"
+                ? "Moderate"
+                : updatedData.crowd_status === "orange"
+                  ? "Busy"
+                  : "Full",
+        };
+      });
+
+      // Hide indicator after 1 second
+      setTimeout(() => {
+        if (isMounted) setIsUpdating(false); // ✅ CHECK MOUNT
+      }, 1000);
+    },
+  );
+
+  return () => {
+    console.log(`🧹 RestaurantDetails cleaning up polling for ${restaurantId}`);
+    isMounted = false; // ✅ SET TO FALSE ON CLEANUP
+    unsubscribe();
+  };
+}, [restaurantId]); 
 
   // ========== IMAGE URLS (CALCULATED FROM RESTAURANT) ==========
   // Calculate these AFTER restaurant is loaded
@@ -244,7 +300,15 @@ function RestaurantDetails({ restaurantId, onBack }) {
 
   return (
     <div className="restaurant-details-page">
-      {/* Restaurant Header - UPDATED with Banner */}
+      {/* ✅ ADD LIVE INDICATOR */}
+      {isUpdating && (
+        <div className="live-update-indicator">
+          <div className="updating-dot"></div>
+          <span>Live updating...</span>
+        </div>
+      )}
+
+      {/* Restaurant Banner */}
       {bannerImageUrl && (
         <div className="restaurant-details-banner">
           <img
@@ -261,24 +325,28 @@ function RestaurantDetails({ restaurantId, onBack }) {
 
       <div className="restaurant-header">
         <div className="restaurant-basic-info">
-          <h1 className="restaurant-name"> <div className="restaurant-image-container">
-          {profileImageUrl ? (
-            <img
-              src={profileImageUrl}
-              alt={`${restaurant.name} profile`}
-              className="restaurant-profile-image"
-              onError={(e) => {
-                e.target.src = profileImage; // Fallback to imported image
-              }}
-            />
-          ) : (
-            <img src={profileImage} alt="Restaurant Profile" />
-          )}
-          {/* <div className="restaurant-image-placeholder">
+          <h1 className="restaurant-name">
+            {" "}
+            <div className="restaurant-image-container">
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt={`${restaurant.name} profile`}
+                  className="restaurant-profile-image"
+                  onError={(e) => {
+                    e.target.src = profileImage; // Fallback to imported image
+                  }}
+                />
+              ) : (
+                <img src={profileImage} alt="Restaurant Profile" />
+              )}
+              {/* <div className="restaurant-image-placeholder">
             /* {restaurant.is_verified && (
               <span className="verified-badge">✅ Verified</span>
           </div> */}
-        </div>{restaurant.name}</h1>
+            </div>
+            {restaurant.name}
+          </h1>
           <div className="restaurant-meta">
             <span className={`crowd-status ${restaurant.crowd_status}`}>
               {getCrowdStatusText(restaurant.crowd_status)}

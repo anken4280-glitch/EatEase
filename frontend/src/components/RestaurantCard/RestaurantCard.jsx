@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./RestaurantCard.css";
 import TierBadge from "../TierBadge/TierBadge";
+import pollingService from "../../services/pollingService";
 
 const API_BASE_URL = "http://localhost/EatEase/backend/public";
 
@@ -37,47 +38,65 @@ function RestaurantCard({
   const profileImageUrl = restaurant.profile_image
     ? getImageUrl(restaurant.profile_image)
     : null;
+
+    // ========== STATE VARIABLES ==========
+  const [currentRestaurant, setCurrentRestaurant] = useState(restaurant); // ✅ ADD THIS
+  const [isUpdating, setIsUpdating] = useState(false); // ✅ ADD THIS
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userHasNotification, setUserHasNotification] = useState(null);
 
-  console.log("🔍 RESTAURANT IMAGE DEBUG:", {
-    name: restaurant.name,
-    banner_image: restaurant.banner_image,
-    profile_image: restaurant.profile_image,
+   // ========== POLLING FOR REAL-TIME UPDATES ========== ✅ ADD THIS SECTION
+  useEffect(() => {
+    // Subscribe to real-time updates for this restaurant
+    const unsubscribe = pollingService.subscribe(
+      restaurant.id,
+      (updatedData) => {
+        console.log(`Real-time update for ${restaurant.name}:`, updatedData);
+        
+        // Show updating indicator
+        setIsUpdating(true);
+        
+        // Update the restaurant data
+        setCurrentRestaurant(prev => ({
+          ...prev,
+          crowd_status: updatedData.crowd_status,
+          current_occupancy: updatedData.current_occupancy,
+          occupancy_percentage: updatedData.occupancy_percentage,
+          crowdLevel: updatedData.crowd_status === 'green' ? 'Low' :
+                    updatedData.crowd_status === 'yellow' ? 'Moderate' :
+                    updatedData.crowd_status === 'orange' ? 'Busy' : 'Full'
+        }));
+        
+        // Hide indicator after 1 second
+        setTimeout(() => setIsUpdating(false), 1000);
+      }
+    );
 
-    // What getImageUrl produces:
-    bannerUrl: restaurant.banner_image
-      ? getImageUrl(restaurant.banner_image)
-      : "NO BANNER",
-    profileUrl: restaurant.profile_image
-      ? getImageUrl(restaurant.profile_image)
-      : "NO PROFILE",
+    // Cleanup on unmount
+    return () => {
+      unsubscribe();
+    };
+  }, [restaurant.id, restaurant.name]);
 
-    // Full restaurant object:
-    restaurantData: restaurant,
-  });
-
-  // Find notification from parent's pre-fetched data
+   // ========== EXISTING EFFECTS (UPDATED TO USE currentRestaurant) ==========
   useEffect(() => {
     const notification = allNotifications.find(
-      (n) => n.restaurant_id === restaurant.id,
+      (n) => n.restaurant_id === currentRestaurant.id  // ✅ Use currentRestaurant
     );
     setUserHasNotification(notification?.notify_when_status || null);
-  }, [allNotifications, restaurant.id]);
+  }, [allNotifications, currentRestaurant.id]);  // ✅ Use currentRestaurant.id
 
-  // Keep bookmark check but remove notification fetch
   useEffect(() => {
     checkBookmarks();
-  }, [restaurant.id]);
+  }, [currentRestaurant.id]);  // ✅ Use currentRestaurant.id
 
   const checkBookmarks = async () => {
     const token = localStorage.getItem("auth_token");
     if (!token) return;
 
     try {
-      // Check bookmarks only
       const bookmarksRes = await fetch(`${API_BASE_URL}/api/bookmarks`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -89,7 +108,7 @@ function RestaurantCard({
         const bookmarksData = await bookmarksRes.json();
         if (bookmarksData.success && bookmarksData.bookmarks) {
           const bookmarked = bookmarksData.bookmarks.some(
-            (b) => b.restaurant_id === restaurant.id,
+            (b) => b.restaurant_id === currentRestaurant.id  // ✅ Use currentRestaurant
           );
           setIsBookmarked(bookmarked);
         }
@@ -100,7 +119,7 @@ function RestaurantCard({
   };
 
   const handleClick = () => {
-    onRestaurantClick(restaurant);
+    onRestaurantClick(currentRestaurant);  // ✅ Use currentRestaurant
   };
 
   const handleBookmarkClick = async (e) => {
@@ -116,7 +135,7 @@ function RestaurantCard({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/bookmarks/${restaurant.id}`,
+        `${API_BASE_URL}/api/bookmarks/${currentRestaurant.id}`,  // ✅ Use currentRestaurant
         {
           method: "POST",
           headers: {
@@ -130,8 +149,6 @@ function RestaurantCard({
       const data = await response.json();
       if (data.success) {
         setIsBookmarked(data.isBookmarked);
-        // Optional: Show subtle feedback
-        console.log(data.message);
       } else {
         console.error("Bookmark failed:", data.message);
       }
@@ -161,7 +178,7 @@ function RestaurantCard({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/notifications/${restaurant.id}`,
+        `${API_BASE_URL}/api/notifications/${currentRestaurant.id}`,  // ✅ Use currentRestaurant
         {
           method: "POST",
           headers: {
@@ -177,13 +194,12 @@ function RestaurantCard({
       if (data.success) {
         setUserHasNotification(crowdLevel);
 
-        // TRIGGER GLOBAL REFRESH - This will update parent's allNotifications
         if (window.refreshNotificationCount) {
           window.refreshNotificationCount();
         }
 
         alert(
-          `You'll be notified when ${restaurant.name} has ${getStatusText(
+          `You'll be notified when ${currentRestaurant.name} has ${getStatusText(  // ✅ Use currentRestaurant
             crowdLevel,
           )} crowd!`,
         );
@@ -207,9 +223,8 @@ function RestaurantCard({
 
     setLoading(true);
     try {
-      // Since we have allNotifications from parent, find the ID
       const notification = allNotifications.find(
-        (n) => n.restaurant_id === restaurant.id,
+        (n) => n.restaurant_id === currentRestaurant.id  // ✅ Use currentRestaurant
       );
 
       if (notification) {
@@ -229,7 +244,6 @@ function RestaurantCard({
         if (deleteData.success) {
           setUserHasNotification(null);
 
-          // TRIGGER GLOBAL REFRESH
           if (window.refreshNotificationCount) {
             window.refreshNotificationCount();
           }
@@ -274,44 +288,53 @@ function RestaurantCard({
     }
   };
 
-  const shortAddress = restaurant.address
-    ? restaurant.address.split(",")[0].trim()
+  const shortAddress = currentRestaurant.address  // ✅ Use currentRestaurant
+    ? currentRestaurant.address.split(",")[0].trim()
     : "Location not available";
 
+  // ========== RENDER ==========
   return (
     <>
       <div className="restaurant-card" onClick={handleClick}>
-        {/* Banner Container with Buttons */}
+        {/* Banner Container with Update Indicator */}
         <div className="restaurant-banner-container">
           {bannerImageUrl ? (
             <img
               src={bannerImageUrl}
-              alt={`${restaurant.name} banner`}
+              alt={`${currentRestaurant.name} banner`}
               className="restaurant-banner"
               onError={(e) => {
                 console.error("Banner failed to load:", bannerImageUrl);
                 e.target.style.display = "none";
                 const placeholder = document.createElement("div");
                 placeholder.className = "banner-placeholder";
-                placeholder.textContent = restaurant.name;
+                placeholder.textContent = currentRestaurant.name;
                 e.target.parentElement.appendChild(placeholder);
               }}
             />
           ) : (
-            <div className="banner-placeholder">{restaurant.name}</div>
+            <div className="banner-placeholder">{currentRestaurant.name}</div>
           )}
 
-          {/* ✅ ADD RATING DISPLAY HERE - Top Left of Banner */}
+          {/* ✅ UPDATE INDICATOR */}
+          {isUpdating && (
+            <div className="update-indicator">
+              <div className="updating-dot"></div>
+              <span>Updating...</span>
+            </div>
+          )}
+
+          {/* Rating Display */}
           <div className="banner-rating-display">
             <span className="rating-star">★</span>
             <span className="card-rating-number">
-              {restaurant.average_rating > 0
-                ? Number(restaurant.average_rating).toFixed(1)
+              {currentRestaurant.average_rating > 0
+                ? Number(currentRestaurant.average_rating).toFixed(1)
                 : "0.0"}
             </span>
           </div>
 
-          {/* Action Buttons - POSITIONED TOP RIGHT */}
+          {/* Action Buttons */}
           <div className="banner-action-buttons">
             <button
               className={`bookmark-btn-icon ${isBookmarked ? "active" : ""} ${
@@ -389,16 +412,14 @@ function RestaurantCard({
         <div className="card-header">
           <div className="card-title-section">
             <div className="restaurant-title-row">
-              {/* Profile Picture - ALWAYS SHOW CONTAINER */}
               <div className="restaurant-profile-container">
                 <div className="profile-image-wrapper">
                   {profileImageUrl ? (
                     <img
                       src={profileImageUrl}
-                      alt={`${restaurant.name} profile`}
+                      alt={`${currentRestaurant.name} profile`}
                       className="restaurant-profile-pic"
                       onError={(e) => {
-                        // Show placeholder on error
                         e.target.style.display = "none";
                         const placeholder = e.target.nextElementSibling;
                         if (placeholder) placeholder.style.display = "block";
@@ -407,37 +428,23 @@ function RestaurantCard({
                   ) : null}
                 </div>
                 <div className="restaurant-name-and-tier">
-                  <h3 className="restaurant-name">{restaurant.name}</h3>
-                  <TierBadge restaurantData={restaurant} />
+                  <h3 className="restaurant-name">{currentRestaurant.name}</h3>
+                  <TierBadge restaurantData={currentRestaurant} />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className={`status-badge ${restaurant.status}`}>
-            Crowd Level: {restaurant.crowdLevel}
+          {/* ✅ UPDATED STATUS BADGE WITH PULSE EFFECT */}
+          <div className={`status-badge ${currentRestaurant.crowd_status} ${isUpdating ? 'updating' : ''}`}>
+            Crowd Level: {currentRestaurant.crowdLevel || getStatusText(currentRestaurant.crowd_status)}
+            {isUpdating && <span className="pulse-dot"></span>}
           </div>
         </div>
 
         <div className="card-details">
-          {/* <p className="card-cuisine">{restaurant.cuisine}</p> */}
-          {/* <p className="card-occupancy">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="16"
-              viewBox="0 -960 960 960"
-              width="16"
-              fill="red"
-              aria-hidden="true"
-            >
-              <path d="M480-660q-29 0-49.5-20.5T410-730q0-29 20.5-49.5T480-800q29 0 49.5 20.5T550-730q0 29-20.5 49.5T480-660Zm-80 500v-200h-40v-180q0-33 23.5-56.5T440-620h80q33 0 56.5 23.5T600-540v180h-40v200H400Z" />
-            </svg>
-            Occupancy: {restaurant.occupancy}%
-          </p> */}
-
           <div className="card-location-container">
             <span className="location-text">
-              {" "}
               <svg
                 className="location-icon"
                 width="11"
@@ -453,7 +460,6 @@ function RestaurantCard({
             </span>
 
             <span className="card-cuisine">
-              {" "}
               <svg
                 width="11"
                 height="11"
@@ -463,12 +469,11 @@ function RestaurantCard({
               >
                 <path d="m175-120-56-56 410-410q-18-42-5-95t57-95q53-53 118-62t106 32q41 41 32 106t-62 118q-42 44-95 57t-95-5l-50 50 304 304-56 56-304-302-304 302Zm118-342L173-582q-54-54-54-129t54-129l248 250-128 128Z" />
               </svg>{" "}
-              {restaurant.cuisine}
+              {currentRestaurant.cuisine}
             </span>
           </div>
         </div>
 
-        {/* Show current notification setting */}
         {userHasNotification && (
           <div className="current-notification">
             <small>
@@ -500,7 +505,7 @@ function RestaurantCard({
             className="notification-modal"
             onClick={(e) => e.stopPropagation()}
           >
-            <h4>Notify me when {restaurant.name} is:</h4>
+            <h4>Notify me when {currentRestaurant.name} is:</h4>
 
             <div className="notification-options">
               {["green", "yellow", "orange", "red"].map((status) => (
