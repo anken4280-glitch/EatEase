@@ -405,12 +405,6 @@ function RestaurantCard({
                       }}
                     />
                   ) : null}
-                  <div
-                    className="restaurant-card-profile-placeholder"
-                    style={{ display: profileImageUrl ? "none" : "flex" }}
-                  >
-                    {restaurant.name.charAt(0)}
-                  </div>
                 </div>
                 <div className="restaurant-name-and-tier">
                   <h3 className="restaurant-name">{restaurant.name}</h3>

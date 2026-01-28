@@ -245,3 +245,7 @@
   align-self: flex-end;
   margin-right: 10px;
 }
+
+.loading-state {
+  margin-top: 20px;
+}

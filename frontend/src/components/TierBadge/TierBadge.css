@@ -36,11 +36,11 @@
   line-height: 1;
 }
 
-
 /* Premium Tier - Mobile */
 .card-tier-badge.premium {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  background: rgb(255, 217, 0);
   color: #856404;
+  border: 1px gold;
 }
 
 /* Basic Tier - Mobile */
@@ -82,13 +82,13 @@
   word-break: keep-all;
 }
 
-  .tier-badge-wrapper:hover .tier-tooltip {
-    opacity: 1;
-    visibility: visible;
-      }
+.tier-badge-wrapper:hover .tier-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
 
 .tier-tooltip::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -6px;
   left: 50%;
@@ -99,13 +99,13 @@
 }
 
 @keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateX(-50%) translateY(-5px); 
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateX(-50%) translateY(0); 
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 
@@ -117,23 +117,23 @@
     gap: 6px;
     min-width: auto;
   }
-  
+
   .tier-icon {
     font-size: 15px;
   }
-  
+
   .card-tier-badge:hover {
     transform: translateY(-2px);
   }
-  
+
   .card-tier-badge.premium:hover {
     box-shadow: 0 6px 16px rgba(255, 215, 0, 0.25);
   }
-  
+
   .card-tier-badge.basic:hover {
     background: #e9ecef;
   }
-  
+
   .tier-tooltip {
     font-size: 13px;
     padding: 10px 16px;
@@ -147,7 +147,7 @@
     padding: 6px 10px;
     font-size: 13px;
   }
-  
+
   .tier-tooltip {
     font-size: 14px;
     padding: 12px 18px;

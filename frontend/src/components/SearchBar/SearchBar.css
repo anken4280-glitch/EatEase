@@ -21,7 +21,7 @@
 .search-input {
   width: 100%;
   padding: 12px 12px 12px 45px; /* Left padding for icon */
-  border: 1px solid #ddd;
+  border: 1px solid #000000;
   border-radius: 8px;
   font-size: 14px;
   background: white;

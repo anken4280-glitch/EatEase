@@ -260,7 +260,8 @@ function RestaurantDetails({ restaurantId, onBack }) {
       )}
 
       <div className="restaurant-header">
-        <div className="restaurant-image-container">
+        <div className="restaurant-basic-info">
+          <h1 className="restaurant-name"> <div className="restaurant-image-container">
           {profileImageUrl ? (
             <img
               src={profileImageUrl}
@@ -277,10 +278,7 @@ function RestaurantDetails({ restaurantId, onBack }) {
             /* {restaurant.is_verified && (
               <span className="verified-badge">✅ Verified</span>
           </div> */}
-        </div>
-
-        <div className="restaurant-basic-info">
-          <h1 className="restaurant-name">{restaurant.name}</h1>
+        </div>{restaurant.name}</h1>
           <div className="restaurant-meta">
             <span className={`crowd-status ${restaurant.crowd_status}`}>
               {getCrowdStatusText(restaurant.crowd_status)}

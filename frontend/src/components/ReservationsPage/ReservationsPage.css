@@ -61,21 +61,6 @@
   margin-bottom: 25px;
 }
 
-.browse-btn {
-  background: #6b5b95;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.browse-btn:hover {
-  background: #5a4a84;
-}
-
 .reservations-list {
   display: flex;
   flex-direction: column;
@@ -210,7 +195,7 @@
 }
 
 .browse-btn {
-  background-color: #007bff;
+  background-color: black;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -417,18 +402,6 @@
 .empty-icon {
   font-size: 64px;
   margin-bottom: 20px;
-}
-
-.browse-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-top: 20px;
-  transition: background-color 0.2s;
 }
 
 .loading {
