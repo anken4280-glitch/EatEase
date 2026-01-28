@@ -26,6 +26,42 @@ class RestaurantController extends Controller
         return $this->getRestaurantById($id);
     }
 
+    /**
+     * Get restaurant status for polling (crowd status, occupancy)
+     */
+    public function getStatus($id)
+    {
+        try {
+            $restaurant = Restaurant::find($id);
+
+            if (!$restaurant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Restaurant not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'restaurant' => [
+                    'id' => $restaurant->id,
+                    'name' => $restaurant->name,
+                    'crowd_status' => $restaurant->crowd_status,
+                    'current_occupancy' => $restaurant->current_occupancy,
+                    'max_capacity' => $restaurant->max_capacity,
+                    'occupancy_percentage' => $restaurant->occupancy_percentage,
+                    'updated_at' => $restaurant->updated_at->toISOString()
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Get restaurant status error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get restaurant status'
+            ], 500);
+        }
+    }
+
 
     // RestaurantController.php
     public function uploadImage(Request $request, $type)

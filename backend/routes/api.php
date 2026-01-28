@@ -16,36 +16,15 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\RestaurantPhotoController;
 use App\Http\Controllers\ReservationController;
 
-// DELETE
-Route::get('/test-spot-holds-public', function() {
-    return response()->json([
-        'success' => true,
-        'message' => 'Public test route works',
-        'routes_exist' => [
-            '/my-restaurant/spot-holds' => Route::has('my-restaurant.spot-holds'),
-            '/restaurant/my' => true,
-        ]
-    ]);
+
+Route::middleware(['auth:sanctum', 'throttle:60,1']) // 60 requests per minute
+    ->group(function () {
+    // Your protected routes
 });
 
-// Delete too
-// In api.php - temporary test
-Route::get('/test-remove-route', function() {
-    return response()->json([
-        'routes' => [
-            'DELETE /api/reservations/{id}/remove' => 'Exists',
-            'test' => 'Working'
-        ]
-    ]);
-});
-
-// DEBUG ROUTES - Add these at the VERY TOP
-Route::get('/debug-public', function() {
-    return response()->json([
-        'message' => '✅ Public route works',
-        'routes_loaded' => true
-    ]);
-});
+// For status endpoint specifically (public), add higher limit:
+Route::get('/restaurants/{id}/status', [RestaurantController::class, 'getStatus'])
+    ->middleware('throttle:300,1'); // 120 requests per minute
 
 Route::middleware('auth:sanctum')->get('/debug-protected', function() {
     $user = auth()->user();
@@ -103,6 +82,8 @@ Route::get('/restaurants/{id}/reviews', [ReviewController::class, 'index']);
 Route::get('/restaurants/{id}/menu-text', [MenuController::class, 'show']);
 Route::get('/restaurants/premium/recommendations', [RecommendationController::class, 'getPremiumRecommendations']);
 Route::get('/restaurants/{id}/menu', [MenuController::class, 'show']);
+// Add this with other public restaurant routes (around line 50)
+Route::get('/restaurants/{id}/status', [RestaurantController::class, 'getStatus']);
 
 
 // ==================== PROTECTED ROUTES ====================
