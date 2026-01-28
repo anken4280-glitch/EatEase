@@ -41,69 +41,52 @@ function RestaurantDetails({ restaurantId, onBack }) {
     total_reviews: 0,
   });
 
-// ========== POLLING FOR REAL-TIME UPDATES ========== 
-useEffect(() => {
-  if (!restaurantId) return;
+  // ========== POLLING FOR REAL-TIME UPDATES ==========
+  useEffect(() => {
+    if (!restaurantId) return;
 
-  console.log(`RestaurantDetails setting up polling for ${restaurantId}`);
-  
-  let isMounted = true; // ✅ ADD MOUNT CHECK
-  
-  // Subscribe to real-time updates
-  const unsubscribe = pollingService.subscribe(
-    restaurantId,
-    (updatedData) => {
-      if (!isMounted) return; // ✅ CHECK IF COMPONENT IS STILL MOUNTED
-      
-      console.log(
-        `Details update for restaurant ${restaurantId}:`,
-        updatedData,
-      );
+    console.log(`🏪 [Details] MOUNTED for restaurant ${restaurantId}`);
 
-      setIsUpdating(true);
+    const unsubscribe = pollingService.subscribe(
+      restaurantId,
+      (updatedData) => {
+        console.log(
+          `🔄 [Details] RECEIVED UPDATE for ${restaurantId}:`,
+          updatedData.crowd_status,
+          `at ${new Date().toLocaleTimeString()}`,
+        );
 
-      // Update restaurant data
-      setRestaurant((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          crowd_status: updatedData.crowd_status,
-          current_occupancy: updatedData.current_occupancy,
-          occupancy_percentage: updatedData.occupancy_percentage,
-          crowd_level:
-            updatedData.crowd_status === "green"
-              ? "Low"
-              : updatedData.crowd_status === "yellow"
-                ? "Moderate"
-                : updatedData.crowd_status === "orange"
-                  ? "Busy"
-                  : "Full",
-        };
-      });
+        setIsUpdating(true);
 
-      // Hide indicator after 1 second
-      setTimeout(() => {
-        if (isMounted) setIsUpdating(false); // ✅ CHECK MOUNT
-      }, 1000);
-    },
-  );
+        // Update restaurant data
+        setRestaurant((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            crowd_status: updatedData.crowd_status,
+            current_occupancy: updatedData.current_occupancy,
+            occupancy_percentage: updatedData.occupancy_percentage,
+            crowd_level:
+              updatedData.crowd_status === "green"
+                ? "Low"
+                : updatedData.crowd_status === "yellow"
+                  ? "Moderate"
+                  : updatedData.crowd_status === "orange"
+                    ? "Busy"
+                    : "Full",
+          };
+        });
 
-  return () => {
-    console.log(`🧹 RestaurantDetails cleaning up polling for ${restaurantId}`);
-    isMounted = false; // ✅ SET TO FALSE ON CLEANUP
-    unsubscribe();
-  };
-}, [restaurantId]); 
+        // Hide indicator after 1 second
+        setTimeout(() => setIsUpdating(false), 1000);
+      },
+    );
 
-  // ========== IMAGE URLS (CALCULATED FROM RESTAURANT) ==========
-  // Calculate these AFTER restaurant is loaded
-  const bannerImageUrl = restaurant?.banner_image
-    ? getImageUrl(restaurant.banner_image)
-    : null;
-
-  const profileImageUrl = restaurant?.profile_image
-    ? getImageUrl(restaurant.profile_image)
-    : null;
+    return () => {
+      console.log(`[Details] UNMOUNTING for restaurant ${restaurantId}`);
+      unsubscribe();
+    };
+  }, [restaurantId]);
 
   useEffect(() => {
     if (restaurantId) {
@@ -115,15 +98,15 @@ useEffect(() => {
     }
   }, [restaurantId]);
 
-  useEffect(() => {
-    if (restaurantId) {
-      fetchRestaurantDetails();
-      fetchReviewsData(); // ADD THIS CALL
-    } else {
-      setError("No restaurant ID provided");
-      setLoading(false);
-    }
-  }, [restaurantId]);
+  // ========== IMAGE URLS (CALCULATED FROM RESTAURANT) ==========
+  // Calculate these AFTER restaurant is loaded
+  const bannerImageUrl = restaurant?.banner_image
+    ? getImageUrl(restaurant.banner_image)
+    : null;
+
+  const profileImageUrl = restaurant?.profile_image
+    ? getImageUrl(restaurant.profile_image)
+    : null;
 
   const fetchReviewsData = async () => {
     try {
