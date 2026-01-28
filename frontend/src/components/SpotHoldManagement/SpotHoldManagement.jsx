@@ -195,7 +195,7 @@ const SpotHoldManagement = ({ restaurant }) => {
       {/* Header with Restaurant Info */}
       <div className="management-header">
         <div>
-          <h1>Spot Hold Management</h1>
+          <h3>Spot Hold Management</h3>
           {restaurantInfo && (
             <p className="restaurant-name">{restaurantInfo.name}</p>
           )}
@@ -301,7 +301,7 @@ const ActiveHoldsView = ({
 }) => {
   if (holds.length === 0) {
     return (
-      <div className="empty-state">
+      <div className="hold-empty-state">
         <p>No active spot holds</p>
         <p className="empty-subtitle">
           When diners request spot holds, they'll appear here.
@@ -378,17 +378,17 @@ const ActiveHoldsView = ({
                         : "Accept this spot hold"
                     }
                   >
-                    ✅ Accept Hold
+                    Accept Hold
                   </button>
                   <button
                     className="btn-reject"
                     onClick={() => onReject(hold.id)}
                   >
-                    ❌ Reject
+                    Reject
                   </button>
                 </>
               ) : (
-                <span className="expired-label">⏰ Hold Expired</span>
+                <span className="expired-label">Hold Expired</span>
               )}
             </div>
           </div>
@@ -402,7 +402,7 @@ const ActiveHoldsView = ({
 const TodaysReservationsView = ({ reservations }) => {
   if (reservations.length === 0) {
     return (
-      <div className="empty-state">
+      <div className="hold-empty-state">
         <p>No confirmed reservations for today</p>
       </div>
     );
@@ -445,7 +445,7 @@ const TodaysReservationsView = ({ reservations }) => {
 const ExpiredHoldsView = ({ holds, getHoldTypeLabel }) => {
   if (holds.length === 0) {
     return (
-      <div className="empty-state">
+      <div className="hold-empty-state">
         <p>No expired holds</p>
       </div>
     );

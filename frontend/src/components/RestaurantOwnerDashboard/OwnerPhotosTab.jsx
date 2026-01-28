@@ -342,7 +342,7 @@ const OwnerPhotosTab = ({ restaurant }) => {
       </div>
 
       {photos.length === 0 ? (
-        <div className="empty-state">
+        <div className="photos-empty-state">
           <div className="empty-icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"

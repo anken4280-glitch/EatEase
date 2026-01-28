@@ -59,7 +59,7 @@
   margin-right: 4px;
 }
 
-.empty-state {
+.photos-empty-state {
   text-align: center;
   padding: 60px 20px;
   background: #fafafa;
@@ -72,18 +72,19 @@
   opacity: 0.5;
 }
 
-.empty-state h4 {
+.photos-mpty-state h4 {
   margin: 0 0 8px;
   color: #333;
   font-size: 20px;
 }
 
-.empty-state p {
+.photos-empty-state p {
   margin: 0 0 24px;
   color: #666;
+  font-size: 11px;
 }
 
-.empty-state-btn {
+.photos-empty-state-btn {
   display: inline-block;
   padding: 8px 12px;
   background: #000000;
@@ -94,7 +95,7 @@
   transition: background 0.2s;
 }
 
-.empty-state-btn:hover {
+.photos-empty-state-btn:hover {
   background: #000000;
 }
 

@@ -183,7 +183,7 @@ const AnalyticsTab = ({ restaurantId, isPremium }) => {
             <p>Average Occupancy</p>
             <div className="kpi-comparison">
               <span>Peak: {occupancyData.peak || 0}%</span>
-              <span>Low: {occupancyData.low || 0}%</span>
+              <span>Lowest: {occupancyData.low || 0}%</span>
             </div>
           </div>
         </div>

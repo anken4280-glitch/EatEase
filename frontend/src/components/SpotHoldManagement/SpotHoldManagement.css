@@ -6,17 +6,18 @@
 
 .management-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #040404;
 }
 
-.management-header h1 {
+.management-header h3 {
   margin: 0;
-  color: var(--text-primary);
-  font-size: 28px;
+  color: #000000;
+  font-size: 24px;
+  text-align: start;
+  font-weight: bold;
 }
 
 .restaurant-name {
@@ -27,18 +28,15 @@
 
 .capacity-status {
   background: white;
-  padding: 15px;
+  padding: 10px;
   border-radius: 12px;
   box-shadow: var(--card-shadow);
   min-width: 250px;
 }
 
-.capacity-bar {
-  margin-bottom: 10px;
-}
 
 .capacity-label {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin-bottom: 5px;
 }
@@ -56,7 +54,7 @@
 }
 
 .available-capacity {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-secondary);
   text-align: center;
 }
@@ -64,20 +62,20 @@
 .management-tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin: 10px 0px;
   border-bottom: 1px solid #e9ecef;
   padding-bottom: 10px;
 }
 
 .tab {
   padding: 10px 20px;
-  background: none;
+  background: black;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: white;
   position: relative;
   transition: all 0.2s ease;
 }
@@ -87,8 +85,9 @@
 }
 
 .tab.active {
-  color: var(--accent-blue);
-  background: #e7f5ff;
+  color: black;
+  background: #ffffff;
+  border: 1px solid black;
 }
 
 .tab-badge {
@@ -127,18 +126,25 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.empty-state {
+.hold-empty-state {
   text-align: center;
   padding: 60px;
   color: var(--text-secondary);
 }
+.hold-empty-state p {
+  font-size: 12px;
+}
 
 .empty-subtitle {
-  font-size: 14px;
+  font-size: 11px;
   margin-top: 5px;
 }
 
@@ -149,11 +155,11 @@
 }
 
 .hold-card {
-  background: white;
+  background: #efedde;
   border-radius: 12px;
   box-shadow: var(--card-shadow);
   padding: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0.1, 0.1, 0.1, 0.4);
 }
 
 .hold-card:hover {
@@ -168,8 +174,8 @@
 
 .hold-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   margin-bottom: 15px;
   flex-wrap: wrap;
   gap: 10px;
@@ -178,16 +184,17 @@
 .hold-user {
   display: flex;
   flex-direction: column;
+  text-align: start;
 }
 
 .user-name {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 13.3px;
 }
 
 .user-email {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 
@@ -195,7 +202,9 @@
   display: flex;
   gap: 15px;
   align-items: center;
-  font-size: 14px;
+  justify-content: center;
+  font-size: 11px;
+  align-self: center;
 }
 
 .party-size {
@@ -242,13 +251,13 @@
 }
 
 .time-label {
-  font-size: 14px;
+  font-size: 11px;
   color: var(--text-secondary);
 }
 
 .time-value {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 11px;
 }
 
 .time-value.expired {
@@ -256,7 +265,7 @@
 }
 
 .expires-at {
-  font-size: 14px;
+  font-size: 10px;
   color: var(--text-secondary);
 }
 
@@ -273,7 +282,8 @@
   gap: 10px;
 }
 
-.btn-accept, .btn-reject {
+.btn-accept,
+.btn-reject {
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
@@ -285,8 +295,9 @@
 }
 
 .btn-accept {
-  background: var(--green-status);
-  color: white;
+  color: rgb(3, 2, 2);
+  background-color: rgb(255, 255, 255);
+  border: 1px solid black;
 }
 
 .btn-accept:hover:not(:disabled) {
@@ -300,7 +311,7 @@
 }
 
 .btn-reject {
-  background: var(--red-status);
+  background: black;
   color: white;
 }
 
@@ -361,7 +372,7 @@
   background: white;
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border-left: 4px solid #dee2e6;
 }
 
@@ -393,35 +404,32 @@
   .management-header {
     flex-direction: column;
   }
-  
+
   .capacity-status {
     width: 100%;
   }
-  
+
   .hold-header {
     flex-direction: column;
-    align-items: flex-start;
   }
-  
+
   .hold-meta {
     flex-direction: column;
-    align-items: flex-start;
     gap: 5px;
   }
-  
+
   .time-info {
     flex-direction: column;
-    align-items: flex-start;
   }
-  
+
   .hold-actions {
     flex-direction: column;
   }
-  
+
   .reservations-table {
     font-size: 14px;
   }
-  
+
   .reservations-table th,
   .reservations-table td {
     padding: 10px;

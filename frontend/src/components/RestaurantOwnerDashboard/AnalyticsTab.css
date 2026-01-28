@@ -67,32 +67,34 @@
 }
 
 .kpi-card {
-  background: white;
+  background: #efedde;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0.1, 0.1, 0.1, 0.4);
 }
 
 .kpi-content h3 {
   font-size: 2rem;
-  margin: 0 0 8px 0;
-  color: #333;
+  margin: 0 0 5px 0;
+  color: #000000;
 }
 
 .kpi-content p {
-  color: #666;
-  margin: 0 0 12px 0;
+  color: #000000;
+  margin: 0 0 5px 0;
+  font-size: 12px;
 }
 
 .kpi-comparison {
   display: flex;
   gap: 16px;
-  font-size: 0.9rem;
-  color: #888;
+  font-size: 10px;
+  color: #000000cd;
+  justify-content: center;
 }
 
 .kpi-trend {
-  font-size: 0.9rem;
+  font-size: 10px;
   font-weight: 600;
 }
 
@@ -113,10 +115,10 @@
 }
 
 .chart-card {
-  background: white;
+  background: #efedde;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0.1, 0.1, 0.1, 0.4);
 }
 
 .chart-card h3 {
@@ -141,8 +143,8 @@
 }
 
 .bar-fill {
-  width: 100%;
-  background: #4d96ff;
+  width: 70%;
+  background: #1a6bdd;
   border-radius: 4px 4px 0 0;
   transition: height 0.3s ease;
   min-height: 1px;
@@ -150,7 +152,7 @@
 
 .bar-label {
   margin-top: 8px;
-  font-size: 0.85rem;
+  font-size: 11px;
   color: #666;
   text-align: center;
 }
@@ -166,6 +168,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  font-size: 11px;
 }
 
 .peak-hour-time {
@@ -195,15 +198,9 @@
 .peak-hour-bar {
   flex: 1;
   height: 8px;
-  background: #e9ecef;
+  background: #06060687;
   border-radius: 4px;
   overflow: hidden;
-}
-
-.peak-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #fcc419, #ff922b);
-  transition: width 0.3s ease;
 }
 
 .peak-hour-percent {
@@ -221,14 +218,16 @@
   margin: 24px 0;
 }
 
-.insights-card, .customer-card {
-  background: white;
+.insights-card,
+.customer-card {
+  background: #efedde;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0.1, 0.1, 0.1, 0.4);
 }
 
-.insights-card h3, .customer-card h3 {
+.insights-card h3,
+.customer-card h3 {
   margin: 0 0 20px 0;
   color: #333;
 }
@@ -238,24 +237,29 @@
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 20px;
+  font-size: 11px;
 }
 
-.recommendations, .insights {
+.recommendations,
+.insights {
   margin-top: 20px;
 }
 
-.recommendations h4, .insights h4 {
+.recommendations h4,
+.insights h4 {
   margin: 0 0 12px 0;
   color: #555;
 }
 
-.recommendations ul, .insights ul {
+.recommendations ul,
+.insights ul {
   margin: 0;
   padding-left: 20px;
   color: #666;
 }
 
-.recommendations li, .insights li {
+.recommendations li,
+.insights li {
   margin-bottom: 8px;
 }
 
@@ -278,7 +282,7 @@
 
 .metric-label {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 11px;
 }
 
 .customer-breakdown {
@@ -319,8 +323,8 @@
 }
 
 .breakdown-label {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 10px;
+  color: #000000ae;
 }
 
 /* Loading states */
@@ -366,7 +370,8 @@
 }
 
 /* Error and no data states */
-.no-chart-data, .no-peak-data {
+.no-chart-data,
+.no-peak-data {
   text-align: center;
   padding: 40px 20px;
   color: #888;
